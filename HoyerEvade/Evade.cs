@@ -15,9 +15,22 @@ namespace Hoyer.Evade
 {
     public static class Evade
     {
+        public static bool UseWalk;
+        public static bool UseSkills;
+
         public static void Init()
         {
             Game.OnUpdate += OnUpdate;
+            InGameObject.OnCreate += InGameObject_OnCreate;
+            MenuEvents.Initialize += MenuHandler.Init;
+        }
+
+        private static void InGameObject_OnCreate(InGameObject inGameObject)
+        {
+            foreach (var type in inGameObject.GetBaseTypes())
+            {
+                Console.WriteLine(type);
+            }
         }
 
         public static void OnUpdate(EventArgs args)
@@ -31,7 +44,8 @@ namespace Hoyer.Evade
             if (dangerousProjectiles.Any())
             {
                 var mostDangerous = dangerousProjectiles.OrderByDescending(p => p.Data().Danger).First();
-                DodgeAbility(mostDangerous);
+                if (UseWalk && CanDodge(mostDangerous)) DodgeWithWalk(mostDangerous);
+                else if (UseSkills) DodgeWithAbilities(mostDangerous);
                 return;
             }
 
@@ -39,14 +53,26 @@ namespace Hoyer.Evade
             if (dangerousCasts.Any())
             {
                 var mostDangerous = dangerousCasts.OrderByDescending(p => p.Data.Danger).First();
-                DodgeAbility(mostDangerous);
+                if (UseWalk) DodgeWithWalk(mostDangerous);
                 return;
             }
 
             LocalPlayer.BlockAllInput = false;
         }
 
-        private static void DodgeAbility(Projectile projectile)
+        private static bool CanDodge(Projectile projectile)
+        {
+            var timeToImpact = (LocalPlayer.Instance.Distance(projectile.MapObject.Position) -
+                                LocalPlayer.Instance.MapCollision.MapCollisionRadius) /
+                               projectile.Data().ProjectileSpeed;
+            var closestPointOnLine = Geometry.ClosestPointOnLine(projectile.StartPosition, projectile.CalculatedEndPosition, LocalPlayer.Instance.Pos());
+            var timeToDodge = (projectile.Radius + LocalPlayer.Instance.MapCollision.MapCollisionRadius -
+                               LocalPlayer.Instance.Distance(closestPointOnLine)) / 3.4f;
+
+            return timeToImpact < timeToDodge;
+        }
+
+        private static void DodgeWithWalk(Projectile projectile)
         {
             LocalPlayer.BlockAllInput = true;
             var closestPointOnLine = Geometry.ClosestPointOnLine(projectile.StartPosition, projectile.CalculatedEndPosition, LocalPlayer.Instance.Pos());
@@ -54,7 +80,7 @@ namespace Hoyer.Evade
             LocalPlayer.Move(dir);
         }
 
-        private static void DodgeAbility(CastingProjectile projectile)
+        private static void DodgeWithWalk(CastingProjectile projectile)
         {
             LocalPlayer.BlockAllInput = true;
             var closestPointOnLine = Geometry.ClosestPointOnLine(projectile.Caster.Pos(), projectile.EndPos, LocalPlayer.Instance.Pos());

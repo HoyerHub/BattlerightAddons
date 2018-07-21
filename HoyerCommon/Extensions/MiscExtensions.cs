@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using BattleRight.Core.Math;
+using BattleRight.SDK.UI.Models;
 
 namespace Hoyer.Common.Extensions
 {
@@ -9,17 +11,24 @@ namespace Hoyer.Common.Extensions
         {
             return array.Any(o => o == target);
         }
+
         public static bool Includes(this string[] array, string target)
         {
             return array.Any(o => o == target);
         }
+
         public static bool Includes(this float[] array, float target)
         {
             return array.Any(o => o == target);
         }
+
         public static bool Includes(this Vector2[] array, Vector2 target)
         {
             return array.Any(o => o == target);
+        }
+
+        public static void Add(this Menu menu, MenuItem item, Action action = null)
+        {
         }
     }
 }

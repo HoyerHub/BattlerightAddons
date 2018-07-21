@@ -7,19 +7,13 @@ using BattleRight.Core.GameObjects;
 using BattleRight.Core.GameObjects.Models;
 using BattleRight.SDK;
 using BattleRight.SDK.Enumeration;
-using BattleRight.SDK.UI.Values;
 using Hoyer.Common.Extensions;
 using Hoyer.Common.Local;
 
-namespace Hoyer.Champions.Jumong.Modes
+namespace Hoyer.Champions.Alysia.Modes
 {
     public class AimAndCast:IMode
     {
-        private bool _useCursor
-        {
-            get { return MenuHandler.JumongMain.Get<MenuCheckBox>("jumong_usecursor").CurrentValue; }
-        }
-
         public void Update()
         {
             if (!LocalPlayer.Instance.AbilitySystem.IsCasting || LocalPlayer.Instance.AbilitySystem.IsPostCasting)
@@ -109,7 +103,7 @@ namespace Hoyer.Champions.Jumong.Modes
 
                 if (OrbLogic(castingSpell.Range, true)) return;
 
-                var target = _useCursor ? GetTargetFromCursor(castingSpell) : GetTargetNoCursor(castingSpell);
+                var target = GetTarget(castingSpell);
                 if (target == null) return;
 
                 var prediction = target.GetPrediction(castingSpell);
@@ -136,30 +130,7 @@ namespace Hoyer.Champions.Jumong.Modes
             return true;
         }
 
-        private Character GetTargetFromCursor(SkillBase castingSpell)
-        {
-            var isProjectile = castingSpell.Slot != AbilitySlot.Ability4 && castingSpell.Slot != AbilitySlot.Ability5;
-            var useOnIncaps = castingSpell.Slot == AbilitySlot.Ability2 || castingSpell.Slot == AbilitySlot.EXAbility2;
-
-            var target = _useCursor ? TargetSelector.GetTarget(TargetingMode.NearMouse) : TargetSelector.GetTarget(TargetingMode.Closest);
-            if (_useCursor && (target.Distance(LocalPlayer.Instance.Aiming.AimPosition) > 3 ||
-                               !target.IsValidTarget(castingSpell, isProjectile, useOnIncaps)))
-            {
-                var possibleTargets = EntitiesManager.EnemyTeam.Where(e => e != null && e.IsValidTarget(castingSpell, isProjectile, useOnIncaps))
-                    .ToList();
-                if (possibleTargets.Count == 0)
-                {
-                    if (!OrbLogic(castingSpell.Range)) LocalPlayer.PressAbility(AbilitySlot.Interrupt, true);
-                    return null;
-                }
-
-                target = possibleTargets.OrderBy(o => o.Distance(LocalPlayer.Instance)).First();
-            }
-
-            return target;
-        }
-
-        private Character GetTargetNoCursor(SkillBase castingSpell)
+        private Character GetTarget(SkillBase castingSpell)
         {
             var isProjectile = castingSpell.Slot != AbilitySlot.Ability4 && castingSpell.Slot != AbilitySlot.Ability5;
             var useOnIncaps = castingSpell.Slot == AbilitySlot.Ability2 || castingSpell.Slot == AbilitySlot.EXAbility2;

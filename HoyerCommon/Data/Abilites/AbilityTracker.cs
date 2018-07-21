@@ -37,7 +37,7 @@ namespace Hoyer.Common.Data.Abilites
                 {
                     if (args.Caster.Id == 25) return;
 
-                    if (args.Caster.Team == BattleRight.Core.Enumeration.Team.Enemy)
+                    if (args.Caster.Team != LocalPlayer.Instance.Team)
                     {
                         Console.WriteLine(args.Caster.AbilitySystem.CastingAbilityName + ": " + args.Caster.AbilitySystem.CastingAbilityId);
                         var abilityInfo = AbilityDatabase.Get(args.Caster.AbilitySystem.CastingAbilityId);

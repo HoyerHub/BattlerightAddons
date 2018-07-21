@@ -25,10 +25,10 @@ namespace Hoyer.Common.Local
 
         public static void Init()
         {
-            HoyerMenu = MainMenu.AddMenu("HoyerMain", "HoyerMain");
+            HoyerMenu = MainMenu.AddMenu("HoyerMain", "Hoyer");
             HoyerMenu.AddLabel("Common Utils");
 
-            var hideNames = new MenuCheckBox("hide_names", "Hide All Names (stream/video mode)");
+            var hideNames = new MenuCheckBox("hide_names", "Hide all names (Video Mode)");
             hideNames.OnValueChange += delegate (ChangedValueArgs<bool> args)
             {
                 HideNames.Active = args.NewValue;

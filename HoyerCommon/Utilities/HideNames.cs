@@ -21,7 +21,6 @@ namespace Hoyer.Common.Utilities
         {
             Component.Update += MB_Update;
             Game.OnMatchStart += Game_OnMatchStart;
-
             SetHudLabels();
         }
 
