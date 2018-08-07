@@ -16,10 +16,11 @@ namespace Hoyer.Champions.Alysia.Modes
         public void Update()
         {
             var castingFill = LocalPlayer.Instance.CastingFill;
-            int[] waitAim = {1};
+            int[] waitAim = {0,1,3,6};
             if (castingFill > 0.5 && castingFill < 1.1 && waitAim.Includes(LocalPlayer.Instance.AbilitySystem.CastingAbilityIndex) 
-                || !waitAim.Includes(LocalPlayer.Instance.AbilitySystem.CastingAbilityIndex) && LocalPlayer.Instance.AbilitySystem.CastingAbilityIsCasting)
+                || !waitAim.Includes(LocalPlayer.Instance.AbilitySystem.CastingAbilityIndex) && LocalPlayer.Instance.AbilitySystem.IsCasting)
             {
+                Console.WriteLine(LocalPlayer.Instance.AbilitySystem.CastingAbilityIndex);
                 GetTargetAndAim();
             }
             else

@@ -10,12 +10,6 @@ namespace Hoyer.Common.Debug
 {
     public static class LogProjectiles
     {
-        public static void Init()
-        {
-            //InGameObject.OnCreate += InGameObject_OnCreate;
-            //Game.OnUpdate += Game_OnUpdate;
-        }
-
         private static void Game_OnUpdate(EventArgs args)
         {
             foreach (var activeProjectile in EntitiesManager.ActiveProjectiles)

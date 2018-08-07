@@ -17,7 +17,7 @@ namespace Hoyer.Champions.Jumong.Modes
     {
         private bool _useCursor
         {
-            get { return MenuHandler.JumongMain.Get<MenuCheckBox>("jumong_usecursor").CurrentValue; }
+            get { return MenuHandler.JumongMenu.Get<MenuCheckBox>("jumong_usecursor").CurrentValue; }
         }
 
         public void Update()

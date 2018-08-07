@@ -1,6 +1,9 @@
 ﻿using System;
 using BattleRight.Sandbox;
-using UnityEngine;
+using Hoyer.Common.Data.Abilites;
+using Hoyer.Common.Local;
+using Hoyer.Common.Utilities;
+using Component = Hoyer.Common.Utilities.Component;
 
 namespace Hoyer.Common
 {
@@ -8,10 +11,17 @@ namespace Hoyer.Common
     {
         public void OnInit()
         {
-            Application.logMessageReceived += delegate (string condition, string trace, LogType type)
-            {
-                if (type != LogType.Log) Console.WriteLine(condition + Environment.NewLine + trace);
-            };
+            InitializeStaticClasses();
+        }
+
+        private void InitializeStaticClasses()
+        {
+            StealthPrediction.Setup();
+            HideNames.Setup();
+            Skills.Setup();
+            MenuEvents.Setup();
+            AbilityTracker.Setup();
+            Component.Setup();
         }
 
         public void OnUnload()

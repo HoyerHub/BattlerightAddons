@@ -2,6 +2,7 @@
 using System.Collections;
 using BattleRight.Core;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Hoyer.Common.Utilities
 {
@@ -17,23 +18,23 @@ namespace Hoyer.Common.Utilities
             _activeComponent.DelayActionBySeconds(action,seconds);
         }
 
-        static Component()
+        public static void Setup()
         {
-            AddObject(null);
-            Game.OnMatchStart += AddObject;
-            Game.OnMatchEnd += AddObject;
+            AddObject();
             DelayAction(Component_Init, 0.5f);
         }
 
         private static void Component_Init()
         {
+            Console.WriteLine("[HoyerCommon/Component] Init");
             Init.Invoke();
         }
 
-        private static void AddObject(EventArgs args)
+        private static void AddObject()
         {
-            var gameObject = new GameObject { name = "letsgo" };
+            var gameObject = new GameObject { name = "HoyerWasHere" };
             _activeComponent = gameObject.AddComponent<HoyerComponent>();
+            gameObject.transform.SetParent(GameObject.FindGameObjectWithTag("ViewCanvas").transform);
         }
 
         public class HoyerComponent : MonoBehaviour

@@ -12,15 +12,25 @@ namespace Hoyer.Common.Utilities
     public static class StealthPrediction
     {
         public static Dictionary<string, Vector2> Positions = new Dictionary<string, Vector2>();
+        public static List<string> HasSeen = new List<string>();
         public static bool DrawStealthed = true;
 
         private static readonly Dictionary<string, float> Widths = new Dictionary<string, float>();
 
-        static StealthPrediction()
+        public static void Setup()
         {
             Game.OnUpdate += OnUpdate;
             Game.OnDraw += Game_OnDraw;
             Game.OnMatchStart += Game_OnMatchStart;
+            Game.OnMatchStateUpdate += Game_OnMatchStateUpdate;
+        }
+
+        private static void Game_OnMatchStateUpdate(MatchStateUpdate args)
+        {
+            if (args.NewMatchState == MatchState.InRound)
+            {
+                HasSeen.Clear();
+            }
         }
 
         private static void Game_OnMatchStart(EventArgs args)
@@ -51,6 +61,7 @@ namespace Hoyer.Common.Utilities
             {
                 if (character.CharacterModel.IsModelInvisible)
                 {
+                    if (!HasSeen.Contains(character.CharName)) continue;
                     if (Positions.ContainsKey(character.CharName))
                     {
                         Positions[character.CharName] = Positions[character.CharName] + character.NetworkMovement.Velocity * Time.deltaTime;
@@ -62,6 +73,7 @@ namespace Hoyer.Common.Utilities
                 }
                 else
                 {
+                    if(!HasSeen.Contains(character.CharName)) HasSeen.Add(character.CharName);
                     if (Positions.ContainsKey(character.CharName)) Positions.Remove(character.CharName);
                 }
             }

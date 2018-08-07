@@ -18,7 +18,7 @@ namespace Hoyer.Common.Local
 
         public static Menu HoyerMenu;
 
-        static MenuEvents()
+        public static void Setup()
         {
             Component.Init += Init;
         }
@@ -28,7 +28,7 @@ namespace Hoyer.Common.Local
             HoyerMenu = MainMenu.AddMenu("HoyerMain", "Hoyer");
             HoyerMenu.AddLabel("Common Utils");
 
-            var hideNames = new MenuCheckBox("hide_names", "Hide all names (Video Mode)");
+            var hideNames = new MenuCheckBox("hide_names", "Hide all names (Video Mode)", false);
             hideNames.OnValueChange += delegate (ChangedValueArgs<bool> args)
             {
                 HideNames.Active = args.NewValue;
@@ -49,21 +49,24 @@ namespace Hoyer.Common.Local
 
             HoyerMenu.AddSeparator();
             LoadValues();
-            
+
+            Console.WriteLine("[HoyerCommon/MenuEvents] Menu Init");
             Initialize.Invoke();
+            Component.DelayAction(Update.Invoke, 1);
+            Game.OnMatchStart += MatchUpdate;
+            Game.OnMatchEnd += MatchUpdate;
+        }
+
+        private static void MatchUpdate(EventArgs args)
+        {
+            Console.WriteLine("[HoyerCommon/MenuEvents] Menu Updating");
             Update.Invoke();
-            Game.OnMatchStart += Game_OnMatchStart;
         }
 
         private static void LoadValues()
         {
             HideNames.Active = HoyerMenu.Get<MenuCheckBox>("hide_names").CurrentValue;
             StealthPrediction.DrawStealthed = HoyerMenu.Get<MenuCheckBox>("show_stealth").CurrentValue;
-        }
-
-        private static void Game_OnMatchStart(EventArgs args)
-        {
-            Update.Invoke();
         }
     }
 }

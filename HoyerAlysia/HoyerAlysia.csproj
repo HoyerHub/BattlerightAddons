@@ -35,7 +35,7 @@
       <HintPath>..\..\..\..\BattleRight\System\BattleRight.Core.dll</HintPath>
     </Reference>
     <Reference Include="BattleRight.Sandbox">
-      <HintPath>..\HoyerCommon\bin\Release\BattleRight.Sandbox.dll</HintPath>
+      <HintPath>..\..\..\..\BattleRight\System\BattleRight.Sandbox.dll</HintPath>
     </Reference>
     <Reference Include="BattleRight.SDK">
       <HintPath>..\..\..\..\BattleRight\System\BattleRight.SDK.dll</HintPath>

@@ -17,7 +17,7 @@ namespace Hoyer.Champions.Jumong.Modes
     {
         private bool _useCursor
         {
-            get { return MenuHandler.JumongMain.Get<MenuCheckBox>("jumong_usecursor").CurrentValue; }
+            get { return MenuHandler.JumongMenu.Get<MenuCheckBox>("jumong_usecursor").CurrentValue; }
         }
 
         public void Update()
@@ -43,7 +43,7 @@ namespace Hoyer.Champions.Jumong.Modes
                 var castingSpell = Skills.Active.Get((AbilitySlot) LocalPlayer.Instance.AbilitySystem.CastingAbilityIndex);
                 if (castingSpell == null) return;
 
-                if (OrbLogic(castingSpell.Range, true)) return;
+                if (OrbLogic(castingSpell, true)) return;
                 var target = _useCursor ? GetTargetFromCursor(castingSpell) : GetTargetNoCursor(castingSpell);
                 if (target == null) return;
 
@@ -57,14 +57,15 @@ namespace Hoyer.Champions.Jumong.Modes
             }
         }
 
-        private bool OrbLogic(float skillRange, bool checkHover = false)
+        private bool OrbLogic(SkillBase skill, bool checkHover = false)
         {
             if (EntitiesManager.CenterOrb == null || EntitiesManager.CenterOrb.Get<LivingObject>().IsDead) return false;
+            if (skill.Slot == AbilitySlot.Ability4 || skill.Slot == AbilitySlot.Ability5 || skill.Slot == AbilitySlot.EXAbility1) return false;
 
             var orbPos = EntitiesManager.CenterOrb.Get<MapGameObject>().Position;
 
             if (checkHover && !EntitiesManager.CenterOrb.Get<MapGameObject>().IsHoveringNear() ||
-                !(orbPos.Distance(LocalPlayer.Instance) < skillRange)) return false;
+                !(orbPos.Distance(LocalPlayer.Instance) < skill.Range)) return false;
 
             LocalPlayer.EditAimPosition = true;
             LocalPlayer.Aim(orbPos);
@@ -81,7 +82,7 @@ namespace Hoyer.Champions.Jumong.Modes
 
             if (possibleTargets.Count == 0)
             {
-                if (!OrbLogic(castingSpell.Range)) LocalPlayer.PressAbility(AbilitySlot.Interrupt, true);
+                if (!OrbLogic(castingSpell)) LocalPlayer.PressAbility(AbilitySlot.Interrupt, true);
                 return null;
             }
 
@@ -103,7 +104,7 @@ namespace Hoyer.Champions.Jumong.Modes
                     .ToList();
                 if (possibleTargets.Count == 0)
                 {
-                    if (!OrbLogic(castingSpell.Range)) LocalPlayer.PressAbility(AbilitySlot.Interrupt, true);
+                    if (!OrbLogic(castingSpell)) LocalPlayer.PressAbility(AbilitySlot.Interrupt, true);
                     return null;
                 }
 

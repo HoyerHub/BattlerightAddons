@@ -12,7 +12,7 @@ namespace Hoyer.Common.Utilities
         private static readonly List<TextMeshProUGUI> HUDLabels = new List<TextMeshProUGUI>();
         private static readonly List<TextMeshProUGUI> UILabels = new List<TextMeshProUGUI>();
 
-        static HideNames()
+        public static void Setup()
         {
             OnInit();
         }
@@ -21,7 +21,7 @@ namespace Hoyer.Common.Utilities
         {
             Component.Update += MB_Update;
             Game.OnMatchStart += Game_OnMatchStart;
-            SetHudLabels();
+            if (Game.IsInGame) SetHudLabels();
         }
 
         private static void Game_OnMatchStart(EventArgs args)

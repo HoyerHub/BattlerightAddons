@@ -12,22 +12,19 @@ namespace Hoyer.Common.Data.Abilites
 {
     public static class AbilityTracker
     {
+        public static void Setup()
+        {
+            Enemy.Projectiles.Setup();
+        }
+
         public static class Enemy
         {
             public static class Projectiles
             {
                 public static readonly List<CastingProjectile> Casting = new List<CastingProjectile>();
-                public static List<Projectile> Active
-                {
-                    get { return EntitiesManager.ActiveProjectiles.ToList(); }
-                }
+                public static List<Projectile> Active = new List<Projectile>();
 
-                static Projectiles()
-                {
-                    Init();
-                }
-
-                private static void Init()
+                public static void Setup()
                 {
                     Game.OnUpdate += OnUpdate;
                     SpellDetector.OnSpellCast += OnSpellCast;
@@ -36,14 +33,13 @@ namespace Hoyer.Common.Data.Abilites
                 private static void OnSpellCast(BattleRight.SDK.EventsArgs.SpellCastArgs args)
                 {
                     if (args.Caster.Id == 25) return;
-
                     if (args.Caster.Team != LocalPlayer.Instance.Team)
                     {
-                        Console.WriteLine(args.Caster.AbilitySystem.CastingAbilityName + ": " + args.Caster.AbilitySystem.CastingAbilityId);
+                        //Console.WriteLine(args.Caster.AbilitySystem.CastingAbilityName + ": " + args.Caster.AbilitySystem.CastingAbilityId);
                         var abilityInfo = AbilityDatabase.Get(args.Caster.AbilitySystem.CastingAbilityId);
                         if (abilityInfo != null)
                         {
-                            Console.WriteLine("AbilityDatabase: Data found for spell: " + abilityInfo.ObjectName);
+                            //Console.WriteLine("AbilityDatabase: Data found for spell: " + abilityInfo.ObjectName);
                             Casting.Add(new CastingProjectile(abilityInfo, args.Caster));
                         }
                     }
@@ -51,6 +47,8 @@ namespace Hoyer.Common.Data.Abilites
 
                 private static void OnUpdate(EventArgs args)
                 {
+                    Active.Clear();
+                    Active.AddRange(EntitiesManager.ActiveProjectiles);
                     CheckForCasts();
                     UpdateCasts();
                 }

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using BattleRight.Core;
+using BattleRight.Core.Enumeration;
 using BattleRight.Core.GameObjects;
 using BattleRight.SDK.UI;
 using BattleRight.SDK.UI.Models;
@@ -9,25 +11,23 @@ namespace Hoyer.Champions.Jumong
 {
     public static class MenuHandler
     {
-        public static Menu HoyerMain;
-        public static Menu JumongMain;
+        public static Menu HoyerMainMenu;
+        public static Menu JumongMenu;
 
         private static MenuIntSlider _modeSlider;
         private static MenuCheckBox _enabledBox;
 
         public static void Init()
         {
-            HoyerMain = MainMenu.GetMenu("HoyerMain");
-            JumongMain = HoyerMain.Add(new Menu("HoyerJumong", "Jumong", true));
-            //AimMode = JumongMain.Add(new Menu("HoyerJumongAim", "Mode: Aim", true));
-            //CastMode = JumongMain.Add(new Menu("HoyerJumongCast", "Mode: Cast and aim", true));
+            HoyerMainMenu = MainMenu.GetMenu("HoyerMain");
+            JumongMenu = HoyerMainMenu.Add(new Menu("HoyerJumong", "Jumong", true));
 
-            JumongMain.Add(new MenuLabel("Jumong"));
+            JumongMenu.Add(new MenuLabel("Jumong"));
             _enabledBox = new MenuCheckBox("jumong_enabled", "Enabled");
-            _enabledBox.OnValueChange += delegate (ChangedValueArgs<bool> args) { /*characterMenu.Hidden = !args.NewValue;*/ Jumong.Enabled = args.NewValue; };
-            JumongMain.Add(_enabledBox);
+            _enabledBox.OnValueChange += delegate (ChangedValueArgs<bool> args) { Jumong.Enabled = args.NewValue; };
+            JumongMenu.Add(_enabledBox);
 
-            JumongMain.AddSeparator();
+            JumongMenu.AddSeparator();
             
             _modeSlider = new MenuIntSlider("jumong_mode", "", 0, 1);
             _modeSlider.OnValueChange += delegate (ChangedValueArgs<int> args)
@@ -35,11 +35,12 @@ namespace Hoyer.Champions.Jumong
                 SetModeSliderName(args.NewValue);
                 Jumong.SetMode(args.NewValue);
             };
-            JumongMain.Add(_modeSlider);
+            JumongMenu.Add(_modeSlider);
 
-            JumongMain.Add(new MenuCheckBox("jumong_usecursor", "Use cursor pos for target selection"));
+            JumongMenu.Add(new MenuCheckBox("jumong_usecursor", "Use cursor pos for target selection"));
 
             FirstRun();
+            Console.WriteLine("[HoyerJumong/MenuHandler] Jumong menu init");
         }
 
         private static void SetModeSliderName(int val)
@@ -59,12 +60,31 @@ namespace Hoyer.Champions.Jumong
 
         public static void Update()
         {
-            var menu = MainMenu.GetMenu("HoyerJumong");
-            if (menu == null || LocalPlayer.Instance == null)
+            if (JumongMenu == null)
             {
+                Console.WriteLine("[HoyerJumong/MenuHandler] Can't find menu, please report this to Hoyer :(");
                 return;
             }
-            menu.Hidden = LocalPlayer.Instance.CharName != "Jumong";
+            if (!Game.IsInGame)
+            {
+                if (JumongMenu.Hidden)
+                {
+                    Console.WriteLine("[HoyerJumong/MenuHandler] Showing Menu");
+                    JumongMenu.Hidden = false;
+                }
+                return;
+            }
+            if (LocalPlayer.Instance.ChampionEnum != Champion.Jumong && !JumongMenu.Hidden)
+            {
+                Console.WriteLine("[HoyerJumong/MenuHandler] Hiding Menu");
+                JumongMenu.Hidden = true;
+                return;
+            }
+            if (LocalPlayer.Instance.ChampionEnum == Champion.Jumong && JumongMenu.Hidden)
+            {
+                Console.WriteLine("[HoyerJumong/MenuHandler] Showing Menu");
+                JumongMenu.Hidden = false;
+            }
         }
     }
 }

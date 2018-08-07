@@ -45,7 +45,7 @@ namespace Hoyer.Champions.Jumong
 
         private void OnUpdate(EventArgs eventArgs)
         {
-            if (!Enabled || !Game.IsInGame || Game.CurrentMatchState != MatchState.InRound || LocalPlayer.Instance.CharName != "Jumong")
+            if (!Enabled || !Game.IsInGame || Game.CurrentMatchState != MatchState.InRound || LocalPlayer.Instance.CharName != "Jumong" || LocalPlayer.Instance.HasBuff("SpellBlock"))
             {
                 LocalPlayer.EditAimPosition = false;
                 return;

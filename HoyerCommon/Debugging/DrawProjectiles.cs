@@ -9,7 +9,7 @@ namespace Hoyer.Common.Debug
 {
     public static class DrawProjectiles
     {
-        static DrawProjectiles()
+        private static void Init()
         {
             Game.OnDraw += Game_OnDraw;
         }

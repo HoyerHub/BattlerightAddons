@@ -26,7 +26,6 @@ namespace Hoyer.Common.Extensions
         {
             if (enemy == null || enemy.Buffs == null || enemy.Living.IsDead || enemy.PhysicsCollision.IsImmaterial && !enemy.CharacterModel.IsModelInvisible)
             {
-                Console.WriteLine(enemy.CharName + " is not valid: a");
                 return false;
             }
 
@@ -42,11 +41,11 @@ namespace Hoyer.Common.Extensions
             }
 
             float timeLeft;
-            if (isProjectile)
+            if (spell.FixedDelay > 0)
             {
-                timeLeft = enemy.Distance(LocalPlayer.Instance) / spell.Speed;
+                timeLeft = spell.FixedDelay;
             }
-            else timeLeft = 0.5f;
+            else timeLeft = enemy.Distance(LocalPlayer.Instance) / spell.Speed;
 
             var ret = true;
             foreach (var buff in enemy.Buffs.Where(b => b != null && b.ObjectName != null))

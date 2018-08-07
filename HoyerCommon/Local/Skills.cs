@@ -22,7 +22,7 @@ namespace Hoyer.Common.Local
             }
         }
 
-        static Skills()
+        public static void Setup()
         {
             Game.OnMatchStart += Game_OnMatchStart;
         }
