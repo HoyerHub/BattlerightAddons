@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A4347B49-024D-4BFD-8B49-30EB525FAEF7}</ProjectGuid>
+    <ProjectGuid>{3BE11565-EDDB-4653-867B-E77D47FBF32F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Hoyer.Champions.Alysia</RootNamespace>
-    <AssemblyName>HoyerAlysia</AssemblyName>
+    <RootNamespace>Hoyer.Evade</RootNamespace>
+    <AssemblyName>HoyerEvade %28WIP%29</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -32,15 +32,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BattleRight.Core">
-      <HintPath>..\..\..\..\BattleRight\System\BattleRight.Core.dll</HintPath>
+      <HintPath>D:\Battleright\System\BattleRight.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="BattleRight.Helper">
+      <HintPath>D:\Battleright\System\BattleRight.Helper.dll</HintPath>
     </Reference>
     <Reference Include="BattleRight.Sandbox">
-      <HintPath>..\..\..\..\BattleRight\System\BattleRight.Sandbox.dll</HintPath>
+      <HintPath>D:\Battleright\System\BattleRight.Sandbox.dll</HintPath>
     </Reference>
     <Reference Include="BattleRight.SDK">
-      <HintPath>..\..\..\..\BattleRight\System\BattleRight.SDK.dll</HintPath>
+      <HintPath>D:\Battleright\System\BattleRight.SDK.dll</HintPath>
     </Reference>
-    <Reference Include="HoyerCommon">
+    <Reference Include="HoyerCommon, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\HoyerCommon\bin\Release\HoyerCommon.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -54,11 +58,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Alysia.cs" />
+    <Compile Include="Evade.cs" />
+    <Compile Include="Loader.cs" />
     <Compile Include="MenuHandler.cs" />
-    <Compile Include="Modes\AimAndCast.cs" />
-    <Compile Include="Modes\AimOnly.cs" />
-    <Compile Include="Modes\IMode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

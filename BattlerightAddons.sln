@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HoyerCommon", "HoyerCommon\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HoyerJumong", "HoyerJumong\HoyerJumong.csproj", "{D255BD13-8CD5-4AB5-9553-E7890AC486B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HoyerEvade", "HoyerEvade\HoyerEvade.csproj", "{3BE11565-EDDB-4653-867B-E77D47FBF32F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HoyerEvade (WIP)", "HoyerEvade\HoyerEvade (WIP).csproj", "{3BE11565-EDDB-4653-867B-E77D47FBF32F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Champions", "Champions", "{D57F082E-AD0D-46DC-A359-EFDE2DB6BF0E}"
 EndProject

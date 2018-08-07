@@ -32,16 +32,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BattleRight.Core">
-      <HintPath>..\..\..\..\BattleRight\System\BattleRight.Core.dll</HintPath>
+      <HintPath>D:\Battleright\System\BattleRight.Core.dll</HintPath>
     </Reference>
     <Reference Include="BattleRight.Helper">
-      <HintPath>..\..\..\..\BattleRight\System\BattleRight.Helper.dll</HintPath>
+      <HintPath>D:\Battleright\System\BattleRight.Helper.dll</HintPath>
     </Reference>
     <Reference Include="BattleRight.Sandbox">
-      <HintPath>..\..\..\..\BattleRight\System\BattleRight.Sandbox.dll</HintPath>
+      <HintPath>D:\Battleright\System\BattleRight.Sandbox.dll</HintPath>
     </Reference>
     <Reference Include="BattleRight.SDK">
-      <HintPath>..\..\..\..\BattleRight\System\BattleRight.SDK.dll</HintPath>
+      <HintPath>D:\Battleright\System\BattleRight.SDK.dll</HintPath>
     </Reference>
     <Reference Include="HoyerCommon, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

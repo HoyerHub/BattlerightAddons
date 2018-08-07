@@ -32,17 +32,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BattleRight.Core">
-      <HintPath>..\..\..\..\BattleRight\System\BattleRight.Core.dll</HintPath>
+      <HintPath>D:\Battleright\System\BattleRight.Core.dll</HintPath>
     </Reference>
     <Reference Include="BattleRight.Helper">
-      <HintPath>..\..\..\..\BattleRight\System\BattleRight.Helper.dll</HintPath>
+      <HintPath>D:\Battleright\System\BattleRight.Helper.dll</HintPath>
     </Reference>
-    <Reference Include="BattleRight.Sandbox, Version=1.0.0.0, Culture=neutral, PublicKeyToken=17d7f475c70d8a09, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\BattleRight\System\BattleRight.Sandbox.dll</HintPath>
+    <Reference Include="BattleRight.Sandbox">
+      <HintPath>D:\Battleright\System\BattleRight.Sandbox.dll</HintPath>
     </Reference>
     <Reference Include="BattleRight.SDK">
-      <HintPath>..\..\..\..\BattleRight\System\BattleRight.SDK.dll</HintPath>
+      <HintPath>D:\Battleright\System\BattleRight.SDK.dll</HintPath>
     </Reference>
     <Reference Include="MergedUnity">
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Battlerite\Battlerite_Data\Managed\MergedUnity.dll</HintPath>
