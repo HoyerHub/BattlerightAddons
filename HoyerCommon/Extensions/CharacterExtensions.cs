@@ -33,9 +33,9 @@ namespace Hoyer.Common.Extensions
         }
 
         // ReSharper disable once InconsistentNaming
-        public static bool IsValidTarget(this Character enemy, SkillBase spell, bool isProjectile = true, bool useOnHardCC = false)
+        public static bool IsValidTarget(this Character enemy, SkillBase spell, bool isProjectile = true, bool useOnHardCC = false, bool avoidStealted = false)
         {
-            if (enemy == null || enemy.Buffs == null || enemy.Living.IsDead || enemy.PhysicsCollision.IsImmaterial && !enemy.CharacterModel.IsModelInvisible)
+            if (enemy == null || enemy.Buffs == null || enemy.Living.IsDead || enemy.PhysicsCollision.IsImmaterial && !enemy.CharacterModel.IsModelInvisible || avoidStealted && enemy.CharacterModel.IsModelInvisible)
             {
                 return false;
             }

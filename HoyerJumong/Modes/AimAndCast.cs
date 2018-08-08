@@ -15,9 +15,14 @@ namespace Hoyer.Champions.Jumong.Modes
 {
     public class AimAndCast:IMode
     {
-        private bool _useCursor
+        private bool UseCursor
         {
-            get { return MenuHandler.JumongMenu.Get<MenuCheckBox>("jumong_usecursor").CurrentValue; }
+            get { return MenuHandler.UseCursor.CurrentValue; }
+        }
+
+        private bool AvoidStealthed
+        {
+            get { return !MenuHandler.HitStealthed.CurrentValue; }
         }
 
         public void Update()
@@ -107,9 +112,9 @@ namespace Hoyer.Champions.Jumong.Modes
                 var castingSpell = Skills.Active.Get((AbilitySlot)LocalPlayer.Instance.AbilitySystem.CastingAbilityIndex);
                 if (castingSpell == null) return;
 
-                if (OrbLogic(castingSpell.Range, true)) return;
+                if (OrbLogic(castingSpell, true)) return;
 
-                var target = _useCursor ? GetTargetFromCursor(castingSpell) : GetTargetNoCursor(castingSpell);
+                var target = UseCursor ? GetTargetFromCursor(castingSpell) : GetTargetNoCursor(castingSpell);
                 if (target == null) return;
 
                 var prediction = target.GetPrediction(castingSpell);
@@ -122,14 +127,15 @@ namespace Hoyer.Champions.Jumong.Modes
             }
         }
 
-        private bool OrbLogic(float skillRange, bool shouldCheckHover = false)
+        private bool OrbLogic(SkillBase skill, bool shouldCheckHover = false)
         {
             if (EntitiesManager.CenterOrb == null || EntitiesManager.CenterOrb.Get<LivingObject>().IsDead) return false;
+            if (skill.Slot == AbilitySlot.Ability4 || skill.Slot == AbilitySlot.Ability5 || skill.Slot == AbilitySlot.EXAbility1) return false;
 
             var orbPos = EntitiesManager.CenterOrb.Get<MapGameObject>().Position;
 
             if (shouldCheckHover && !EntitiesManager.CenterOrb.Get<MapGameObject>().IsHoveringNear() ||
-                !(orbPos.Distance(LocalPlayer.Instance) < skillRange)) return false;
+                !(orbPos.Distance(LocalPlayer.Instance) < skill.Range)) return false;
 
             LocalPlayer.EditAimPosition = true;
             LocalPlayer.Aim(orbPos);
@@ -141,15 +147,15 @@ namespace Hoyer.Champions.Jumong.Modes
             var isProjectile = castingSpell.Slot != AbilitySlot.Ability4 && castingSpell.Slot != AbilitySlot.Ability5;
             var useOnIncaps = castingSpell.Slot == AbilitySlot.Ability2 || castingSpell.Slot == AbilitySlot.EXAbility2;
 
-            var target = _useCursor ? TargetSelector.GetTarget(TargetingMode.NearMouse) : TargetSelector.GetTarget(TargetingMode.Closest);
-            if (_useCursor && (target.Distance(LocalPlayer.Instance.Aiming.AimPosition) > 3 ||
-                               !target.IsValidTarget(castingSpell, isProjectile, useOnIncaps)))
+            var target = UseCursor ? TargetSelector.GetTarget(TargetingMode.NearMouse) : TargetSelector.GetTarget(TargetingMode.Closest);
+            if (UseCursor && (target.Distance(LocalPlayer.Instance.Aiming.AimPosition) > 3 ||
+                               !target.IsValidTarget(castingSpell, isProjectile, useOnIncaps, AvoidStealthed)))
             {
-                var possibleTargets = EntitiesManager.EnemyTeam.Where(e => e != null && e.IsValidTarget(castingSpell, isProjectile, useOnIncaps))
+                var possibleTargets = EntitiesManager.EnemyTeam.Where(e => e != null && e.IsValidTarget(castingSpell, isProjectile, useOnIncaps, AvoidStealthed))
                     .ToList();
                 if (possibleTargets.Count == 0)
                 {
-                    if (!OrbLogic(castingSpell.Range)) LocalPlayer.PressAbility(AbilitySlot.Interrupt, true);
+                    if (!OrbLogic(castingSpell)) LocalPlayer.PressAbility(AbilitySlot.Interrupt, true);
                     return null;
                 }
 
@@ -164,12 +170,12 @@ namespace Hoyer.Champions.Jumong.Modes
             var isProjectile = castingSpell.Slot != AbilitySlot.Ability4 && castingSpell.Slot != AbilitySlot.Ability5;
             var useOnIncaps = castingSpell.Slot == AbilitySlot.Ability2 || castingSpell.Slot == AbilitySlot.EXAbility2;
 
-            var possibleTargets = EntitiesManager.EnemyTeam.Where(e => e != null && e.IsValidTarget(castingSpell, isProjectile, useOnIncaps))
+            var possibleTargets = EntitiesManager.EnemyTeam.Where(e => e != null && e.IsValidTarget(castingSpell, isProjectile, useOnIncaps, AvoidStealthed))
                 .ToList();
 
             if (possibleTargets.Count == 0)
             {
-                if (!OrbLogic(castingSpell.Range)) LocalPlayer.PressAbility(AbilitySlot.Interrupt, true);
+                if (!OrbLogic(castingSpell)) LocalPlayer.PressAbility(AbilitySlot.Interrupt, true);
                 return null;
             }
 

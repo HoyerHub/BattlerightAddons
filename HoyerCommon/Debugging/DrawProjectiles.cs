@@ -2,6 +2,7 @@
 using BattleRight.Core;
 using Hoyer.Common.Data.Abilites;
 using Hoyer.Common.Extensions;
+using Hoyer.Common.Local;
 using UnityEngine;
 using Vector2 = BattleRight.Core.Math.Vector2;
 
@@ -9,7 +10,9 @@ namespace Hoyer.Common.Debug
 {
     public static class DrawProjectiles
     {
-        private static void Init()
+        public static bool Active = false;
+
+        public static void Setup()
         {
             Game.OnDraw += Game_OnDraw;
         }
@@ -40,7 +43,7 @@ namespace Hoyer.Common.Debug
 
         private static void Game_OnDraw(EventArgs args)
         {
-            if(!Game.IsInGame)return;
+            if(!Game.IsInGame || !Active) return;
             foreach (var projectile in EntitiesManager.ActiveProjectiles)
             {
                 if (projectile.BaseObject.TeamId == 2)

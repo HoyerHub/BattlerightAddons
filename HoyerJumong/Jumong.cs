@@ -20,6 +20,7 @@ namespace Hoyer.Champions.Jumong
     public class Jumong : IAddon
     {
         public static bool Enabled;
+        public static bool AimUserInput;
         private static IMode _mode;
 
         public void OnInit()
@@ -53,11 +54,10 @@ namespace Hoyer.Champions.Jumong
             _mode.Update();
         }
 
-        public static void SetMode(int index)
+        public static void SetMode(bool combo)
         {
-            if (index == 0) _mode = new AimOnly();
-            else if (index == 1)
-                _mode = new AimAndCast();
+            if (!combo) _mode = new AimOnly();
+            else _mode = new AimAndCast();
         }
 
         public void OnUnload()

@@ -6,6 +6,7 @@ using BattleRight.Core.GameObjects;
 using BattleRight.SDK.UI;
 using BattleRight.SDK.UI.Models;
 using BattleRight.SDK.UI.Values;
+using UnityEngine;
 
 namespace Hoyer.Champions.Jumong
 {
@@ -14,8 +15,13 @@ namespace Hoyer.Champions.Jumong
         public static Menu HoyerMainMenu;
         public static Menu JumongMenu;
 
-        private static MenuIntSlider _modeSlider;
+        public static MenuCheckBox HitStealthed;
+        public static MenuCheckBox UseCursor;
+        public static MenuCheckBox AimUserInput;
+
+        private static MenuKeybind _comboKey;
         private static MenuCheckBox _enabledBox;
+        private static MenuCheckBox _comboToggle;
 
         public static void Init()
         {
@@ -28,34 +34,32 @@ namespace Hoyer.Champions.Jumong
             JumongMenu.Add(_enabledBox);
 
             JumongMenu.AddSeparator();
-            
-            _modeSlider = new MenuIntSlider("jumong_mode", "", 0, 1);
-            _modeSlider.OnValueChange += delegate (ChangedValueArgs<int> args)
-            {
-                SetModeSliderName(args.NewValue);
-                Jumong.SetMode(args.NewValue);
-            };
-            JumongMenu.Add(_modeSlider);
 
-            JumongMenu.Add(new MenuCheckBox("jumong_usecursor", "Use cursor pos for target selection"));
+            _comboKey = new MenuKeybind("jumong_combokey", "Combo key", KeyCode.V);
+            _comboKey.OnValueChange += delegate (ChangedValueArgs<bool> args) { Jumong.SetMode(args.NewValue); };
+            JumongMenu.Add(_comboKey);
+
+            _comboToggle = new MenuCheckBox("jumong_combotoggle", "Should Combo key be a toggle", false);
+            _comboToggle.OnValueChange += delegate(ChangedValueArgs<bool> args) { _comboKey.IsToggle = args.NewValue; };
+            JumongMenu.Add(_comboToggle);
+
+            AimUserInput = new MenuCheckBox("jumong_aimuserinput", "Apply aim logic when combo isn't active");
+            JumongMenu.Add(AimUserInput);
+
+            UseCursor = new MenuCheckBox("jumong_usecursor", "Use cursor pos for target selection");
+            JumongMenu.Add(UseCursor);
+
+            HitStealthed = new MenuCheckBox("jumong_hitstealthed", "Allow to hit stealthed enemies");
+            JumongMenu.Add(HitStealthed);
 
             FirstRun();
-            Console.WriteLine("[HoyerJumong/MenuHandler] Jumong menu init");
-        }
-
-        private static void SetModeSliderName(int val)
-        {
-            if (val == 0)
-                _modeSlider.DisplayName = "Mode: Handle Aiming";
-            else if (val == 1)
-                _modeSlider.DisplayName = "Mode: Handle Aiming and SpellCasting";
+            Console.WriteLine("[HoyerJumong/MenuHandler] Jumong Menu Init");
         }
 
         private static void FirstRun()
         {
             Jumong.Enabled = _enabledBox.CurrentValue;
-            Jumong.SetMode(_modeSlider.CurrentValue);
-            SetModeSliderName(_modeSlider.CurrentValue);
+            _comboKey.IsToggle = _comboToggle.CurrentValue;
         }
 
         public static void Update()

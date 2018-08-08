@@ -15,18 +15,29 @@ namespace Hoyer.Champions.Jumong.Modes
 {
     public class AimOnly : IMode
     {
-        private bool _useCursor
+        private bool UseCursor
         {
-            get { return MenuHandler.JumongMenu.Get<MenuCheckBox>("jumong_usecursor").CurrentValue; }
+            get { return MenuHandler.UseCursor.CurrentValue; }
+        }
+
+        private bool AvoidStealthed
+        {
+            get { return !MenuHandler.HitStealthed.CurrentValue; }
         }
 
         public void Update()
         {
+            if (!MenuHandler.AimUserInput.CurrentValue) return;
+
             var castingFill = LocalPlayer.Instance.CastingFill;
             int[] waitAim = {0, 1, 3};
-            if (castingFill > 0.7 && castingFill < 1.1 && waitAim.Includes(LocalPlayer.Instance.AbilitySystem.CastingAbilityIndex)
-                || !waitAim.Includes(LocalPlayer.Instance.AbilitySystem.CastingAbilityIndex) &&
+
+            if (!waitAim.Includes(LocalPlayer.Instance.AbilitySystem.CastingAbilityIndex) &&
                 LocalPlayer.Instance.AbilitySystem.CastingAbilityIsCasting)
+            {
+                GetTargetAndAim();
+            }
+            else if (castingFill > 0.7 && castingFill < 1.1)
             {
                 GetTargetAndAim();
             }
@@ -44,7 +55,7 @@ namespace Hoyer.Champions.Jumong.Modes
                 if (castingSpell == null) return;
 
                 if (OrbLogic(castingSpell, true)) return;
-                var target = _useCursor ? GetTargetFromCursor(castingSpell) : GetTargetNoCursor(castingSpell);
+                var target = UseCursor ? GetTargetFromCursor(castingSpell) : GetTargetNoCursor(castingSpell);
                 if (target == null) return;
 
                 var prediction = target.GetPrediction(castingSpell);
@@ -77,7 +88,7 @@ namespace Hoyer.Champions.Jumong.Modes
             var isProjectile = castingSpell.Slot != AbilitySlot.Ability4 && castingSpell.Slot != AbilitySlot.Ability5;
             var useOnIncaps = castingSpell.Slot == AbilitySlot.Ability2 || castingSpell.Slot == AbilitySlot.EXAbility2;
 
-            var possibleTargets = EntitiesManager.EnemyTeam.Where(e => e != null && e.IsValidTarget(castingSpell, isProjectile, useOnIncaps))
+            var possibleTargets = EntitiesManager.EnemyTeam.Where(e => e != null && e.IsValidTarget(castingSpell, isProjectile, useOnIncaps, AvoidStealthed))
                 .ToList();
 
             if (possibleTargets.Count == 0)
@@ -98,9 +109,9 @@ namespace Hoyer.Champions.Jumong.Modes
 
             var target = TargetSelector.GetTarget(TargetingMode.NearMouse);
             if (target.Distance(LocalPlayer.Instance.Aiming.AimPosition) > 3 ||
-                               !target.IsValidTarget(castingSpell, isProjectile, useOnIncaps))
+                               !target.IsValidTarget(castingSpell, isProjectile, useOnIncaps, AvoidStealthed))
             {
-                var possibleTargets = EntitiesManager.EnemyTeam.Where(e => e != null && e.IsValidTarget(castingSpell, isProjectile, useOnIncaps))
+                var possibleTargets = EntitiesManager.EnemyTeam.Where(e => e != null && e.IsValidTarget(castingSpell, isProjectile, useOnIncaps, AvoidStealthed))
                     .ToList();
                 if (possibleTargets.Count == 0)
                 {

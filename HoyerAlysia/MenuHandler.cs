@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using BattleRight.Core;
+using BattleRight.Core.Enumeration;
 using BattleRight.Core.GameObjects;
 using BattleRight.SDK.UI;
 using BattleRight.SDK.UI.Models;
@@ -9,25 +11,23 @@ namespace Hoyer.Champions.Alysia
 {
     public static class MenuHandler
     {
-        public static Menu HoyerMain;
-        public static Menu AlysiaMain;
+        public static Menu HoyerMenu;
+        public static Menu AlysiaMenu;
 
         private static MenuIntSlider _modeSlider;
         private static MenuCheckBox _enabledBox;
 
         public static void Init()
         {
-            HoyerMain = MainMenu.GetMenu("HoyerMain");
-            AlysiaMain = HoyerMain.Add(new Menu("HoyerAlysia", "Alysia", true));
-            //AimMode = AlysiaMain.Add(new Menu("HoyerAlysiaAim", "Mode: Aim", true));
-            //CastMode = AlysiaMain.Add(new Menu("HoyerAlysiaCast", "Mode: Cast and aim", true));
+            HoyerMenu = MainMenu.GetMenu("HoyerMain");
+            AlysiaMenu = HoyerMenu.Add(new Menu("HoyerAlysia", "Alysia", true));
 
-            AlysiaMain.Add(new MenuLabel("Alysia"));
+            AlysiaMenu.Add(new MenuLabel("Alysia"));
             _enabledBox = new MenuCheckBox("alysia_enabled", "Enabled");
-            _enabledBox.OnValueChange += delegate (ChangedValueArgs<bool> args) { /*characterMenu.Hidden = !args.NewValue;*/ Alysia.Enabled = args.NewValue; };
-            AlysiaMain.Add(_enabledBox);
+            _enabledBox.OnValueChange += delegate (ChangedValueArgs<bool> args) { Alysia.Enabled = args.NewValue; };
+            AlysiaMenu.Add(_enabledBox);
 
-            AlysiaMain.AddSeparator();
+            AlysiaMenu.AddSeparator();
             
             _modeSlider = new MenuIntSlider("alysia_mode", "", 0, 1);
             _modeSlider.OnValueChange += delegate (ChangedValueArgs<int> args)
@@ -35,11 +35,12 @@ namespace Hoyer.Champions.Alysia
                 SetModeSliderName(args.NewValue);
                 Alysia.SetMode(args.NewValue);
             };
-            AlysiaMain.Add(_modeSlider);
+            AlysiaMenu.Add(_modeSlider);
 
-            AlysiaMain.Add(new MenuCheckBox("alysia_usecursor", "Use cursor pos for target selection"));
+            AlysiaMenu.Add(new MenuCheckBox("alysia_usecursor", "Use cursor pos for target selection"));
 
             FirstRun();
+            Console.WriteLine("[HoyerAlysia/MenuHandler] Alysia Menu Init");
         }
 
         private static void SetModeSliderName(int val)
@@ -59,12 +60,31 @@ namespace Hoyer.Champions.Alysia
 
         public static void Update()
         {
-            var menu = MainMenu.GetMenu("HoyerAlysia");
-            if (menu == null || LocalPlayer.Instance == null)
+            if (AlysiaMenu == null)
             {
+                Console.WriteLine("[HoyerAlysia/MenuHandler] Can't find menu, please report this to Hoyer :(");
                 return;
             }
-            menu.Hidden = LocalPlayer.Instance.CharName != "Alysia";
+            if (!Game.IsInGame)
+            {
+                if (AlysiaMenu.Hidden)
+                {
+                    Console.WriteLine("[HoyerAlysia/MenuHandler] Showing Menu");
+                    AlysiaMenu.Hidden = false;
+                }
+                return;
+            }
+            if (LocalPlayer.Instance.ChampionEnum != Champion.Alysia && !AlysiaMenu.Hidden)
+            {
+                Console.WriteLine("[HoyerAlysia/MenuHandler] Hiding Menu");
+                AlysiaMenu.Hidden = true;
+                return;
+            }
+            if (LocalPlayer.Instance.ChampionEnum == Champion.Alysia && AlysiaMenu.Hidden)
+            {
+                Console.WriteLine("[HoyerAlysia/MenuHandler] Showing Menu");
+                AlysiaMenu.Hidden = false;
+            }
         }
     }
 }

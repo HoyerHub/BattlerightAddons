@@ -1,6 +1,7 @@
 ﻿using System;
 using BattleRight.Sandbox;
 using Hoyer.Common.Data.Abilites;
+using Hoyer.Common.Debug;
 using Hoyer.Common.Local;
 using Hoyer.Common.Utilities;
 using Component = Hoyer.Common.Utilities.Component;
@@ -19,8 +20,9 @@ namespace Hoyer.Common
             StealthPrediction.Setup();
             HideNames.Setup();
             Skills.Setup();
-            MenuEvents.Setup();
+            DrawProjectiles.Setup();
             AbilityTracker.Setup();
+            MenuEvents.Setup();
             Component.Setup();
         }
 

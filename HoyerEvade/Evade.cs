@@ -29,7 +29,6 @@ namespace Hoyer.Evade
         {
             foreach (var type in inGameObject.GetBaseTypes())
             {
-                Console.WriteLine(type);
             }
         }
 

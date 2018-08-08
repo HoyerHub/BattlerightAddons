@@ -29,36 +29,6 @@ namespace Hoyer.Champions.Alysia
             Game.OnUpdate += OnUpdate;
         }
 
-        private void MenuInit()
-        {
-            Console.WriteLine("init menu");
-            var mainMenu = MainMenu.GetMenu("HoyerMain");
-            //var characterMenu = MainMenu.AddMenu("HoyerAlysia", "Alysia");
-
-            mainMenu.Add(new MenuLabel("Alysia"));
-            var enabledCheckBox = new MenuCheckBox("alysia_enabled", "Enabled");
-            enabledCheckBox.OnValueChange += delegate (ChangedValueArgs<bool> args) { /*characterMenu.Hidden = !args.NewValue;*/ Enabled = args.NewValue; };
-            mainMenu.Add(enabledCheckBox);
-
-            var slider = new MenuIntSlider("alysia_mode", "Mode: Aim logic", 0, 1);
-            slider.OnValueChange += delegate (ChangedValueArgs<int> args)
-            {
-                if (args.NewValue == 0)
-                    slider.DisplayName = "Mode: Aim logic";
-                else if (args.NewValue == 1)
-                    slider.DisplayName = "Mode: Aim and cast spells";
-                /*else if (args.NewValue == 2)
-                    slider.DisplayName = "Mode: Full auto????";*/
-
-                SetMode(args.NewValue);
-            };
-            mainMenu.Add(slider);
-
-            mainMenu.AddSeparator();
-            Enabled = enabledCheckBox.CurrentValue;
-            SetMode(slider.CurrentValue);
-        }
-
         private void SpellInit()
         {
             if (LocalPlayer.Instance.CharName != "Alysia") return;

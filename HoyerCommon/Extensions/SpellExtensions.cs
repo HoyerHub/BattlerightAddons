@@ -22,7 +22,6 @@ namespace Hoyer.Common.Extensions
 
                 var colsolver = CollisionSolver.CheckThickLineCollision(localPlayer.Pos(),
                     target.Pos() + direction, radius);
-                if (colsolver.IsColliding) Console.WriteLine(colsolver.CollisionFlags.ToString());
                 return colsolver.IsColliding;
             }
 

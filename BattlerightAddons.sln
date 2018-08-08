@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HoyerEvade (WIP)", "HoyerEv
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Champions", "Champions", "{D57F082E-AD0D-46DC-A359-EFDE2DB6BF0E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HoyerAlysia", "HoyerAlysia\HoyerAlysia.csproj", "{A4347B49-024D-4BFD-8B49-30EB525FAEF7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HoyerAlysia (WIP)", "HoyerAlysia\HoyerAlysia (WIP).csproj", "{A4347B49-024D-4BFD-8B49-30EB525FAEF7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

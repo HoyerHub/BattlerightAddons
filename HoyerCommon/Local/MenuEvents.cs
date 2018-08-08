@@ -3,6 +3,7 @@ using BattleRight.Core;
 using BattleRight.SDK.UI;
 using BattleRight.SDK.UI.Models;
 using BattleRight.SDK.UI.Values;
+using Hoyer.Common.Debug;
 using Hoyer.Common.Utilities;
 using TMPro;
 using UnityEngine;
@@ -21,6 +22,11 @@ namespace Hoyer.Common.Local
         public static void Setup()
         {
             Component.Init += Init;
+        }
+
+        public static bool GetBool(string name)
+        {
+            return HoyerMenu.Get<MenuCheckBox>(name).CurrentValue;
         }
 
         public static void Init()
@@ -46,6 +52,10 @@ namespace Hoyer.Common.Local
             var showStealth = new MenuCheckBox("show_stealth", "Show predicted stealth positions");
             showStealth.OnValueChange += delegate (ChangedValueArgs<bool> args) { StealthPrediction.DrawStealthed = args.NewValue; };
             HoyerMenu.Add(showStealth);
+
+            var drawProjectiles = new MenuCheckBox("draw_projectiles", "Draw Projectile Paths", false);
+            drawProjectiles.OnValueChange += delegate (ChangedValueArgs<bool> args) { DrawProjectiles.Active = args.NewValue; };
+            HoyerMenu.Add(drawProjectiles);
 
             HoyerMenu.AddSeparator();
             LoadValues();
