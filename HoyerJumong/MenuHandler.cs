@@ -49,7 +49,7 @@ namespace Hoyer.Champions.Jumong
             UseCursor = new MenuCheckBox("jumong_usecursor", "Use cursor pos for target selection");
             JumongMenu.Add(UseCursor);
 
-            AvoidStealthed = new MenuCheckBox("jumong_ignorestealthed", "Ignore stealthed enemies");
+            AvoidStealthed = new MenuCheckBox("jumong_ignorestealthed", "Ignore stealthed enemies", false);
             JumongMenu.Add(AvoidStealthed);
 
             FirstRun();
