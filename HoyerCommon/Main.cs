@@ -23,6 +23,7 @@ namespace Hoyer.Common
             DrawProjectiles.Setup();
             AbilityTracker.Setup();
             MenuEvents.Setup();
+            CommonEvents.Setup();
             Component.Setup();
         }
 

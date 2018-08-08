@@ -916,7 +916,6 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = DodgeAbilityType.Ghost,
                 MinDanger = 3,
                 Priority = 2,
-                WaitAfter = 1.3f,
                 CastTime = 0.1f
             });
             Add(new DodgeAbilityInfo
@@ -925,7 +924,6 @@ namespace Hoyer.Common.Data.Abilites
                 AbilitySlot = AbilitySlot.Ability4,
                 AbilityType = DodgeAbilityType.Counter,
                 Priority = 1,
-                WaitAfter = 0.6f,
                 CastTime = 0.1f
             });
             Add(new DodgeAbilityInfo
@@ -935,7 +933,6 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = DodgeAbilityType.Jump,
                 MinDanger = 2,
                 Priority = 1,
-                WaitAfter = 0.5f,
                 CastTime = 0.2f
             });
             Add(new DodgeAbilityInfo
@@ -945,8 +942,30 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = DodgeAbilityType.Ghost,
                 MinDanger = 3,
                 Priority = 2,
-                WaitAfter = 1.3f,
                 CastTime = 0.1f
+            });
+            Add(new DodgeAbilityInfo
+            {
+                Champion = "Poloma",
+                AbilitySlot = AbilitySlot.Ability2,
+                AbilityId = 887586317,
+                AbilityType = DodgeAbilityType.Ghost,
+                NeedsSelfCast = true,
+                MinDanger = 3,
+                Priority = 1,
+                CastTime = 0.1f
+            });
+            Add(new DodgeAbilityInfo
+            {
+                Champion = "Gunner",
+                AbilitySlot = AbilitySlot.Ability3,
+                AbilityId = 512745910,
+                AbilityType = DodgeAbilityType.Jump,
+                UsesMousePos = true,
+                Range = 7,
+                MinDanger = 4,
+                Priority = 1,
+                CastTime = 0.2f
             });
 
         }
@@ -974,6 +993,11 @@ namespace Hoyer.Common.Data.Abilites
         public static DodgeAbilityInfo[] GetDodge(string champ)
         {
             return DodgeAbilities.Where(a => a.Champion == champ).ToArray();
+        }
+
+        public static DodgeAbilityInfo GetDodge(int spellid)
+        {
+            return DodgeAbilities.FirstOrDefault(a => a.AbilityId == spellid);
         }
 
         private static void Add(DodgeAbilityInfo info)

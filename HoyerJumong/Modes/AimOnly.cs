@@ -30,10 +30,10 @@ namespace Hoyer.Champions.Jumong.Modes
             if (!MenuHandler.AimUserInput.CurrentValue) return;
 
             var castingFill = LocalPlayer.Instance.CastingFill;
-            int[] waitAim = {0, 1, 3};
+            AbilitySlot[] waitAim = {AbilitySlot.Ability1, AbilitySlot.Ability2, AbilitySlot.Ability4};
 
-            if (!waitAim.Includes(LocalPlayer.Instance.AbilitySystem.CastingAbilityIndex) &&
-                LocalPlayer.Instance.AbilitySystem.CastingAbilityIsCasting)
+            if (LocalPlayer.Instance.AbilitySystem.CastingAbilityIsCasting &&
+                !waitAim.Includes((AbilitySlot)LocalPlayer.Instance.AbilitySystem.CastingAbilityIndex))
             {
                 GetTargetAndAim();
             }
@@ -108,7 +108,7 @@ namespace Hoyer.Champions.Jumong.Modes
             var useOnIncaps = castingSpell.Slot == AbilitySlot.Ability2 || castingSpell.Slot == AbilitySlot.EXAbility2;
 
             var target = TargetSelector.GetTarget(TargetingMode.NearMouse);
-            if (target.Distance(LocalPlayer.Instance.Aiming.AimPosition) > 3 ||
+            if (target.MapObject.ScreenPosition.Distance(InputManager.MousePosition) > 300 ||
                                !target.IsValidTarget(castingSpell, isProjectile, useOnIncaps, AvoidStealthed))
             {
                 var possibleTargets = EntitiesManager.EnemyTeam.Where(e => e != null && e.IsValidTarget(castingSpell, isProjectile, useOnIncaps, AvoidStealthed))

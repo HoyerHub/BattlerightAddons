@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using BattleRight.Core.Enumeration;
 using BattleRight.Core.Math;
 using BattleRight.SDK.UI.Models;
 
@@ -23,6 +24,11 @@ namespace Hoyer.Common.Extensions
         }
 
         public static bool Includes(this Vector2[] array, Vector2 target)
+        {
+            return array.Any(o => o == target);
+        }
+
+        public static bool Includes(this AbilitySlot[] array, AbilitySlot target)
         {
             return array.Any(o => o == target);
         }

@@ -28,7 +28,7 @@ namespace Hoyer.Champions.Jumong
             MenuEvents.Initialize += MenuHandler.Init;
             MenuEvents.Update += MenuHandler.Update;
             Skills.Initialize += SpellInit;
-            Game.OnUpdate += OnUpdate;
+            CommonEvents.Update += OnUpdate;
         }
 
         private void SpellInit()
@@ -44,7 +44,7 @@ namespace Hoyer.Champions.Jumong
             Skills.Active.Add(new SkillBase(AbilitySlot.EXAbility2, SkillType.Line, 8.8f, 26.5f, 0.3f));
         }
 
-        private void OnUpdate(EventArgs eventArgs)
+        private void OnUpdate()
         {
             if (!Enabled || !Game.IsInGame || Game.CurrentMatchState != MatchState.InRound || LocalPlayer.Instance.CharName != "Jumong" || LocalPlayer.Instance.HasBuff("SpellBlock"))
             {

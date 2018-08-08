@@ -59,6 +59,11 @@ namespace Hoyer.Common.Utilities
             if (!Game.IsInGame || Game.CurrentMatchState != MatchState.InRound) return;
             foreach (var character in EntitiesManager.EnemyTeam)
             {
+                if (character.Living.IsDead)
+                {
+                    if(Positions.ContainsKey(character.CharName)) Positions.Remove(character.CharName);
+                    continue;
+                }
                 if (character.CharacterModel.IsModelInvisible)
                 {
                     if (!HasSeen.Contains(character.CharName)) continue;

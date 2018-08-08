@@ -21,13 +21,13 @@ namespace Hoyer.Evade
             EvadeMain = HoyerMain.Add(new Menu("HoyerEvade", "Evade", true));
 
             EvadeMain.Add(new MenuLabel("Evade"));
-            _enabledWalkBox = new MenuCheckBox("evade_walk", "Try to walk out of skillshots (doesnt work well enough yet)");
-            _enabledWalkBox.OnValueChange += delegate(ChangedValueArgs<bool> args) { Evade.UseWalk = args.NewValue; };
-            EvadeMain.Add(_enabledWalkBox);
-            
             _enabledSkillsBox = new MenuCheckBox("evade_skills", "Use skills to dodge dangerous skillshots");
             _enabledSkillsBox.OnValueChange += delegate(ChangedValueArgs<bool> args) { Evade.UseSkills = args.NewValue; };
             EvadeMain.Add(_enabledSkillsBox);
+
+            _enabledWalkBox = new MenuCheckBox("evade_walk", "Try to walk out of skillshots (doesnt work well enough yet)", false);
+            _enabledWalkBox.OnValueChange += delegate (ChangedValueArgs<bool> args) { Evade.UseWalk = args.NewValue; };
+            EvadeMain.Add(_enabledWalkBox);
 
             FirstRun();
         }
