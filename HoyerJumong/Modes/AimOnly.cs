@@ -22,7 +22,7 @@ namespace Hoyer.Champions.Jumong.Modes
 
         private bool AvoidStealthed
         {
-            get { return !MenuHandler.HitStealthed.CurrentValue; }
+            get { return MenuHandler.AvoidStealthed.CurrentValue; }
         }
 
         public void Update()

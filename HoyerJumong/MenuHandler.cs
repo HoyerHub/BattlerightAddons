@@ -15,7 +15,7 @@ namespace Hoyer.Champions.Jumong
         public static Menu HoyerMainMenu;
         public static Menu JumongMenu;
 
-        public static MenuCheckBox HitStealthed;
+        public static MenuCheckBox AvoidStealthed;
         public static MenuCheckBox UseCursor;
         public static MenuCheckBox AimUserInput;
 
@@ -49,8 +49,8 @@ namespace Hoyer.Champions.Jumong
             UseCursor = new MenuCheckBox("jumong_usecursor", "Use cursor pos for target selection");
             JumongMenu.Add(UseCursor);
 
-            HitStealthed = new MenuCheckBox("jumong_hitstealthed", "Allow to hit stealthed enemies");
-            JumongMenu.Add(HitStealthed);
+            AvoidStealthed = new MenuCheckBox("jumong_ignorestealthed", "Ignore stealthed enemies");
+            JumongMenu.Add(AvoidStealthed);
 
             FirstRun();
             Console.WriteLine("[HoyerJumong/MenuHandler] Jumong Menu Init");
