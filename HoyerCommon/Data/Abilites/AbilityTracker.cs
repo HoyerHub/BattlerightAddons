@@ -48,7 +48,7 @@ namespace Hoyer.Common.Data.Abilites
                 private static void OnUpdate(EventArgs args)
                 {
                     Active.Clear();
-                    Active.AddRange(EntitiesManager.ActiveProjectiles);
+                    Active.AddRange(EntitiesManager.ActiveProjectiles.Where(p=>p.BaseObject.TeamId != LocalPlayer.Instance.BaseObject.TeamId));
                     CheckForCasts();
                     UpdateCasts();
                 }

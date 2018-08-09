@@ -11,6 +11,7 @@ namespace Hoyer.Common.Utilities
 {
     public static class StealthPrediction
     {
+        public static bool ShouldUse;
         public static Dictionary<string, Vector2> Positions = new Dictionary<string, Vector2>();
         public static List<string> HasSeen = new List<string>();
         public static bool DrawStealthed = true;

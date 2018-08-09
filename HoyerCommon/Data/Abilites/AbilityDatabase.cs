@@ -318,6 +318,26 @@ namespace Hoyer.Common.Data.Abilites
             Add(new AbilityInfo
             {
                 Champion = "Jumong",
+                AbilitySlot = AbilitySlot.Ability4,
+                AbilityId = 1338599461,
+                SkillType = SkillType.Circle,
+                Range = 10,
+                Radius = 2,
+                FixedDelay = 0.5f,
+            });
+            Add(new AbilityInfo
+            {
+                Champion = "Jumong",
+                AbilitySlot = AbilitySlot.Ability5,
+                AbilityId = 508323608,
+                SkillType = SkillType.Line,
+                Range = 6.8f,
+                Radius = 1,
+                ProjectileSpeed = 12
+            });
+            Add(new AbilityInfo
+            {
+                Champion = "Jumong",
                 ObjectName = "GuidedArrow",
                 AbilitySlot = AbilitySlot.EXAbility1,
                 AbilityId = 782235039,

@@ -4,6 +4,7 @@ using BattleRight.SDK.UI;
 using BattleRight.SDK.UI.Models;
 using BattleRight.SDK.UI.Values;
 using Hoyer.Common.Debug;
+using Hoyer.Common.Extensions;
 using Hoyer.Common.Utilities;
 using TMPro;
 using UnityEngine;
@@ -18,6 +19,7 @@ namespace Hoyer.Common.Local
         public static event Action Update = delegate { };
 
         public static Menu HoyerMenu;
+        public static Menu PredMenu;
 
         public static void Setup()
         {
@@ -58,6 +60,9 @@ namespace Hoyer.Common.Local
             HoyerMenu.Add(drawProjectiles);
 
             HoyerMenu.AddSeparator();
+
+            InitPredMenu();
+
             LoadValues();
 
             Console.WriteLine("[HoyerCommon/MenuEvents] Menu Init");
@@ -67,9 +72,24 @@ namespace Hoyer.Common.Local
             Game.OnMatchEnd += MatchUpdate;
         }
 
+        private static void InitPredMenu()
+        {
+            PredMenu = HoyerMenu.Add(new Menu("HoyerPred", "Prediction", true));
+            PredMenu.AddLabel("Common Prediction Settings");
+            var predModes = new[] {"Basic Aimlogic (fastest)", "SDK Prediction", "DaPip's TestPred"};
+            var predMode = PredMenu.Add(new MenuComboBox("pred_mode", "Prediction Mode", 1, predModes));
+            predMode.OnValueChange += delegate(ChangedValueArgs<int> args) {
+                Prediction.Mode = args.NewValue;
+                Console.WriteLine("[HoyerCommon/MenuEvents] Prediction changed to " + predModes[args.NewValue]);
+            };
+            var useStealthPred = PredMenu.Add(new MenuCheckBox("use_stealth_pred", "Use Stealth Pred in Addons (WIP)", false));
+            useStealthPred.OnValueChange += delegate(ChangedValueArgs<bool> args) { StealthPrediction.ShouldUse = args.NewValue; };
+        }
+
+
         private static void MatchUpdate(EventArgs args)
         {
-            Console.WriteLine("[HoyerCommon/MenuEvents] Menu Updating");
+            Console.WriteLine("[HoyerCommon/MenuEvents] Checking Menus");
             Update.Invoke();
         }
 
@@ -77,6 +97,8 @@ namespace Hoyer.Common.Local
         {
             HideNames.Active = HoyerMenu.Get<MenuCheckBox>("hide_names").CurrentValue;
             StealthPrediction.DrawStealthed = HoyerMenu.Get<MenuCheckBox>("show_stealth").CurrentValue;
+            StealthPrediction.ShouldUse = PredMenu.Get<MenuCheckBox>("use_stealth_pred").CurrentValue;
+            Prediction.Mode = PredMenu.Get<MenuComboBox>("pred_mode").CurrentValue;
         }
     }
 }

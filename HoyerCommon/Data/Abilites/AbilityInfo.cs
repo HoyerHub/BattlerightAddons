@@ -48,7 +48,7 @@ namespace Hoyer.Common.Data.Abilites
         public float Radius = 0;
         public float CollideCount = 1;
         public float ProjectileSpeed = 0;
-        public float FixedDelay = 0;
+        public float FixedDelay = 0;                
         public bool RequiresCharging;
         public bool CanCounter = true;
     }

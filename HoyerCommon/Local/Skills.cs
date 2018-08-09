@@ -5,6 +5,7 @@ using BattleRight.Core.Enumeration;
 using BattleRight.Core.GameObjects;
 using BattleRight.SDK;
 using Hoyer.Common.Data.Abilites;
+using Hoyer.Common.Extensions;
 
 namespace Hoyer.Common.Local
 {
@@ -20,6 +21,11 @@ namespace Hoyer.Common.Local
             {
                 Active.Add(new SkillBase(slot, data.SkillType, data.Range == 0 ? data.MaxRange : data.Range, data.ProjectileSpeed, data.Radius, data.FixedDelay));
             }
+        }
+
+        public static SkillBase Get(int id)
+        {
+            return Active.Get(AbilityDatabase.Get(id).AbilitySlot);
         }
 
         public static void Setup()

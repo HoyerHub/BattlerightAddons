@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BattleRight.Core;
 using BattleRight.Core.Enumeration;
@@ -10,6 +11,7 @@ using BattleRight.SDK.UI;
 using BattleRight.SDK.UI.Values;
 using Hoyer.Common.Extensions;
 using Hoyer.Common.Local;
+using Prediction = Hoyer.Common.Prediction;
 
 namespace Hoyer.Champions.Jumong.Modes
 {
@@ -27,40 +29,43 @@ namespace Hoyer.Champions.Jumong.Modes
 
         public void Update()
         {
-            if (!MenuHandler.AimUserInput.CurrentValue) return;
+            if (!MenuHandler.AimUserInput.CurrentValue || !LocalPlayer.Instance.AbilitySystem.CastingAbilityIsCasting)
+            {
+                LocalPlayer.EditAimPosition = false;
+                return;
+            }
 
             var castingFill = LocalPlayer.Instance.CastingFill;
+            var skill = Skills.Get(LocalPlayer.Instance.AbilitySystem.CastingAbilityId);
+            if (skill == null) return;
+
             AbilitySlot[] waitAim = {AbilitySlot.Ability1, AbilitySlot.Ability2, AbilitySlot.Ability4};
 
-            if (LocalPlayer.Instance.AbilitySystem.CastingAbilityIsCasting &&
-                !waitAim.Includes((AbilitySlot)LocalPlayer.Instance.AbilitySystem.CastingAbilityIndex))
+            if (!waitAim.Includes(skill.Slot))
             {
-                GetTargetAndAim();
+                GetTargetAndAim(skill);
             }
             else if (castingFill > 0.7 && castingFill < 1.1)
             {
-                GetTargetAndAim();
-            }
-            else
-            {
-                LocalPlayer.EditAimPosition = false;
+                GetTargetAndAim(skill);
             }
         }
 
-        private void GetTargetAndAim()
+        private void GetTargetAndAim(SkillBase skill)
         {
             try
             {
-                var castingSpell = Skills.Active.Get((AbilitySlot) LocalPlayer.Instance.AbilitySystem.CastingAbilityIndex);
-                if (castingSpell == null) return;
+                if (OrbLogic(skill, true)) return;
+                var prediction = GetTargetPrediction(skill);
 
-                if (OrbLogic(castingSpell, true)) return;
-                var target = UseCursor ? GetTargetFromCursor(castingSpell) : GetTargetNoCursor(castingSpell);
-                if (target == null) return;
+                if (prediction == Prediction.Output.None && !OrbLogic(skill))
+                {
+                    LocalPlayer.PressAbility(AbilitySlot.Interrupt, true);
+                    return;
+                }
 
-                var prediction = target.GetPrediction(castingSpell);
                 LocalPlayer.EditAimPosition = true;
-                LocalPlayer.Aim(prediction);
+                LocalPlayer.Aim(prediction.CastPosition);
             }
             catch (Exception e)
             {
@@ -83,46 +88,46 @@ namespace Hoyer.Champions.Jumong.Modes
             return true;
         }
 
-        private Character GetTargetNoCursor(SkillBase castingSpell)
+        private Prediction.Output GetTargetPrediction(SkillBase castingSpell)
         {
             var isProjectile = castingSpell.Slot != AbilitySlot.Ability4 && castingSpell.Slot != AbilitySlot.Ability5;
             var useOnIncaps = castingSpell.Slot == AbilitySlot.Ability2 || castingSpell.Slot == AbilitySlot.EXAbility2;
 
-            var possibleTargets = EntitiesManager.EnemyTeam.Where(e => e != null && e.IsValidTarget(castingSpell, isProjectile, useOnIncaps, AvoidStealthed))
+            var possibleTargets = EntitiesManager.EnemyTeam.Where(e => e != null && !e.Living.IsDead && e.Distance(LocalPlayer.Instance) < castingSpell.Range)
                 .ToList();
 
-            if (possibleTargets.Count == 0)
+            var output = Prediction.Output.None;
+
+            while (possibleTargets.Count > 0 && output.CanHit == false)
             {
-                if (!OrbLogic(castingSpell)) LocalPlayer.PressAbility(AbilitySlot.Interrupt, true);
-                return null;
+                Character tryGetTarget = null;
+                tryGetTarget = TargetSelector.GetTarget(possibleTargets, GetTargetingMode(possibleTargets), float.MaxValue);
+                if (tryGetTarget.IsValidTarget(castingSpell, isProjectile, useOnIncaps, AvoidStealthed))
+                {
+                    var pred = tryGetTarget.GetPrediction(castingSpell);
+                    if (pred.CanHit)
+                    {
+                        output = pred;
+                    }
+                    else
+                    {
+                        possibleTargets.Remove(tryGetTarget);
+                    }
+                }
+                else
+                {
+                    possibleTargets.Remove(tryGetTarget);
+                }
             }
 
-            if (possibleTargets.Any(o => o.Distance(LocalPlayer.Instance) < 5))
-                return TargetSelector.GetTarget(possibleTargets, TargetingMode.Closest, float.MaxValue);
-            return TargetSelector.GetTarget(possibleTargets, TargetingMode.LowestHealth, float.MaxValue);
+            return output;
         }
 
-        private Character GetTargetFromCursor(SkillBase castingSpell)
+        private TargetingMode GetTargetingMode(IEnumerable<Character> possibleTargets)
         {
-            var isProjectile = castingSpell.Slot != AbilitySlot.Ability4 && castingSpell.Slot != AbilitySlot.Ability5;
-            var useOnIncaps = castingSpell.Slot == AbilitySlot.Ability2 || castingSpell.Slot == AbilitySlot.EXAbility2;
-
-            var target = TargetSelector.GetTarget(TargetingMode.NearMouse);
-            if (target.MapObject.ScreenPosition.Distance(InputManager.MousePosition) > 300 ||
-                               !target.IsValidTarget(castingSpell, isProjectile, useOnIncaps, AvoidStealthed))
-            {
-                var possibleTargets = EntitiesManager.EnemyTeam.Where(e => e != null && e.IsValidTarget(castingSpell, isProjectile, useOnIncaps, AvoidStealthed))
-                    .ToList();
-                if (possibleTargets.Count == 0)
-                {
-                    if (!OrbLogic(castingSpell)) LocalPlayer.PressAbility(AbilitySlot.Interrupt, true);
-                    return null;
-                }
-
-                target = possibleTargets.OrderBy(o => o.Distance(LocalPlayer.Instance)).First();
-            }
-
-            return target;
+            if (UseCursor) return TargetingMode.NearMouse;
+            return possibleTargets.Any(o => o.Distance(LocalPlayer.Instance) < 5) ? 
+                TargetingMode.Closest : TargetingMode.LowestHealth;
         }
     }
 }

@@ -59,6 +59,7 @@ namespace Hoyer.Champions.Jumong
         private static void FirstRun()
         {
             Jumong.Enabled = _enabledBox.CurrentValue;
+            Jumong.SetMode(false);
             _comboKey.IsToggle = _comboToggle.CurrentValue;
         }
 

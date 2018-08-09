@@ -15,7 +15,7 @@ namespace Hoyer.Common.Extensions
     {
         public static Vector2 Pos(this Character character)
         {
-            if (character.CharacterModel.IsModelInvisible && StealthPrediction.Positions.ContainsKey(character.CharName))
+            if (StealthPrediction.ShouldUse && character.Team == BattleRight.Core.Enumeration.Team.Enemy && character.CharacterModel.IsModelInvisible && StealthPrediction.Positions.ContainsKey(character.CharName))
             {
                 return StealthPrediction.Positions[character.CharName];
             }
@@ -29,6 +29,24 @@ namespace Hoyer.Common.Extensions
                 return false;
             }
 
+            return true;
+        }
+
+        public static bool IsValidTargetProjectile(this Character enemy)
+        {
+            if (enemy == null || enemy.Buffs == null || enemy.Living.IsDead || enemy.PhysicsCollision.IsImmaterial && !enemy.CharacterModel.IsModelInvisible)
+            {
+                return false;
+            }
+
+            foreach (var buff in enemy.Buffs.Where(b => b != null && b.ObjectName != null))
+            {
+                if (buff.BuffType == BuffType.Counter || buff.BuffType == BuffType.Consume || buff.ObjectName == "GustBuff" ||
+                                     buff.ObjectName == "BulwarkBuff" || buff.ObjectName == "TractorBeam")
+                {
+                    return false;
+                }
+            }
             return true;
         }
 
@@ -73,22 +91,12 @@ namespace Hoyer.Common.Extensions
                 }
             }
 
-            if (isProjectile && LocalPlayer.Instance.CheckCollisionToTarget(enemy, spell.SpellCollisionRadius))
-            {
-                ret = false;
-            }
-
             return ret;
         }
 
-        public static Vector2 GetPrediction(this Character target, SkillBase castingSpell)
+        public static Prediction.Output GetPrediction(this Character target, SkillBase castingSpell)
         {
-            var distance = target.Distance(LocalPlayer.Instance);
-            return castingSpell.FixedDelay > 0
-                ? new Vector2(target.Pos().X + target.NetworkMovement.Velocity.X * castingSpell.FixedDelay,
-                    target.Pos().Y + target.NetworkMovement.Velocity.Y * castingSpell.FixedDelay)
-                : new Vector2(target.Pos().X + target.NetworkMovement.Velocity.X * (distance / castingSpell.Speed),
-                    target.Pos().Y + target.NetworkMovement.Velocity.Y * (distance / castingSpell.Speed));
+            return Prediction.Get(target, castingSpell);
         }
 
         public static bool IsHoveringNear(this MapGameObject obj)
