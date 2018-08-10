@@ -80,7 +80,7 @@ namespace Hoyer.Common.Local
             var useStealthPred = PredMenu.Add(new MenuCheckBox("use_stealth_pred", "Use Stealth Pred to aim (WIP)", false));
             useStealthPred.OnValueChange += delegate (ChangedValueArgs<bool> args) { StealthPrediction.ShouldUse = args.NewValue; };
 
-            var castRangeSlider = PredMenu.Add(new MenuSlider("pred_castrange", "Cast range modifier", 0.92f, 1.1f, 0.9f));
+            var castRangeSlider = PredMenu.Add(new MenuSlider("pred_castrange", "Start casting range modifier", 0.92f, 1.1f, 0.9f));
             castRangeSlider.OnValueChange += delegate (ChangedValueArgs<float> args) { Prediction.CastingRangeModifier = args.NewValue; };
 
             var cancelRangeSlider = PredMenu.Add(new MenuSlider("pred_cancelrange", "Out of range modifier", 1, 1.1f, 0.9f));
@@ -107,8 +107,8 @@ namespace Hoyer.Common.Local
             StealthPrediction.DrawStealthed = HoyerMenu.Get<MenuCheckBox>("show_stealth").CurrentValue;
             StealthPrediction.ShouldUse = PredMenu.Get<MenuCheckBox>("use_stealth_pred").CurrentValue;
             Prediction.Mode = PredMenu.Get<MenuComboBox>("pred_mode").CurrentValue;
-            Prediction.CastingRangeModifier = PredMenu.Get<MenuComboBox>("pred_castrange").CurrentValue;
-            Prediction.CancelRangeModifier = PredMenu.Get<MenuComboBox>("pred_cancelrange").CurrentValue;
+            Prediction.CastingRangeModifier = PredMenu.Get<MenuSlider>("pred_castrange").CurrentValue;
+            Prediction.CancelRangeModifier = PredMenu.Get<MenuSlider>("pred_cancelrange").CurrentValue;
         }
     }
 }
