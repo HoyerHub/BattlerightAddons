@@ -14,6 +14,8 @@ namespace Hoyer.Common.Data.Abilites
 
         static AbilityDatabase()
         {
+            #region Abilities
+
             Add(new AbilityInfo
             {
                 Champion = "Dummy McFuckFace",
@@ -929,10 +931,17 @@ namespace Hoyer.Common.Data.Abilites
                 ProjectileSpeed = 25.5f,
                 Danger = 3,
             });
+
+            #endregion
+
+            #region DodgeSpells
+
             Add(new DodgeAbilityInfo
             {
                 Champion = "Shifu",
                 AbilitySlot = AbilitySlot.Ability3,
+                SharedCooldown = AbilitySlot.EXAbility1,
+                AbilityId = 1493003740,
                 AbilityType = DodgeAbilityType.Ghost,
                 MinDanger = 3,
                 Priority = 2,
@@ -941,7 +950,18 @@ namespace Hoyer.Common.Data.Abilites
             Add(new DodgeAbilityInfo
             {
                 Champion = "Shifu",
+                AbilitySlot = AbilitySlot.EXAbility1,
+                SharedCooldown = AbilitySlot.Ability3,
+                AbilityId = 235612200,
+                AbilityType = DodgeAbilityType.Ghost,
+                UseInEvade = false,
+                CastTime = 0.1f
+            });
+            Add(new DodgeAbilityInfo
+            {
+                Champion = "Shifu",
                 AbilitySlot = AbilitySlot.Ability4,
+                AbilityId = 1750205777,
                 AbilityType = DodgeAbilityType.Counter,
                 Priority = 1,
                 CastTime = 0.1f
@@ -977,6 +997,16 @@ namespace Hoyer.Common.Data.Abilites
             });
             Add(new DodgeAbilityInfo
             {
+                Champion = "Rook",
+                AbilitySlot = AbilitySlot.Ability4,
+                AbilityId = 1413535840,
+                AbilityType = DodgeAbilityType.Counter,
+                MinDanger = 1,
+                Priority = 1,
+                CastTime = 0.1f
+            });
+            Add(new DodgeAbilityInfo
+            {
                 Champion = "Gunner",
                 AbilitySlot = AbilitySlot.Ability3,
                 AbilityId = 512745910,
@@ -987,7 +1017,138 @@ namespace Hoyer.Common.Data.Abilites
                 Priority = 1,
                 CastTime = 0.2f
             });
-
+            Add(new DodgeAbilityInfo
+            {
+                Champion = "Ruh Kaan",
+                AbilitySlot = AbilitySlot.Ability3,
+                AbilityId = 1599533417,
+                AbilityType = DodgeAbilityType.Jump,
+                UsesMousePos = true,
+                Range = 3.8f,
+                MinDanger = 2,
+                Priority = 2,
+                CastTime = 0.1f
+            }); 
+            Add(new DodgeAbilityInfo
+            {
+                Champion = "Ruh Kaan",
+                AbilitySlot = AbilitySlot.Ability4,
+                AbilityId = 1697456501,
+                AbilityType = DodgeAbilityType.Shield,
+                UsesMousePos = true,
+                MinDanger = 2,
+                Priority = 1,
+                CastTime = 0.1f
+            });
+            Add(new DodgeAbilityInfo
+            {
+                Champion = "Ruh Kaan",
+                AbilitySlot = AbilitySlot.Ability6,
+                AbilityId = 676298304,
+                AbilityType = DodgeAbilityType.Jump,
+                UsesMousePos = true,
+                Range = 7,
+                MinDanger = 4,
+                Priority = 3,
+                CastTime = 0.1f
+            });
+            Add(new DodgeAbilityInfo
+            {
+                Champion = "Bakko",
+                AbilitySlot = AbilitySlot.Ability4,
+                AbilityId = 1445018825,
+                AbilityType = DodgeAbilityType.Shield,
+                UsesMousePos = true,
+                MinDanger = 2,
+                Priority = 1,
+                CastTime = 0.1f
+            });
+            Add(new DodgeAbilityInfo
+            {
+                Champion = "Bakko",
+                AbilitySlot = AbilitySlot.Ability3,
+                SharedCooldown = AbilitySlot.EXAbility1,
+                AbilityId = 1353508382,
+                AbilityType = DodgeAbilityType.Jump,
+                UsesMousePos = true,
+                Range = 8,
+                MinDanger = 4,
+                Priority = 2,
+                CastTime = 0.1f
+            });
+            Add(new DodgeAbilityInfo
+            {
+                Champion = "Bakko",
+                AbilitySlot = AbilitySlot.EXAbility1,
+                SharedCooldown = AbilitySlot.Ability3,
+                AbilityId = 1383890402,
+                AbilityType = DodgeAbilityType.Jump,
+                UsesMousePos = true,
+                UseInEvade = false,
+                Range = 8,
+                CastTime = 0.1f
+            });
+            Add(new DodgeAbilityInfo
+            {
+                Champion = "Freya",
+                AbilitySlot = AbilitySlot.Ability4,
+                AbilityId = 98085269,
+                AbilityType = DodgeAbilityType.Counter,
+                MinDanger = 1,
+                Priority = 1,
+                CastTime = 0.1f
+            });
+            Add(new DodgeAbilityInfo
+            {
+                Champion = "Jamila",
+                AbilitySlot = AbilitySlot.Ability4,
+                AbilityId = 98085269,
+                AbilityType = DodgeAbilityType.Counter,
+                MinDanger = 1,
+                Priority = 1,
+                CastTime = 0.1f
+            });
+            Add(new DodgeAbilityInfo
+            {
+                Champion = "Varesh",
+                AbilitySlot = AbilitySlot.Ability4,
+                AbilityId = 1729824531,
+                AbilityType = DodgeAbilityType.Counter,
+                MinDanger = 1,
+                Priority = 1,
+                CastTime = 0.1f
+            });
+            Add(new DodgeAbilityInfo
+            {
+                Champion = "Destiny",
+                AbilitySlot = AbilitySlot.Ability4,
+                AbilityId = 1574749481,
+                AbilityType = DodgeAbilityType.Counter,
+                MinDanger = 1,
+                Priority = 1,
+                CastTime = 0.1f
+            });
+            Add(new DodgeAbilityInfo
+            {
+                Champion = "Sirius",
+                AbilitySlot = AbilitySlot.Ability4,
+                AbilityId = 812246817,
+                AbilityType = DodgeAbilityType.Counter,
+                MinDanger = 1,
+                Priority = 1,
+                CastTime = 0.1f
+            });
+            Add(new DodgeAbilityInfo
+            {
+                Champion = "Pearl",
+                AbilitySlot = AbilitySlot.Ability4,
+                AbilityId = 1032123680,
+                AbilityType = DodgeAbilityType.Counter,
+                MinDanger = 1,
+                Priority = 1,
+                CastTime = 0.1f
+            });
+            #endregion
         }
 
         public static AbilityInfo[] Get(string champ, AbilitySlot slot)

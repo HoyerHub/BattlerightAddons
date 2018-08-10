@@ -28,6 +28,8 @@ namespace Hoyer.Common.Data.Abilites
         public int Priority = 3; //Evade will choose lowest available
         public int MinDanger = 0;
         public float CastTime = 0;
+        public bool UseInEvade = true;
+        public AbilitySlot SharedCooldown = AbilitySlot.Taunt;
 
         public Vector2 GetSafeJumpPos()
         {
