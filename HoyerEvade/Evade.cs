@@ -95,7 +95,6 @@ namespace Hoyer.Evade
         {
             if (LocalPlayer.Instance.AbilitySystem.IsCasting)
             {
-                Console.WriteLine(LocalPlayer.Instance.AbilitySystem.CastingAbilityId);
                 return AbilityDatabase.GetDodge(LocalPlayer.Instance.AbilitySystem.CastingAbilityId);
             }
             return null;
