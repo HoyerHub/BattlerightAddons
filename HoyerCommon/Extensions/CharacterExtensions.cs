@@ -32,7 +32,7 @@ namespace Hoyer.Common.Extensions
             return true;
         }
 
-        public static bool IsValidTargetProjectile(this Character enemy)
+        public static bool IsValidTargetProjectile(this Character enemy, bool useOnHardCC = false)
         {
             if (enemy == null || enemy.Buffs == null || enemy.Living.IsDead || enemy.PhysicsCollision.IsImmaterial && !enemy.CharacterModel.IsModelInvisible)
             {
@@ -46,7 +46,13 @@ namespace Hoyer.Common.Extensions
                 {
                     return false;
                 }
+                if (!useOnHardCC && (buff.ObjectName == "Incapacitate" || buff.ObjectName == "PetrifyStone"))
+                {
+                    return false;
+                }
             }
+
+            if (LocalPlayer.Instance.CheckCollisionToTarget(enemy, 0.35f)) return false;
             return true;
         }
 
@@ -64,6 +70,7 @@ namespace Hoyer.Common.Extensions
                 timeLeft = spell.FixedDelay;
             }
             else timeLeft = enemy.Distance(LocalPlayer.Instance) / spell.Speed;
+            timeLeft += 0.1f;
 
             var ret = true;
             foreach (var buff in enemy.Buffs.Where(b => b != null && b.ObjectName != null))

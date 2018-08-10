@@ -5,6 +5,7 @@ using BattleRight.Core;
 using BattleRight.Core.Enumeration;
 using BattleRight.Core.GameObjects;
 using BattleRight.Core.GameObjects.Models;
+using BattleRight.Core.Math;
 using BattleRight.SDK;
 using BattleRight.SDK.Enumeration;
 using BattleRight.SDK.UI;
@@ -48,7 +49,7 @@ namespace Hoyer.Champions.Jumong.Modes
             var skill = Skills.Get(LocalPlayer.Instance.AbilitySystem.CastingAbilityId);
             if (skill == null) return;
 
-            AbilitySlot[] waitAim = {AbilitySlot.Ability1, AbilitySlot.Ability2, AbilitySlot.Ability4};
+            AbilitySlot[] waitAim = {AbilitySlot.Ability1, AbilitySlot.Ability2, AbilitySlot.EXAbility2};
 
             if (!waitAim.Includes(skill.Slot))
             {
@@ -112,7 +113,7 @@ namespace Hoyer.Champions.Jumong.Modes
             var isProjectile = castingSpell.Slot != AbilitySlot.Ability4 && castingSpell.Slot != AbilitySlot.Ability5;
             var useOnIncaps = castingSpell.Slot == AbilitySlot.Ability2 || castingSpell.Slot == AbilitySlot.EXAbility2;
 
-            var possibleTargets = EntitiesManager.EnemyTeam.Where(e => e != null && !e.Living.IsDead && e.Distance(LocalPlayer.Instance) < castingSpell.Range)
+            var possibleTargets = EntitiesManager.EnemyTeam.Where(e => e != null && !e.Living.IsDead && e.Pos() != Vector2.Zero && e.Distance(LocalPlayer.Instance) < castingSpell.Range * Prediction.CancelRangeModifier)
                 .ToList();
 
             var output = Prediction.Output.None;
@@ -121,7 +122,15 @@ namespace Hoyer.Champions.Jumong.Modes
             {
                 Character tryGetTarget = null;
                 tryGetTarget = TargetSelector.GetTarget(possibleTargets, GetTargetingMode(possibleTargets), float.MaxValue);
-                if (tryGetTarget.IsValidTarget(castingSpell, isProjectile, useOnIncaps, AvoidStealthed))
+                if (castingSpell.Slot == AbilitySlot.Ability4)
+                {
+                    if (tryGetTarget.IsValidTarget())
+                    {
+                        output = Prediction.Basic(tryGetTarget, castingSpell);
+                        output.CanHit = true;
+                    }
+                }
+                else if (tryGetTarget.IsValidTarget(castingSpell, isProjectile, useOnIncaps, AvoidStealthed))
                 {
                     var pred = tryGetTarget.GetPrediction(castingSpell);
                     if (pred.CanHit)

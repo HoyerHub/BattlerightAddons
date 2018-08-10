@@ -5,6 +5,7 @@ using BattleRight.Core;
 using BattleRight.Core.Enumeration;
 using BattleRight.Core.GameObjects;
 using BattleRight.Core.GameObjects.Models;
+using BattleRight.Core.Math;
 using BattleRight.SDK;
 using BattleRight.SDK.Enumeration;
 using BattleRight.SDK.UI.Values;
@@ -53,7 +54,8 @@ namespace Hoyer.Champions.Jumong.Modes
 
             var enemyTeam = EntitiesManager.EnemyTeam;
             var validEnemies = enemyTeam.Where(e => e.IsValidTarget()).ToList();
-            var validForProjectiles = enemyTeam.Any(e => e.IsValidTargetProjectile());
+            var validForProjectiles = validEnemies.Any(e => e.IsValidTargetProjectile());
+            var validForBigProjectiles = validEnemies.Any(e => e.IsValidTargetProjectile(true));
             if (validEnemies.Any())
             {
                 var closestRange = validEnemies.OrderBy(e => e.Distance(LocalPlayer.Instance)).First().Distance(LocalPlayer.Instance);
@@ -70,7 +72,7 @@ namespace Hoyer.Champions.Jumong.Modes
                 }
 
                 if (MenuHandler.UseSkill(AbilitySlot.EXAbility2) && AbilitySlot.EXAbility2.IsReady() &&
-                    AbilitySlot.EXAbility2.InRange(closestRange) && validForProjectiles)
+                    AbilitySlot.EXAbility2.InRange(closestRange) && validForBigProjectiles)
                 {
                     if (!MenuHandler.SkillBool("save_a6") || LocalPlayer.Instance.Energized.Energy >= 50)
                     {
@@ -79,8 +81,8 @@ namespace Hoyer.Champions.Jumong.Modes
                     }
                 }
 
-                if (MenuHandler.UseSkill(AbilitySlot.Ability2) && AbilitySlot.Ability2.IsReady() && AbilitySlot.Ability2.InRange(closestRange) &&
-                    validForProjectiles)
+                if (MenuHandler.UseSkill(AbilitySlot.Ability2) && AbilitySlot.Ability2.IsReady() && AbilitySlot.EXAbility2.InRange(closestRange) &&
+                    validForBigProjectiles)
                 {
                     if (EnemiesInRange(5).Count == 0)
                     {
@@ -173,7 +175,7 @@ namespace Hoyer.Champions.Jumong.Modes
             var useOnIncaps = castingSpell.Slot == AbilitySlot.Ability2 || castingSpell.Slot == AbilitySlot.EXAbility2;
 
             var possibleTargets = EntitiesManager.EnemyTeam
-                .Where(e => e != null && !e.Living.IsDead && e.Distance(LocalPlayer.Instance) < castingSpell.Range)
+                .Where(e => e != null && !e.Living.IsDead && e.Pos() != Vector2.Zero && e.Distance(LocalPlayer.Instance) < castingSpell.Range * Prediction.CancelRangeModifier)
                 .ToList();
 
             var output = Prediction.Output.None;
@@ -182,7 +184,15 @@ namespace Hoyer.Champions.Jumong.Modes
             {
                 Character tryGetTarget = null;
                 tryGetTarget = TargetSelector.GetTarget(possibleTargets, GetTargetingMode(possibleTargets), float.MaxValue);
-                if (tryGetTarget.IsValidTarget(castingSpell, isProjectile, useOnIncaps, AvoidStealthed))
+                if (castingSpell.Slot == AbilitySlot.Ability4)
+                {
+                    if (tryGetTarget.IsValidTarget())
+                    {
+                        output = Prediction.Basic(tryGetTarget, castingSpell);
+                        output.CanHit = true;
+                    }
+                }
+                else if (tryGetTarget.IsValidTarget(castingSpell, isProjectile, useOnIncaps, AvoidStealthed))
                 {
                     var pred = tryGetTarget.GetPrediction(castingSpell);
                     if (pred.CanHit)
@@ -199,7 +209,6 @@ namespace Hoyer.Champions.Jumong.Modes
                     possibleTargets.Remove(tryGetTarget);
                 }
             }
-
             return output;
         }
 

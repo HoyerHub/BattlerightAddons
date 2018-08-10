@@ -35,7 +35,7 @@ namespace Hoyer.Champions.Jumong
         {
             if (LocalPlayer.Instance.CharName != "Jumong") return;
             Skills.Active.Add(new SkillBase(AbilitySlot.Ability1, SkillType.Line, 7.9f, 17, 0.3f));
-            Skills.Active.Add(new SkillBase(AbilitySlot.Ability2, SkillType.Line, 10.5f, 26.5f, 0.3f));
+            Skills.Active.Add(new SkillBase(AbilitySlot.Ability2, SkillType.Line, 10.25f, 26.5f, 0.3f));
             Skills.Active.Add(new SkillBase(AbilitySlot.Ability3, SkillType.Line, 7.8f, 13.5f, 0.3f));
             Skills.Active.Add(new SkillBase(AbilitySlot.Ability4, SkillType.Circle, 10, 0, 2, 0.5f));
             Skills.Active.Add(new SkillBase(AbilitySlot.Ability5, SkillType.Circle, 6.8f, 12, 1));

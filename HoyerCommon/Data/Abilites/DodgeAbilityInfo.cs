@@ -12,6 +12,8 @@ namespace Hoyer.Common.Data.Abilites
     {
         Counter,
         Jump,
+        Shield,
+        HealthShield,
         Ghost
     }
     public class DodgeAbilityInfo

@@ -11,6 +11,8 @@ namespace Hoyer.Common
     public static class Prediction
     {
         public static int Mode = 1;
+        public static float CastingRangeModifier;
+        public static float CancelRangeModifier;
 
         public static Output Get(Character target, SkillBase spell)
         {

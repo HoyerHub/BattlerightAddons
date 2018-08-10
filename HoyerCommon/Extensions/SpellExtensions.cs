@@ -58,7 +58,7 @@ namespace Hoyer.Common.Extensions
 
         public static bool InRange(this AbilitySlot slot, float distance)
         {
-            return Skills.Active.Get(slot).Range > distance;
+            return Skills.Active.Get(slot).Range * Prediction.CastingRangeModifier > distance;
         }
     }
 }
