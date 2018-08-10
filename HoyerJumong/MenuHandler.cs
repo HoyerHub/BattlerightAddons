@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BattleRight.Core;
 using BattleRight.Core.Enumeration;
@@ -14,6 +15,7 @@ namespace Hoyer.Champions.Jumong
     {
         public static Menu HoyerMainMenu;
         public static Menu JumongMenu;
+        public static Menu SkillMenu;
 
         public static MenuCheckBox AvoidStealthed;
         public static MenuCheckBox UseCursor;
@@ -22,6 +24,8 @@ namespace Hoyer.Champions.Jumong
         private static MenuKeybind _comboKey;
         private static MenuCheckBox _enabledBox;
         private static MenuCheckBox _comboToggle;
+
+        private static Dictionary<string, bool> SkillCheckBoxes = new Dictionary<string, bool>();
 
         public static void Init()
         {
@@ -52,8 +56,55 @@ namespace Hoyer.Champions.Jumong
             AvoidStealthed = new MenuCheckBox("jumong_ignorestealthed", "Ignore stealthed enemies", false);
             JumongMenu.Add(AvoidStealthed);
 
+            InitSkillMenu();
+
             FirstRun();
             Console.WriteLine("[HoyerJumong/MenuHandler] Jumong Menu Init");
+        }
+
+        private static void InitSkillMenu()
+        {
+            SkillMenu = JumongMenu.Add(new Menu("HoyerJumong.Skills", "Skills", true));
+            AddSkillCheckbox("combo_a1", "Use M1 in combo");
+            AddSkillCheckbox("combo_a2", "Use M2 in combo");
+            AddSkillCheckbox("close_a3", "Use Space to avoid melees");
+            AddSkillCheckbox("combo_a4", "Use Q in combo");
+            AddSkillCheckbox("combo_a5", "Use E in combo");
+            AddSkillCheckbox("save_a6", "Save energy for R in combo");
+            AddSkillCheckbox("combo_ex1", "Use EX1 in combo");
+            AddSkillCheckbox("combo_ex2", "Use EX2 in combo");
+        }
+
+        public static bool SkillBool(string name)
+        {
+            return SkillCheckBoxes[name];
+        }
+
+        public static bool UseSkill(AbilitySlot slot)
+        {
+            switch (slot)
+            {
+                case AbilitySlot.Ability1:
+                    return SkillCheckBoxes["combo_a1"];
+                case AbilitySlot.Ability2:
+                    return SkillCheckBoxes["combo_a2"];
+                case AbilitySlot.Ability4:
+                    return SkillCheckBoxes["combo_a4"];
+                case AbilitySlot.Ability5:
+                    return SkillCheckBoxes["combo_a5"];
+                case AbilitySlot.EXAbility1:
+                    return SkillCheckBoxes["combo_ex1"];
+                case AbilitySlot.EXAbility2:
+                    return SkillCheckBoxes["combo_ex2"];
+            }
+            return false;
+        }
+
+        private static void AddSkillCheckbox(string name, string displayname, bool defaultVal = true)
+        {
+            var skill = SkillMenu.Add(new MenuCheckBox(name, displayname, defaultVal));
+            SkillCheckBoxes.Add(name, skill.CurrentValue);
+            skill.OnValueChange += delegate(ChangedValueArgs<bool> args) { SkillCheckBoxes[skill.Name] = args.NewValue; };
         }
 
         private static void FirstRun()

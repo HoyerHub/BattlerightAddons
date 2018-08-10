@@ -32,6 +32,15 @@ namespace Hoyer.Champions.Jumong.Modes
             if (!MenuHandler.AimUserInput.CurrentValue || !LocalPlayer.Instance.AbilitySystem.CastingAbilityIsCasting)
             {
                 LocalPlayer.EditAimPosition = false;
+
+                if (MenuHandler.SkillBool("close_a3") && EntitiesManager.EnemyTeam.Where(e => e.Distance(LocalPlayer.Instance) < 2).ToList().Count > 0)
+                {
+                    if (AbilitySlot.Ability3.IsReady())
+                    {
+                        LocalPlayer.PressAbility(AbilitySlot.Ability3, true);
+                        return;
+                    }
+                }
                 return;
             }
 
@@ -58,7 +67,7 @@ namespace Hoyer.Champions.Jumong.Modes
                 if (OrbLogic(skill, true)) return;
                 var prediction = GetTargetPrediction(skill);
 
-                if (prediction == Prediction.Output.None && !OrbLogic(skill))
+                if (!prediction.CanHit && !OrbLogic(skill))
                 {
                     LocalPlayer.PressAbility(AbilitySlot.Interrupt, true);
                     return;
@@ -73,14 +82,24 @@ namespace Hoyer.Champions.Jumong.Modes
             }
         }
 
-        private bool OrbLogic(SkillBase skill, bool checkHover = false)
+        private bool OrbLogic(SkillBase skill, bool shouldCheckHover = false)
         {
-            if (EntitiesManager.CenterOrb == null || EntitiesManager.CenterOrb.Get<LivingObject>().IsDead) return false;
+            if (EntitiesManager.CenterOrb == null) return false;
+            var orbLiving = EntitiesManager.CenterOrb.Get<LivingObject>();
+            if (orbLiving.IsDead) return false;
+
             if (skill.Slot == AbilitySlot.Ability4 || skill.Slot == AbilitySlot.Ability5 || skill.Slot == AbilitySlot.EXAbility1) return false;
 
-            var orbPos = EntitiesManager.CenterOrb.Get<MapGameObject>().Position;
+            var orbMapObj = EntitiesManager.CenterOrb.Get<MapGameObject>();
+            var orbPos = orbMapObj.Position;
+            if (orbLiving.Health <= 16 && skill.Slot != AbilitySlot.Ability7)
+            {
+                LocalPlayer.EditAimPosition = true;
+                LocalPlayer.Aim(orbPos);
+                return true;
+            }
 
-            if (checkHover && !EntitiesManager.CenterOrb.Get<MapGameObject>().IsHoveringNear() ||
+            if (shouldCheckHover && !orbMapObj.IsHoveringNear() ||
                 !(orbPos.Distance(LocalPlayer.Instance) < skill.Range)) return false;
 
             LocalPlayer.EditAimPosition = true;
@@ -98,7 +117,7 @@ namespace Hoyer.Champions.Jumong.Modes
 
             var output = Prediction.Output.None;
 
-            while (possibleTargets.Count > 0 && output.CanHit == false)
+            while (possibleTargets.Count > 0 && !output.CanHit)
             {
                 Character tryGetTarget = null;
                 tryGetTarget = TargetSelector.GetTarget(possibleTargets, GetTargetingMode(possibleTargets), float.MaxValue);
