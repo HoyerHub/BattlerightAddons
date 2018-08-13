@@ -8,7 +8,6 @@ using Hoyer.Common.Extensions;
 using Hoyer.Common.Utilities;
 using TMPro;
 using UnityEngine;
-using Component = Hoyer.Common.Utilities.Component;
 using Object = UnityEngine.Object;
 
 namespace Hoyer.Common.Local
@@ -23,7 +22,7 @@ namespace Hoyer.Common.Local
 
         public static void Setup()
         {
-            Component.Init += Init;
+            Main.Init += Init;
         }
 
         public static bool GetBool(string name)
@@ -37,26 +36,26 @@ namespace Hoyer.Common.Local
             HoyerMenu.AddLabel("Common Utils");
 
             var hideNames = new MenuCheckBox("hide_names", "Hide all names (Video Mode)", false);
-            hideNames.OnValueChange += delegate (ChangedValueArgs<bool> args)
+            hideNames.OnValueChange += delegate(ChangedValueArgs<bool> args)
             {
                 HideNames.Active = args.NewValue;
                 if (!args.NewValue)
                 {
                     foreach (var label in Object.FindObjectsOfType(typeof(TextMeshProUGUI)))
                     {
-                        var component = ((MonoBehaviour)label).GetComponent<TextMeshProUGUI>();
+                        var component = ((MonoBehaviour) label).GetComponent<TextMeshProUGUI>();
                         if (label.name == "Name" || label.name == "NameText") component.enabled = true;
                     }
                 }
             };
             HoyerMenu.Add(hideNames);
-            
+
             var showStealth = new MenuCheckBox("show_stealth", "Show predicted stealth positions");
-            showStealth.OnValueChange += delegate (ChangedValueArgs<bool> args) { StealthPrediction.DrawStealthed = args.NewValue; };
+            showStealth.OnValueChange += delegate(ChangedValueArgs<bool> args) { StealthPrediction.DrawStealthed = args.NewValue; };
             HoyerMenu.Add(showStealth);
 
             var drawProjectiles = new MenuCheckBox("draw_projectiles", "Draw Projectile Paths", false);
-            drawProjectiles.OnValueChange += delegate (ChangedValueArgs<bool> args) { DrawProjectiles.Active = args.NewValue; };
+            drawProjectiles.OnValueChange += delegate(ChangedValueArgs<bool> args) { DrawProjectiles.Active = args.NewValue; };
             HoyerMenu.Add(drawProjectiles);
 
             HoyerMenu.AddSeparator();
@@ -67,7 +66,11 @@ namespace Hoyer.Common.Local
 
             Console.WriteLine("[HoyerCommon/MenuEvents] Menu Init");
             Initialize.Invoke();
-            Component.DelayAction(Update.Invoke, 1);
+            Main.DelayAction(delegate
+            {
+                Console.WriteLine("[HoyerCommon/MenuEvents] Checking Menus");
+                Update.Invoke();
+            }, 1);
             Game.OnMatchStart += MatchUpdate;
             Game.OnMatchEnd += MatchUpdate;
         }
@@ -78,17 +81,18 @@ namespace Hoyer.Common.Local
             PredMenu.AddLabel("Common Prediction Settings");
 
             var useStealthPred = PredMenu.Add(new MenuCheckBox("use_stealth_pred", "Use Stealth Pred to aim (WIP)", false));
-            useStealthPred.OnValueChange += delegate (ChangedValueArgs<bool> args) { StealthPrediction.ShouldUse = args.NewValue; };
+            useStealthPred.OnValueChange += delegate(ChangedValueArgs<bool> args) { StealthPrediction.ShouldUse = args.NewValue; };
 
             var castRangeSlider = PredMenu.Add(new MenuSlider("pred_castrange", "Start casting range modifier", 0.92f, 1.1f, 0.9f));
-            castRangeSlider.OnValueChange += delegate (ChangedValueArgs<float> args) { Prediction.CastingRangeModifier = args.NewValue; };
+            castRangeSlider.OnValueChange += delegate(ChangedValueArgs<float> args) { Prediction.CastingRangeModifier = args.NewValue; };
 
             var cancelRangeSlider = PredMenu.Add(new MenuSlider("pred_cancelrange", "Out of range modifier", 1, 1.1f, 0.9f));
-            cancelRangeSlider.OnValueChange += delegate (ChangedValueArgs<float> args) { Prediction.CancelRangeModifier = args.NewValue; };
+            cancelRangeSlider.OnValueChange += delegate(ChangedValueArgs<float> args) { Prediction.CancelRangeModifier = args.NewValue; };
 
             var predModes = new[] {"Basic Aimlogic (fastest)", "SDK Prediction", "DaPip's TestPred"};
             var predMode = PredMenu.Add(new MenuComboBox("pred_mode", "Prediction Mode", 1, predModes));
-            predMode.OnValueChange += delegate(ChangedValueArgs<int> args) {
+            predMode.OnValueChange += delegate(ChangedValueArgs<int> args)
+            {
                 Prediction.Mode = args.NewValue;
                 Console.WriteLine("[HoyerCommon/MenuEvents] Prediction changed to " + predModes[args.NewValue]);
             };

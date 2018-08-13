@@ -95,7 +95,13 @@ namespace Hoyer.Evade
         {
             if (LocalPlayer.Instance.AbilitySystem.IsCasting)
             {
-                return AbilityDatabase.GetDodge(LocalPlayer.Instance.AbilitySystem.CastingAbilityId);
+                var dodge = AbilityDatabase.GetDodge(LocalPlayer.Instance.AbilitySystem.CastingAbilityId);
+                if (dodge != null && LocalPlayer.Instance.AbilitySystem.CastingAbilityIndex != -1)
+                {
+                    //Console.WriteLine(LocalPlayer.Instance.AbilitySystem.CastingAbilityId);
+                    //Console.WriteLine(LocalPlayer.Instance.AbilitySystem.CastingAbilityIndex);
+                }
+                return dodge;
             }
             return null;
         }
@@ -145,7 +151,6 @@ namespace Hoyer.Evade
                 {
                     if (ability.NeedsSelfCast)
                     {
-                        LocalPlayer.PressAbility(AbilitySlot.SelfCastModifier, true);
                         LocalPlayer.PressAbility(ability.AbilitySlot, true);
                     }
                     else

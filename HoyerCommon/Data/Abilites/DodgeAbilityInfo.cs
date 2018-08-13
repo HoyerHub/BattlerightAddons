@@ -20,6 +20,7 @@ namespace Hoyer.Common.Data.Abilites
     {
         public string Champion;
         public int AbilityId;
+        public int AbilityIndex = -1;
         public AbilitySlot AbilitySlot;
         public DodgeAbilityType AbilityType;
         public bool UsesMousePos = false;

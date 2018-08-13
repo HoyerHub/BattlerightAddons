@@ -19,7 +19,7 @@ namespace Hoyer.Common.Utilities
 
         private static void OnInit()
         {
-            Component.Update += MB_Update;
+            Game.OnUpdate += MB_Update;
             Game.OnMatchStart += Game_OnMatchStart;
             if (Game.IsInGame) SetHudLabels();
         }
@@ -48,7 +48,7 @@ namespace Hoyer.Common.Utilities
                     HUDLabels.Add(label);
         }
 
-        private static void MB_Update()
+        private static void MB_Update(EventArgs args)
         {
             if (!Active) return;
             if (!Game.IsInGame) SetUILabels();
