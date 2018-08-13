@@ -31,28 +31,5 @@ namespace Hoyer.Common.Data.Abilites
         public float CastTime = 0;
         public bool UseInEvade = true;
         public AbilitySlot SharedCooldown = AbilitySlot.Taunt;
-
-        public Vector2 GetSafeJumpPos()
-        {
-            var nearbyAlly = EntitiesManager.LocalTeam.FirstOrDefault(ally => ally.Distance(LocalPlayer.Instance) < Range);
-            if (nearbyAlly != null)
-            {
-                return nearbyAlly.MapObject.Position;
-            }
-
-            var towardsBase = LocalPlayer.Instance.MapObject.Position.Extend(new Vector2(-100, 0), Range);
-            if (!EntitiesManager.EnemyTeam.Any(e => e.Distance(towardsBase) < 5))
-            {
-                return towardsBase;
-            }
-
-            var mousePos = InputManager.MousePosition.ScreenToWorld();
-            if (!EntitiesManager.EnemyTeam.Any(e => e.Distance(mousePos) < 5))
-            {
-                return mousePos;
-            }
-
-            return Vector2.Zero;
-        }
     }
 }

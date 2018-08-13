@@ -35,9 +35,9 @@ namespace Hoyer.Common.Data.Abilites
         public string Champion;
         public AbilitySlot AbilitySlot;
         public int AbilityId;
-        public string ObjectName;
+        public string ObjectName = "";
         public SkillType SkillType;
-        public float Danger;
+        public int Danger;
         public Battlerite[] ImportantBattlerites;
         public CollisionType CollisionType = CollisionType.Units | CollisionType.Walls;
         public float Range = 0;

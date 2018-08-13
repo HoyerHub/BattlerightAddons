@@ -41,26 +41,20 @@ namespace Hoyer.Evade
             var casting = CastingEvadeSpell();
             if (casting != null && casting.UseInEvade && casting.ShouldUse())
             {
+                var projectiles = AbilityTracker.Enemy.Projectiles.Active
+                    .Where(p => p.WillCollideWithPlayer(LocalPlayer.Instance, p.Radius / 2)).ToArray();
                 if (casting.AbilityType == DodgeAbilityType.Jump && casting.UsesMousePos)
                 {
                     LocalPlayer.EditAimPosition = true;
-                    LocalPlayer.Aim(casting.GetSafeJumpPos());
+                    LocalPlayer.Aim(casting.GetJumpPos());
                 }
+                if (!projectiles.Any()) return;
                 if (casting.AbilityType == DodgeAbilityType.Shield && casting.UsesMousePos)
                 {
                     LocalPlayer.EditAimPosition = true;
-                    var projectiles = AbilityTracker.Enemy.Projectiles.Active
-                        .Where(p => p.WillCollideWithPlayer(LocalPlayer.Instance, p.Radius / 2)).ToArray();
-                    if (projectiles.Any())
-                    {
-                        LocalPlayer.Aim(projectiles
-                            .OrderByDescending(p => p.Data().Danger)
-                            .First().MapObject.Position);
-                    }
-                    else
-                    {
-                        LocalPlayer.Aim(EntitiesManager.EnemyTeam.OrderBy(e => e.Distance(LocalPlayer.Instance)).First().MapObject.Position);
-                    }
+                    LocalPlayer.Aim(projectiles
+                        .OrderByDescending(p => p.Data().Danger)
+                        .First().MapObject.Position);
                 }
                 else if (casting.NeedsSelfCast)
                 {
@@ -145,7 +139,7 @@ namespace Hoyer.Evade
             if (PlayerIsSafe(timeToImpact)) return;
             foreach (var ability in AbilityDatabase.GetDodge(LocalPlayer.Instance.CharName).OrderBy(a => a.Priority))
             {
-                if (ability.ShouldUse() && ability.GetDanger() <= projectile.Data().Danger &&
+                if (ability.ShouldUse() && ability.GetDanger() <= projectile.Data().GetDanger() &&
                     LocalPlayer.GetAbilityHudData(ability.AbilitySlot).CooldownLeft <= 0.01 &&
                     !LocalPlayer.Instance.PhysicsCollision.IsImmaterial && !LocalPlayer.Instance.IsCountering)
                 {

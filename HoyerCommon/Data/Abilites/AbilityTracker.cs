@@ -42,7 +42,7 @@ namespace Hoyer.Common.Data.Abilites
                             var data = AbilityDatabase.GetDodge(abilityState.Key);
                             if (data.AbilityIndex != -1)
                             {
-                                Console.WriteLine(character.AbilitySystem.GetAbility(data.AbilityIndex).CooldownEndTime);
+                                //Console.WriteLine(character.AbilitySystem.GetAbility(data.AbilityIndex).CooldownEndTime);
                             }
                         }
                     }
