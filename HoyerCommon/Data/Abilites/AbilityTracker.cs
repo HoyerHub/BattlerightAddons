@@ -68,7 +68,7 @@ namespace Hoyer.Common.Data.Abilites
                 public static void Setup()
                 {
                     Game.OnUpdate += OnUpdate;
-                    SpellDetector.OnSpellCast += OnSpellCast;
+                    //SpellDetector.OnSpellCast += OnSpellCast;
                 }
 
                 private static void OnSpellCast(BattleRight.SDK.EventsArgs.SpellCastArgs args)
@@ -90,8 +90,8 @@ namespace Hoyer.Common.Data.Abilites
                 {
                     Active.Clear();
                     Active.AddRange(EntitiesManager.ActiveProjectiles.Where(p => p.BaseObject.TeamId != LocalPlayer.Instance.BaseObject.TeamId));
-                    CheckForCasts();
-                    UpdateCasts();
+                    //CheckForCasts();
+                    //UpdateCasts();
                 }
 
                 private static void UpdateCasts()

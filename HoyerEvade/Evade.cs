@@ -38,32 +38,35 @@ namespace Hoyer.Evade
 
         private static void EvadeLogic()
         {
-            var casting = CastingEvadeSpell();
-            if (casting != null && casting.UseInEvade && casting.ShouldUse())
+            if (UseSkills)
             {
-                var projectiles = AbilityTracker.Enemy.Projectiles.Active
-                    .Where(p => p.WillCollideWithPlayer(LocalPlayer.Instance, p.Radius / 2)).ToArray();
-                if (casting.AbilityType == DodgeAbilityType.Jump && casting.UsesMousePos)
+                var casting = CastingEvadeSpell();
+                if (casting != null && casting.UseInEvade && casting.ShouldUse())
                 {
-                    LocalPlayer.EditAimPosition = true;
-                    LocalPlayer.Aim(casting.GetJumpPos());
+                    var projectiles = AbilityTracker.Enemy.Projectiles.Active
+                        .Where(p => p.WillCollideWithPlayer(LocalPlayer.Instance, p.Radius / 2)).ToArray();
+                    if (casting.AbilityType == DodgeAbilityType.Jump && casting.UsesMousePos)
+                    {
+                        LocalPlayer.EditAimPosition = true;
+                        LocalPlayer.Aim(casting.GetJumpPos());
+                    }
+                    if (!projectiles.Any()) return;
+                    if (casting.AbilityType == DodgeAbilityType.Shield && casting.UsesMousePos)
+                    {
+                        LocalPlayer.EditAimPosition = true;
+                        LocalPlayer.Aim(projectiles
+                            .OrderByDescending(p => p.Data().Danger)
+                            .First().MapObject.Position);
+                    }
+                    else if (casting.NeedsSelfCast)
+                    {
+                        LocalPlayer.EditAimPosition = true;
+                        LocalPlayer.Aim(LocalPlayer.Instance.MapObject.Position);
+                    }
+                    return;
                 }
-                if (!projectiles.Any()) return;
-                if (casting.AbilityType == DodgeAbilityType.Shield && casting.UsesMousePos)
-                {
-                    LocalPlayer.EditAimPosition = true;
-                    LocalPlayer.Aim(projectiles
-                        .OrderByDescending(p => p.Data().Danger)
-                        .First().MapObject.Position);
-                }
-                else if (casting.NeedsSelfCast)
-                {
-                    LocalPlayer.EditAimPosition = true;
-                    LocalPlayer.Aim(LocalPlayer.Instance.MapObject.Position);
-                }
-                return;
+                else if (!LocalPlayer.Instance.AbilitySystem.IsCasting) LocalPlayer.EditAimPosition = false;
             }
-            else if (!LocalPlayer.Instance.AbilitySystem.IsCasting) LocalPlayer.EditAimPosition = false;
 
             var dangerousProjectiles = AbilityTracker.Enemy.Projectiles.Active.Where(p => p.WillCollideWithPlayer(LocalPlayer.Instance, p.Radius / 2))
                 .ToArray();
@@ -167,7 +170,6 @@ namespace Hoyer.Evade
                     if (buff.TimeToExpire > time) return true;
                 }
             }
-
             return false;
         }
     }
