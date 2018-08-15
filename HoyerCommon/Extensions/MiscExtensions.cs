@@ -61,6 +61,16 @@ namespace Hoyer.Common.Extensions
             return "Error";
         }
 
+        public static string ToCharacterString(this string character)
+        {
+            switch (character)
+            {
+                case "Gunner": return "Jade";
+                case "Glutton": return "Rook";
+                default: return character;
+            }
+        }
+
         public static string ToFriendlyString(this DodgeAbilityType type)
         {
             switch (type)

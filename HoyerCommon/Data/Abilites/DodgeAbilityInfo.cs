@@ -25,6 +25,7 @@ namespace Hoyer.Common.Data.Abilites
         public DodgeAbilityType AbilityType;
         public bool UsesMousePos = false;
         public bool NeedsSelfCast = false;
+        public bool IsIFrame = true;
         public float Range = 0;
         public int Priority = 3; //Evade will choose lowest available
         public int MinDanger = 0;

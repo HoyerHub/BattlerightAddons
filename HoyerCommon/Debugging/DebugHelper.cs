@@ -39,8 +39,6 @@ namespace Hoyer.Common.Debug
                     Console.WriteLine("Duration: " + throwObj.Duration);
                     Console.WriteLine("MapColRadius: " + throwObj.MapCollisionRadius);
                     Console.WriteLine("SpellRadius: " + throwObj.SpellCollisionRadius);
-                    Drawing.DrawCircleOneShot(throwObj.TargetPosition, throwObj.SpellCollisionRadius, Color.green, throwObj.Duration);
-                    Drawing.DrawLineOneShot(throwObj.StartPosition, throwObj.TargetPosition, Color.green, throwObj.Duration);
                 }
             }
             Console.WriteLine("----");

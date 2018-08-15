@@ -65,7 +65,7 @@ namespace Hoyer.Common.Extensions
         public static bool IsReady(this AbilitySlot slot)
         {
             var ability = LocalPlayer.GetAbilityHudData(slot);
-            return ability.CooldownLeft <= 0 && ability.EnergyCost <= LocalPlayer.Instance.Energized.Energy;
+            return ability != null && ability.CooldownLeft <= 0 && ability.EnergyCost <= LocalPlayer.Instance.Energized.Energy;
         }
 
         public static bool InRange(this AbilitySlot slot, float distance)

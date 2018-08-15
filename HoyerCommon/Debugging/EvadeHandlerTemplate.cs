@@ -6,13 +6,13 @@ using BattleRight.SDK.UI.Values;
 
 public static class EvadeHandler
 {
-    public static EvadeSpell GunnerSpace;
+    public static EvadeSpell JadeSpace;
     public static EvadeSpell RuhKaanR;
     public static EvadeSpell BakkoEx1;
 
     public static void Setup()
     {
-        GunnerSpace = new EvadeSpell("GunnerSpace");
+        JadeSpace = new EvadeSpell("JadeSpace");
         RuhKaanR = new EvadeSpell("Ruh KaanR");
         BakkoEx1 = new EvadeSpell("BakkoEX1");
     }
@@ -85,11 +85,11 @@ public static class EvadeHandler
         private void SetupStatus(Menu evadeStatusMenu)
         {
             _activeCheckBox = evadeStatusMenu.Get<MenuCheckBox>("isActive_" + _abilityString);
-            _activeCheckBox.OnValueChange += SpaceCheckBox_OnValueChange;
+            _activeCheckBox.OnValueChange += ActiveCheckBox_OnValueChange;
         }
 
         //Sets IsEvading to true if this handler is selected in the "External Logic" menu
-        private void SpaceCheckBox_OnValueChange(ChangedValueArgs<bool> changedValueArgs)
+        private void ActiveCheckBox_OnValueChange(ChangedValueArgs<bool> changedValueArgs)
         {
             if (_overrideComboBox.CurrentValue != _overrideIndex) return;
 

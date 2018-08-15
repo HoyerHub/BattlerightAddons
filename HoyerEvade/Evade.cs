@@ -187,8 +187,7 @@ namespace Hoyer.Evade
             foreach (var ability in AbilityDatabase.GetDodge(LocalPlayer.Instance.CharName).OrderBy(a => a.Priority))
             {
                 if (ability.ShouldUse() && ability.AbilityType != DodgeAbilityType.Counter && 
-                    ability.AbilityType != DodgeAbilityType.Shield && ability.GetDanger() <= data.GetDanger() &&
-                    LocalPlayer.GetAbilityHudData(ability.AbilitySlot).CooldownLeft <= 0.01)
+                    ability.AbilityType != DodgeAbilityType.Shield && ability.GetDanger() <= data.GetDanger())
                 {
                     if (ability.NeedsSelfCast)
                     {
@@ -217,7 +216,6 @@ namespace Hoyer.Evade
             foreach (var ability in AbilityDatabase.GetDodge(LocalPlayer.Instance.CharName).OrderBy(a => a.Priority))
             {
                 if (ability.ShouldUse() && ability.GetDanger() <= data.GetDanger() &&
-                    LocalPlayer.GetAbilityHudData(ability.AbilitySlot).CooldownLeft <= 0.01 &&
                     !LocalPlayer.Instance.PhysicsCollision.IsImmaterial && !LocalPlayer.Instance.IsCountering)
                 {
                     if (ability.NeedsSelfCast)

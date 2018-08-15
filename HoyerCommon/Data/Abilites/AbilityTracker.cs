@@ -88,27 +88,6 @@ namespace Hoyer.Common.Data.Abilites
                         var throwObj = inGameObject.Get<ThrowObject>();
                         if (throwObj.Data() != null) Active.Add(throwObj);
                     }
-
-                    /*DEBUG
-                    foreach (var baseType in inGameObject.GetBaseTypes())
-                    {
-                        Console.WriteLine(baseType);
-                        if (baseType == "Throw")
-                        {
-                            var throwObj = inGameObject.Get<ThrowObject>();
-                            Console.WriteLine("Name: " + inGameObject.ObjectName);
-                            Console.WriteLine("Start: " + throwObj.StartPosition);
-                            Console.WriteLine("Target: " + throwObj.TargetPosition);
-                            Console.WriteLine("Distance: " + throwObj.StartPosition.Distance(throwObj.TargetPosition));
-                            Console.WriteLine("Duration: " + throwObj.Duration);
-                            Console.WriteLine("MapColRadius: " + throwObj.MapCollisionRadius);
-                            Console.WriteLine("SpellRadius: " + throwObj.SpellCollisionRadius);
-                            Drawing.DrawCircleOneShot(throwObj.TargetPosition, throwObj.SpellCollisionRadius, Color.green, throwObj.Duration);
-                            Drawing.DrawLineOneShot(throwObj.StartPosition, throwObj.TargetPosition, Color.green, throwObj.Duration);
-                        }
-                    }
-                    Console.WriteLine("----");
-                    */
                 }
             }
 

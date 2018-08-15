@@ -428,6 +428,17 @@ namespace Hoyer.Common.Data.Abilites
             });
             Add(new AbilityInfo
             {
+                Champion = "Glutton",
+                ObjectName = "BoulderTossThrow",
+                AbilitySlot = AbilitySlot.Ability5,
+                AbilityType = AbilityType.CircleThrowObject,
+                Range = 10,
+                Radius = 2,
+                Duration = 0.9f,
+                Danger = 2,
+            });
+            Add(new AbilityInfo
+            {
                 Champion = "Raigon",
                 ObjectName = "SeismicShock",
                 AbilitySlot = AbilitySlot.Ability5,

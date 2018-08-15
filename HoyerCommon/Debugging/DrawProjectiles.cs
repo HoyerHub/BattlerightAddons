@@ -1,5 +1,6 @@
 ﻿using System;
 using BattleRight.Core;
+using BattleRight.Core.GameObjects.Models;
 using Hoyer.Common.Data.Abilites;
 using Hoyer.Common.Extensions;
 using Hoyer.Common.Local;
@@ -44,27 +45,17 @@ namespace Hoyer.Common.Debug
         private static void Game_OnDraw(EventArgs args)
         {
             if(!Game.IsInGame || !Active) return;
-            foreach (var projectile in EntitiesManager.ActiveProjectiles)
+            foreach (var projectile in AbilityTracker.Enemy.Projectiles.Active)
             {
-                if (projectile.BaseObject.TeamId == 2)
-                {
-                    DrawRectangle(projectile.StartPosition, projectile.CalculatedEndPosition, projectile.Radius, Color.red);
-                    Drawing.DrawCircle(projectile.MapObject.Position, projectile.Radius / 2, Color.red);
-                }
-                else if (projectile.BaseObject.TeamId == 1)
-                {
-                    DrawRectangle(projectile.StartPosition, projectile.CalculatedEndPosition, projectile.Radius, Color.green);
-                    Drawing.DrawCircle(projectile.MapObject.Position, projectile.Radius / 2, Color.green);
-                }
+                DrawRectangle(projectile.StartPosition, projectile.CalculatedEndPosition, projectile.Radius, Color.red);
+                Drawing.DrawCircle(projectile.MapObject.Position, projectile.Radius / 2, Color.red);
             }
-
-            foreach (var character in EntitiesManager.EnemyTeam)
+            foreach (var throwObj in AbilityTracker.Enemy.CircularThrows.Active)
             {
-                if (character.CharacterModel.IsModelInvisible)
-                {
-                    Drawing.DrawCircle(character.Pos(), character.MapCollision.MapCollisionRadius, Color.green);
-                    Drawing.DrawString(character.Pos(), character.CharName, Color.green);
-                }
+                var data = throwObj.Data();
+                var age = throwObj.GameObject.Get<AgeObject>();
+                Drawing.DrawCircle(throwObj.TargetPosition, data.Radius, Color.red);
+                Drawing.DrawString(throwObj.TargetPosition, (data.Duration - age.Age).ToString(), Color.white);
             }
             /*var guiStyle = GUI.skin.GetStyle("label");
             guiStyle.fontSize = 15;
