@@ -5,6 +5,7 @@ using BattleRight.Core;
 using BattleRight.Core.Enumeration;
 using BattleRight.Core.GameObjects;
 using BattleRight.Core.GameObjects.Models;
+using BattleRight.SDK;
 using BattleRight.SDK.Events;
 using Hoyer.Common.Extensions;
 using Hoyer.Common.Local;
@@ -64,7 +65,11 @@ namespace Hoyer.Common.Data.Abilites
 
             public static class CircularThrows
             {
-                public static List<ThrowObject> Active = new List<ThrowObject>();
+                public static event Action<ThrowObject> OnDangerous = delegate { };
+                public static event Action<ThrowObject> OnDangerousDestroyed = delegate { };
+
+                public static List<ThrowObject> Dangerous = new List<ThrowObject>();
+                public static List<ThrowObject> NonDangerous = new List<ThrowObject>();
 
                 public static void Setup()
                 {
@@ -74,76 +79,79 @@ namespace Hoyer.Common.Data.Abilites
 
                 private static void InGameObject_OnDestroy(InGameObject inGameObject)
                 {
-                    var active = Active.FirstOrDefault(t => t.GameObject.Id == inGameObject.Id);
-                    if (active != default(ThrowObject))
+                    var tryNonDanger = NonDangerous.FirstOrDefault(t => t.GameObject.Id == inGameObject.Id);
+                    if (tryNonDanger != default(ThrowObject))
                     {
-                        Active.Remove(active);
+                        NonDangerous.Remove(tryNonDanger);
+                    }
+                    var tryDanger = Dangerous.FirstOrDefault(t => t.GameObject.Id == inGameObject.Id);
+                    if (tryDanger != default(ThrowObject))
+                    {
+                        Dangerous.Remove(tryDanger);
+                        OnDangerousDestroyed.Invoke(tryDanger);
                     }
                 }
 
                 private static void InGameObject_OnCreate(InGameObject inGameObject)
                 {
-                    if (inGameObject.GetBaseTypes().Contains("Throw"))
+                    if (inGameObject.GetBaseTypes().Contains("Throw") && inGameObject.Get<BaseGameObject>().TeamId != LocalPlayer.Instance.BaseObject.TeamId)
                     {
                         var throwObj = inGameObject.Get<ThrowObject>();
-                        if (throwObj.Data() != null) Active.Add(throwObj);
+                        var data = throwObj.Data();
+                        if (data != null)
+                        {
+                            if (throwObj.TargetPosition.Distance(LocalPlayer.Instance) < data.Radius)
+                            {
+                                Dangerous.Add(throwObj);
+                                OnDangerous.Invoke(throwObj);
+                            }
+                            else NonDangerous.Add(throwObj);
+                        }
                     }
                 }
             }
 
             public static class Projectiles
             {
-                private static readonly List<CastingProjectile> Casting = new List<CastingProjectile>();
-                public static List<Projectile> Active = new List<Projectile>();
+                public static event Action<Projectile> OnDangerous = delegate { };
+                public static event Action<Projectile> OnDangerousDestroyed = delegate { };
+
+                public static List<Projectile> Dangerous = new List<Projectile>();
+                public static List<Projectile> NonDangerous = new List<Projectile>();
 
                 public static void Setup()
                 {
-                    Game.OnUpdate += OnUpdate;
-                    //SpellDetector.OnSpellCast += OnSpellCast;
+                    InGameObject.OnCreate += InGameObject_OnCreate;
+                    InGameObject.OnDestroy += InGameObject_OnDestroy;
                 }
 
-                private static void OnSpellCast(BattleRight.SDK.EventsArgs.SpellCastArgs args)
+                private static void InGameObject_OnDestroy(InGameObject inGameObject)
                 {
-                    if (args.Caster.Id == 25) return;
-                    if (args.Caster.Team == BattleRight.Core.Enumeration.Team.Enemy)
+                    var tryNonDanger = NonDangerous.FirstOrDefault(t => t.Id == inGameObject.Id);
+                    if (tryNonDanger != default(Projectile))
                     {
-                        //Console.WriteLine(args.Caster.AbilitySystem.CastingAbilityName + ": " + args.Caster.AbilitySystem.CastingAbilityId);
-                        var abilityInfo = AbilityDatabase.Get(args.Caster.AbilitySystem.CastingAbilityId);
-                        if (abilityInfo != null)
+                        NonDangerous.Remove(tryNonDanger);
+                    }
+                    var tryDanger = Dangerous.FirstOrDefault(t => t.Id == inGameObject.Id);
+                    if (tryDanger != default(Projectile))
+                    {
+                        Dangerous.Remove(tryDanger);
+                        OnDangerousDestroyed.Invoke(tryDanger);
+                    }
+                }
+
+                private static void InGameObject_OnCreate(InGameObject inGameObject)
+                {
+                    var data = AbilityDatabase.Get(inGameObject.ObjectName);
+                    if (data != null && data.AbilityType == AbilityType.LineProjectile && inGameObject.Get<BaseGameObject>().TeamId != LocalPlayer.Instance.BaseObject.TeamId)
+                    {
+                        var projectile = inGameObject as Projectile;
+                        if (projectile.WillCollideWithPlayer(LocalPlayer.Instance, data.Radius / 2))
                         {
-                            //Console.WriteLine("AbilityDatabase: Data found for spell: " + abilityInfo.ObjectName);
-                            Casting.Add(new CastingProjectile(abilityInfo, args.Caster));
+                            Dangerous.Add(projectile);
+                            OnDangerous.Invoke(projectile);
                         }
-                    }
-                }
-
-                private static void OnUpdate(EventArgs args)
-                {
-                    Active.Clear();
-                    Active.AddRange(EntitiesManager.ActiveProjectiles.Where(p => p.BaseObject.TeamId != LocalPlayer.Instance.BaseObject.TeamId));
-                    //CheckForCasts();
-                    //UpdateCasts();
-                }
-
-                private static void UpdateCasts()
-                {
-                    foreach (var cast in Casting)
-                    {
-                        cast.Update();
-                    }
-                }
-
-                private static void CheckForCasts()
-                {
-                    var toRemove = new List<CastingProjectile>();
-                    foreach (var cast in Casting)
-                    {
-                        if (!cast.Caster.AbilitySystem.IsCasting || cast.Caster.AbilitySystem.IsPostCasting) toRemove.Add(cast);
-                    }
-
-                    foreach (var projectile in toRemove)
-                    {
-                        Casting.Remove(projectile);
+                        else NonDangerous.Add(projectile);
                     }
                 }
             }

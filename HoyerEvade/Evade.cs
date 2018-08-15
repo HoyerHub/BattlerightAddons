@@ -23,14 +23,9 @@ namespace Hoyer.Evade
 
         private static DodgeAbilityInfo _castingLastFrame = null;
 
-        private static List<Projectile> _dangerousProjectiles;
-        private static List<ThrowObject> _dangerousCircularThrows;
-
         public static void Init()
         {
             CommonEvents.PostUpdate += OnUpdate;
-            MenuEvents.Initialize += MenuHandler.Init;
-            MenuEvents.Update += MenuHandler.Update;
         }
 
         public static void OnUpdate()
@@ -40,18 +35,14 @@ namespace Hoyer.Evade
 
         private static void EvadeLogic()
         {
+            var dangerousProjectiles = AbilityTracker.Enemy.Projectiles.Dangerous;
+            var dangerousCircularThrows = AbilityTracker.Enemy.CircularThrows.Dangerous;
+
             if (UseSkills)
             {
                 var casting = CastingEvadeSpell();
                 if (casting != null && casting.UseInEvade && casting.ShouldUse())
                 {
-                    var projectiles = AbilityTracker.Enemy.Projectiles.Active
-                        .Where(p => p.WillCollideWithPlayer(LocalPlayer.Instance, p.Radius / 2)).ToArray();
-                    if (!projectiles.Any()) return;
-                    var circularThrows = AbilityTracker.Enemy.CircularThrows.Active
-                        .Where(t => t.TargetPosition.Distance(LocalPlayer.Instance) < t.SpellCollisionRadius).ToArray();
-                    if (!circularThrows.Any()) return;
-
                     _castingLastFrame = casting;
                     casting.SetStatus(true);
 
@@ -65,7 +56,7 @@ namespace Hoyer.Evade
                     if (casting.AbilityType == DodgeAbilityType.Shield && casting.UsesMousePos)
                     {
                         LocalPlayer.EditAimPosition = true;
-                        LocalPlayer.Aim(projectiles
+                        LocalPlayer.Aim(dangerousProjectiles
                             .OrderByDescending(p => p.Data().Danger)
                             .First().MapObject.Position);
                     }
@@ -83,9 +74,7 @@ namespace Hoyer.Evade
                     LocalPlayer.EditAimPosition = false;
                 }
             }
-
-            var dangerousProjectiles = AbilityTracker.Enemy.Projectiles.Active.Where(p => p.WillCollideWithPlayer(LocalPlayer.Instance, p.Radius / 2))
-                .ToArray();
+            
             if (dangerousProjectiles.Any())
             {
                 var mostDangerous = dangerousProjectiles.OrderByDescending(p => p.Data().Danger).First();
@@ -104,9 +93,7 @@ namespace Hoyer.Evade
                 }
                 return;
             }
-
-            var dangerousCircularThrows = AbilityTracker.Enemy.CircularThrows.Active
-                .Where(t => t.TargetPosition.Distance(LocalPlayer.Instance) < t.SpellCollisionRadius).ToArray();
+            
             if (dangerousCircularThrows.Any())
             {
                 var mostDangerous = dangerousCircularThrows.OrderByDescending(p => p.Data().Danger).First();

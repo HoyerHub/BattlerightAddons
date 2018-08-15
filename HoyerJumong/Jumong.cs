@@ -21,7 +21,7 @@ namespace Hoyer.Champions.Jumong
     {
         public static bool Enabled;
         public static bool AimUserInput;
-        private static IMode _mode;
+        private static bool _combo;
 
         public void OnInit()
         {
@@ -51,13 +51,13 @@ namespace Hoyer.Champions.Jumong
                 LocalPlayer.EditAimPosition = false;
                 return;
             }
-            _mode.Update();
+            if(_combo) AimAndCast.Update();
+            else AimOnly.Update();
         }
 
         public static void SetMode(bool combo)
         {
-            if (!combo) _mode = new AimOnly();
-            else _mode = new AimAndCast();
+            _combo = combo;
         }
 
         public void OnUnload()

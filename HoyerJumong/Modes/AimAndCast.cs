@@ -15,19 +15,19 @@ using Prediction = Hoyer.Common.Prediction;
 
 namespace Hoyer.Champions.Jumong.Modes
 {
-    public class AimAndCast : IMode
+    public static class AimAndCast 
     {
-        private bool UseCursor
+        private static bool UseCursor
         {
             get { return MenuHandler.UseCursor.CurrentValue; }
         }
 
-        private bool AvoidStealthed
+        private static bool AvoidStealthed
         {
             get { return MenuHandler.AvoidStealthed.CurrentValue; }
         }
 
-        public void Update()
+        public static void Update()
         {
             if (!LocalPlayer.Instance.AbilitySystem.IsCasting || LocalPlayer.Instance.AbilitySystem.IsPostCasting)
             {
@@ -41,7 +41,7 @@ namespace Hoyer.Champions.Jumong.Modes
             }
         }
 
-        private void SpellCastLogic()
+        private static void SpellCastLogic()
         {
             if (MenuHandler.SkillBool("close_a3") && EnemiesInRange(2).Count > 0)
             {
@@ -112,17 +112,17 @@ namespace Hoyer.Champions.Jumong.Modes
             }
         }
 
-        private void Cast(AbilitySlot slot)
+        private static void Cast(AbilitySlot slot)
         {
             LocalPlayer.PressAbility(slot, true);
         }
 
-        private List<Character> EnemiesInRange(float distance)
+        private static List<Character> EnemiesInRange(float distance)
         {
             return EntitiesManager.EnemyTeam.Where(e => e.Distance(LocalPlayer.Instance) < distance).ToList();
         }
 
-        private void GetTargetAndAim(SkillBase skill)
+        private static void GetTargetAndAim(SkillBase skill)
         {
             try
             {
@@ -144,7 +144,7 @@ namespace Hoyer.Champions.Jumong.Modes
             }
         }
 
-        private bool OrbLogic(SkillBase skill, bool shouldCheckHover = false)
+        private static bool OrbLogic(SkillBase skill, bool shouldCheckHover = false)
         {
             if (EntitiesManager.CenterOrb == null) return false;
             var orbLiving = EntitiesManager.CenterOrb.Get<LivingObject>();
@@ -169,7 +169,7 @@ namespace Hoyer.Champions.Jumong.Modes
             return true;
         }
 
-        private Prediction.Output GetTargetPrediction(SkillBase castingSpell)
+        private static Prediction.Output GetTargetPrediction(SkillBase castingSpell)
         {
             var isProjectile = castingSpell.Slot != AbilitySlot.Ability4 && castingSpell.Slot != AbilitySlot.Ability5;
             var useOnIncaps = castingSpell.Slot == AbilitySlot.Ability2 || castingSpell.Slot == AbilitySlot.EXAbility2;
@@ -212,7 +212,7 @@ namespace Hoyer.Champions.Jumong.Modes
             return output;
         }
 
-        private TargetingMode GetTargetingMode(IEnumerable<Character> possibleTargets)
+        private static TargetingMode GetTargetingMode(IEnumerable<Character> possibleTargets)
         {
             if (UseCursor) return TargetingMode.NearMouse;
             return possibleTargets.Any(o => o.Distance(LocalPlayer.Instance) < 5) ? TargetingMode.Closest : TargetingMode.LowestHealth;

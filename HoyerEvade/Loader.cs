@@ -1,5 +1,7 @@
 ﻿using BattleRight.Core;
 using BattleRight.Sandbox;
+using Hoyer.Common;
+using Hoyer.Common.Debug;
 using Hoyer.Common.Local;
 using Hoyer.Common.Utilities;
 
@@ -9,15 +11,12 @@ namespace Hoyer.Evade
     {
         public void OnInit()
         {
+            DrawEvade.Setup();
             Evade.Init();
-            MenuEvents.Initialize += MenuInit;
+            MenuEvents.Initialize += MenuHandler.Init;
+            MenuEvents.Update += MenuHandler.Update;
         }
-
-        private void MenuInit()
-        {
-            
-        }
-
+        
         public void OnUnload()
         {
         }

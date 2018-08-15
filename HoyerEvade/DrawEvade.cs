@@ -1,17 +1,19 @@
 ﻿using System;
+using System.Linq;
 using BattleRight.Core;
+using BattleRight.Core.GameObjects;
 using BattleRight.Core.GameObjects.Models;
 using Hoyer.Common.Data.Abilites;
 using Hoyer.Common.Extensions;
-using Hoyer.Common.Local;
 using UnityEngine;
 using Vector2 = BattleRight.Core.Math.Vector2;
 
-namespace Hoyer.Common.Debug
+namespace Hoyer.Evade
 {
-    public static class DrawProjectiles
+    public static class DrawEvade
     {
         public static bool Active = false;
+
 
         public static void Setup()
         {
@@ -45,31 +47,30 @@ namespace Hoyer.Common.Debug
         private static void Game_OnDraw(EventArgs args)
         {
             if(!Game.IsInGame || !Active) return;
-            foreach (var projectile in AbilityTracker.Enemy.Projectiles.Active)
+            foreach (var projectile in AbilityTracker.Enemy.Projectiles.Dangerous)
             {
                 DrawRectangle(projectile.StartPosition, projectile.CalculatedEndPosition, projectile.Radius, Color.red);
                 Drawing.DrawCircle(projectile.MapObject.Position, projectile.Radius / 2, Color.red);
             }
-            foreach (var throwObj in AbilityTracker.Enemy.CircularThrows.Active)
+            foreach (var projectile in AbilityTracker.Enemy.Projectiles.NonDangerous)
+            {
+                DrawRectangle(projectile.StartPosition, projectile.CalculatedEndPosition, projectile.Radius, Color.white);
+                Drawing.DrawCircle(projectile.MapObject.Position, projectile.Radius / 2, Color.gray);
+            }
+            foreach (var throwObj in AbilityTracker.Enemy.CircularThrows.Dangerous)
             {
                 var data = throwObj.Data();
                 var age = throwObj.GameObject.Get<AgeObject>();
                 Drawing.DrawCircle(throwObj.TargetPosition, data.Radius, Color.red);
                 Drawing.DrawString(throwObj.TargetPosition, (data.Duration - age.Age).ToString(), Color.white);
             }
-            /*var guiStyle = GUI.skin.GetStyle("label");
-            guiStyle.fontSize = 15;
-            guiStyle.normal.textColor = Color.green;
-
-            var i = 0;
-            GUI.Label(new Rect(new UnityEngine.Vector2(Screen.width - 200, 50), new UnityEngine.Vector2(100, 50)), EntitiesManager.LocalPlayer.CharName, guiStyle);
-            foreach (var buff in EntitiesManager.LocalPlayer.Buffs)
+            foreach (var throwObj in AbilityTracker.Enemy.CircularThrows.NonDangerous)
             {
-                i++;
-                GUI.Label(new Rect(new UnityEngine.Vector2(Screen.width - 200, i*70), new UnityEngine.Vector2(100, 50)), buff.ObjectName, guiStyle);
-                i++;
-                GUI.Label(new Rect(new UnityEngine.Vector2(Screen.width - 200, i * 70), new UnityEngine.Vector2(100, 50)), buff.BuffType.ToString(), guiStyle);
-            }*/
+                var data = throwObj.Data();
+                var age = throwObj.GameObject.Get<AgeObject>();
+                Drawing.DrawCircle(throwObj.TargetPosition, data.Radius, Color.white);
+                Drawing.DrawString(throwObj.TargetPosition, (data.Duration - age.Age).ToString(), Color.white);
+            }
         }
     }
 

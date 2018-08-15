@@ -7,6 +7,7 @@ using BattleRight.SDK.UI;
 using BattleRight.SDK.UI.Models;
 using BattleRight.SDK.UI.Values;
 using Hoyer.Common.Data.Abilites;
+using Hoyer.Common.Debug;
 using Hoyer.Common.Extensions;
 
 namespace Hoyer.Evade
@@ -32,13 +33,16 @@ namespace Hoyer.Evade
 
         private static MenuCheckBox _enabledWalkBox;
         private static MenuCheckBox _enabledSkillsBox;
+        private static MenuCheckBox _enabledDrawings;
         private static MenuComboBox _jumpMode;
 
         private static MenuCheckBox _activeSpell;
 
         public static void Init()
         {
-            HoyerMain = MainMenu.GetMenu("Hoyer.MainMenu");
+            try
+            {
+                HoyerMain = MainMenu.GetMenu("Hoyer.MainMenu");
             EvadeMain = HoyerMain.Add(new Menu("Evade.MainMenu", "Evade", true));
 
             EvadeMain.Add(new MenuLabel("Evade"));
@@ -48,13 +52,19 @@ namespace Hoyer.Evade
 
             _enabledWalkBox = new MenuCheckBox("evade_walk", "Try to walk out of skillshots (doesnt work well enough yet)", false);
             _enabledWalkBox.OnValueChange += delegate(ChangedValueArgs<bool> args) { Evade.UseWalk = args.NewValue; };
+            _enabledWalkBox.Hidden = true;
             EvadeMain.Add(_enabledWalkBox);
+
+            _enabledDrawings = new MenuCheckBox("evade_draw", "Draw Evade Drawings", false);
+            _enabledDrawings.OnValueChange += delegate (ChangedValueArgs<bool> args) { DrawEvade.Active = args.NewValue; };
+            EvadeMain.Add(_enabledDrawings);
 
             _jumpMode = EvadeMain.Add(new MenuComboBox("evade_jumpmode", "Jump Logic", 1, new[] {"Mouse Cursor", "DaPip's BestJumpPos"}));
             _jumpMode.OnValueChange += delegate(ChangedValueArgs<int> args) { JumpMode = args.NewValue; };
 
-            try
-            {
+            
+
+            
                 EvadeStatusInit();
                 EvadeSkillsInit();
                 EvadeEnemySkillsInit();
@@ -249,8 +259,9 @@ namespace Hoyer.Evade
 
         private static void FirstRun()
         {
-            Evade.UseWalk = _enabledWalkBox.CurrentValue;
+            Evade.UseWalk = false;//_enabledWalkBox.CurrentValue;
             Evade.UseSkills = _enabledSkillsBox.CurrentValue;
+            DrawEvade.Active = _enabledDrawings.CurrentValue;
             JumpMode = _jumpMode.CurrentValue;
         }
 

@@ -61,6 +61,7 @@
     <Compile Include="DrawEvade.cs" />
     <Compile Include="Evade.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Loader.cs" />
     <Compile Include="MenuHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -16,19 +16,19 @@ using Prediction = Hoyer.Common.Prediction;
 
 namespace Hoyer.Champions.Jumong.Modes
 {
-    public class AimOnly : IMode
+    public static class AimOnly
     {
-        private bool UseCursor
+        private static bool UseCursor
         {
             get { return MenuHandler.UseCursor.CurrentValue; }
         }
 
-        private bool AvoidStealthed
+        private static bool AvoidStealthed
         {
             get { return MenuHandler.AvoidStealthed.CurrentValue; }
         }
 
-        public void Update()
+        public static void Update()
         {
             if (!MenuHandler.AimUserInput.CurrentValue || !LocalPlayer.Instance.AbilitySystem.CastingAbilityIsCasting)
             {
@@ -61,7 +61,7 @@ namespace Hoyer.Champions.Jumong.Modes
             }
         }
 
-        private void GetTargetAndAim(SkillBase skill)
+        private static void GetTargetAndAim(SkillBase skill)
         {
             try
             {
@@ -83,7 +83,7 @@ namespace Hoyer.Champions.Jumong.Modes
             }
         }
 
-        private bool OrbLogic(SkillBase skill, bool shouldCheckHover = false)
+        private static bool OrbLogic(SkillBase skill, bool shouldCheckHover = false)
         {
             if (EntitiesManager.CenterOrb == null) return false;
             var orbLiving = EntitiesManager.CenterOrb.Get<LivingObject>();
@@ -108,7 +108,7 @@ namespace Hoyer.Champions.Jumong.Modes
             return true;
         }
 
-        private Prediction.Output GetTargetPrediction(SkillBase castingSpell)
+        private static Prediction.Output GetTargetPrediction(SkillBase castingSpell)
         {
             var isProjectile = castingSpell.Slot != AbilitySlot.Ability4 && castingSpell.Slot != AbilitySlot.Ability5;
             var useOnIncaps = castingSpell.Slot == AbilitySlot.Ability2 || castingSpell.Slot == AbilitySlot.EXAbility2;
@@ -151,7 +151,7 @@ namespace Hoyer.Champions.Jumong.Modes
             return output;
         }
 
-        private TargetingMode GetTargetingMode(IEnumerable<Character> possibleTargets)
+        private static TargetingMode GetTargetingMode(IEnumerable<Character> possibleTargets)
         {
             if (UseCursor) return TargetingMode.NearMouse;
             return possibleTargets.Any(o => o.Distance(LocalPlayer.Instance) < 5) ? 

@@ -73,6 +73,7 @@
     <Compile Include="Debugging\DebugHelper.cs" />
     <Compile Include="Extensions\CharacterExtensions.cs" />
     <Compile Include="Extensions\MiscExtensions.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Local\CommonEvents.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Local\MenuEvents.cs" />
