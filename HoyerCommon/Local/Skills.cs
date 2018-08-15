@@ -19,7 +19,7 @@ namespace Hoyer.Common.Local
             var data = AbilityDatabase.Get(LocalPlayer.Instance.CharName, slot)[0];
             if (data != null)
             {
-                Active.Add(new SkillBase(slot, data.SkillType, data.Range == 0 ? data.MaxRange : data.Range, data.ProjectileSpeed, data.Radius, data.FixedDelay));
+                Active.Add(new SkillBase(slot, data.AbilityType.ToSkillType(), data.Range == 0 ? data.MaxRange : data.Range, data.ProjectileSpeed, data.Radius, data.FixedDelay));
             }
         }
 

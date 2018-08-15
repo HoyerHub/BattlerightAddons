@@ -11,6 +11,12 @@ namespace Hoyer.Common.Data.Abilites
         Walls
     }
 
+    public enum AbilityType
+    {
+        LineProjectile,
+        CircleThrowObject
+    }
+
     public struct Field
     {
         public string Name;
@@ -36,7 +42,7 @@ namespace Hoyer.Common.Data.Abilites
         public AbilitySlot AbilitySlot;
         public int AbilityId;
         public string ObjectName = "";
-        public SkillType SkillType;
+        public AbilityType AbilityType;
         public int Danger;
         public Battlerite[] ImportantBattlerites;
         public CollisionType CollisionType = CollisionType.Units | CollisionType.Walls;
@@ -51,5 +57,6 @@ namespace Hoyer.Common.Data.Abilites
         public float FixedDelay = 0;                
         public bool RequiresCharging;
         public bool CanCounter = true;
+        public float Duration = 0;
     }
 }

@@ -29,7 +29,7 @@ namespace Hoyer.Champions.Jumong
 
         public static void Init()
         {
-            HoyerMainMenu = MainMenu.GetMenu("HoyerMain");
+            HoyerMainMenu = MainMenu.GetMenu("Hoyer.MainMenu");
             JumongMenu = HoyerMainMenu.Add(new Menu("HoyerJumong", "Jumong", true));
 
             JumongMenu.Add(new MenuLabel("Jumong"));

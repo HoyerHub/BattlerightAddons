@@ -66,11 +66,6 @@ namespace Hoyer.Common.Debug
                     Drawing.DrawString(character.Pos(), character.CharName, Color.green);
                 }
             }
-                
-            foreach (var cast in AbilityTracker.Enemy.Projectiles.Casting)
-            {
-                DrawRectangle(cast.Caster.Pos(), cast.EndPos, cast.Data.Radius, Color.blue);
-            }
             /*var guiStyle = GUI.skin.GetStyle("label");
             guiStyle.fontSize = 15;
             guiStyle.normal.textColor = Color.green;

@@ -32,7 +32,7 @@ namespace Hoyer.Common.Local
 
         public static void Init()
         {
-            HoyerMenu = MainMenu.AddMenu("HoyerMain", "Hoyer");
+            HoyerMenu = MainMenu.AddMenu("Hoyer.MainMenu", "Hoyer");
             HoyerMenu.AddLabel("Common Utils");
 
             var hideNames = new MenuCheckBox("hide_names", "Hide all names (Video Mode)", false);

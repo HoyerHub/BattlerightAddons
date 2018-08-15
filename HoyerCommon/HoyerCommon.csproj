@@ -70,6 +70,7 @@
     <Compile Include="Data\Abilites\AbilityTracker.cs" />
     <Compile Include="Data\Abilites\DodgeAbilityInfo.cs" />
     <Compile Include="Debugging\DrawProjectiles.cs" />
+    <Compile Include="Debugging\EvadeHandlerTemplate.cs" />
     <Compile Include="Debugging\LogProjectiles.cs" />
     <Compile Include="Extensions\CharacterExtensions.cs" />
     <Compile Include="Extensions\MiscExtensions.cs" />

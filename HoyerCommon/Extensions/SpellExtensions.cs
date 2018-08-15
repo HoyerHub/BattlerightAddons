@@ -3,10 +3,13 @@ using System.Linq;
 using BattleRight.Core;
 using BattleRight.Core.Enumeration;
 using BattleRight.Core.GameObjects;
+using BattleRight.Core.GameObjects.Models;
 using BattleRight.Core.Math;
 using BattleRight.SDK;
+using BattleRight.SDK.Enumeration;
 using Hoyer.Common.Data.Abilites;
 using Hoyer.Common.Local;
+using Hoyer.Common.Utilities;
 
 namespace Hoyer.Common.Extensions
 {
@@ -32,6 +35,11 @@ namespace Hoyer.Common.Extensions
             return AbilityDatabase.Get(projectile.ObjectName);
         }
 
+        public static AbilityInfo Data(this ThrowObject throwObject)
+        {
+            return AbilityDatabase.Get(throwObject.GameObject.ObjectName);
+        }
+
         public static SkillBase Get(this List<SkillBase> skills, AbilitySlot slot)
         {
             return skills.FirstOrDefault(skill => skill.Slot == slot);
@@ -49,6 +57,11 @@ namespace Hoyer.Common.Extensions
                 projectile.StartPosition, projectile.CalculatedEndPosition, projectile.Radius + extraWidth, true);
         }
 
+        public static Vector2 GetClosestExitPointFromCircle(this Character player, Vector2 circleCenter, float circleRadius)
+        {
+            return circleCenter.Extend(player.Pos(), circleRadius);
+        }
+
         public static bool IsReady(this AbilitySlot slot)
         {
             var ability = LocalPlayer.GetAbilityHudData(slot);
@@ -58,6 +71,13 @@ namespace Hoyer.Common.Extensions
         public static bool InRange(this AbilitySlot slot, float distance)
         {
             return Skills.Active.Get(slot).Range * Prediction.CastingRangeModifier > distance;
+        }
+
+        public static SkillType ToSkillType(this AbilityType type)
+        {
+            if (type == AbilityType.LineProjectile) return SkillType.Line;
+            if (type == AbilityType.CircleThrowObject) return SkillType.Circle;
+            return SkillType.Line;
         }
     }
 }

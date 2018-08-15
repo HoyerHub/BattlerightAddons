@@ -34,7 +34,7 @@ namespace Hoyer.Common.Extensions
             return array.Any(o => o == target);
         }
 
-        public static string ToKeyString(this AbilitySlot slot)
+        public static string ToFriendlyString(this AbilitySlot slot)
         {
             switch (slot)
             {
@@ -78,10 +78,6 @@ namespace Hoyer.Common.Extensions
             }
             Console.WriteLine("Error in parsing of DodgeAbilityType");
             return "Error";
-        }
-
-        public static void Add(this Menu menu, MenuItem item, Action action = null)
-        {
         }
     }
 }

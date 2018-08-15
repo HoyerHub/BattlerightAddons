@@ -4,6 +4,7 @@ using System.Linq;
 using BattleRight.Core;
 using BattleRight.Core.Enumeration;
 using BattleRight.Core.GameObjects;
+using BattleRight.Core.GameObjects.Models;
 using BattleRight.SDK.Events;
 using Hoyer.Common.Extensions;
 using Hoyer.Common.Local;
@@ -17,6 +18,7 @@ namespace Hoyer.Common.Data.Abilites
         public static void Setup()
         {
             Enemy.Projectiles.Setup();
+            Enemy.CircularThrows.Setup();
             Enemy.Cooldowns.Setup();
         }
 
@@ -60,9 +62,59 @@ namespace Hoyer.Common.Data.Abilites
                 }
             }
 
+            public static class CircularThrows
+            {
+                public static List<ThrowObject> Active = new List<ThrowObject>();
+
+                public static void Setup()
+                {
+                    InGameObject.OnCreate += InGameObject_OnCreate;
+                    InGameObject.OnDestroy += InGameObject_OnDestroy;
+                }
+
+                private static void InGameObject_OnDestroy(InGameObject inGameObject)
+                {
+                    var active = Active.FirstOrDefault(t => t.GameObject.Id == inGameObject.Id);
+                    if (active != default(ThrowObject))
+                    {
+                        Active.Remove(active);
+                    }
+                }
+
+                private static void InGameObject_OnCreate(InGameObject inGameObject)
+                {
+                    if (inGameObject.GetBaseTypes().Contains("Throw"))
+                    {
+                        var throwObj = inGameObject.Get<ThrowObject>();
+                        if (throwObj.Data() != null) Active.Add(throwObj);
+                    }
+
+                    /*DEBUG
+                    foreach (var baseType in inGameObject.GetBaseTypes())
+                    {
+                        Console.WriteLine(baseType);
+                        if (baseType == "Throw")
+                        {
+                            var throwObj = inGameObject.Get<ThrowObject>();
+                            Console.WriteLine("Name: " + inGameObject.ObjectName);
+                            Console.WriteLine("Start: " + throwObj.StartPosition);
+                            Console.WriteLine("Target: " + throwObj.TargetPosition);
+                            Console.WriteLine("Distance: " + throwObj.StartPosition.Distance(throwObj.TargetPosition));
+                            Console.WriteLine("Duration: " + throwObj.Duration);
+                            Console.WriteLine("MapColRadius: " + throwObj.MapCollisionRadius);
+                            Console.WriteLine("SpellRadius: " + throwObj.SpellCollisionRadius);
+                            Drawing.DrawCircleOneShot(throwObj.TargetPosition, throwObj.SpellCollisionRadius, Color.green, throwObj.Duration);
+                            Drawing.DrawLineOneShot(throwObj.StartPosition, throwObj.TargetPosition, Color.green, throwObj.Duration);
+                        }
+                    }
+                    Console.WriteLine("----");
+                    */
+                }
+            }
+
             public static class Projectiles
             {
-                public static readonly List<CastingProjectile> Casting = new List<CastingProjectile>();
+                private static readonly List<CastingProjectile> Casting = new List<CastingProjectile>();
                 public static List<Projectile> Active = new List<Projectile>();
 
                 public static void Setup()

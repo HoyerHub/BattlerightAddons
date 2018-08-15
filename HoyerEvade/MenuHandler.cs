@@ -15,22 +15,31 @@ namespace Hoyer.Evade
     {
         public static Menu HoyerMain;
         public static Menu EvadeMain;
+
         public static Menu EvadeSkillsMenu;
-        public static Menu EvadeEnemySkillsMenu;
+        public static Menu DodgeableSkillsMenu;
+
+        public static Menu EvadeStatusMenu;
+        public static Menu EvadeOverrideMenu;
 
         public static int JumpMode = 0;
 
-        private static readonly Dictionary<string, List<MenuItem>> SkillMenuByChampion = new Dictionary<string, List<MenuItem>>();
-        private static readonly Dictionary<string, List<MenuItem>> EnemySkillMenuByChampion = new Dictionary<string, List<MenuItem>>();
+        private static readonly Dictionary<string, List<MenuItem>> EvadeSkillsMenuByChampion = new Dictionary<string, List<MenuItem>>();
+        private static readonly Dictionary<string, List<MenuItem>> DodgeableSkillsMenuByChampion = new Dictionary<string, List<MenuItem>>();
+
+        private static readonly Dictionary<string, List<MenuItem>> EvadeStatusMenuByChampion = new Dictionary<string, List<MenuItem>>();
+        private static readonly Dictionary<string, List<MenuItem>> EvadeOverrideMenuByChampion = new Dictionary<string, List<MenuItem>>();
 
         private static MenuCheckBox _enabledWalkBox;
         private static MenuCheckBox _enabledSkillsBox;
         private static MenuComboBox _jumpMode;
 
+        private static MenuCheckBox _activeSpell;
+
         public static void Init()
         {
-            HoyerMain = MainMenu.GetMenu("HoyerMain");
-            EvadeMain = HoyerMain.Add(new Menu("HoyerEvade", "Evade", true));
+            HoyerMain = MainMenu.GetMenu("Hoyer.MainMenu");
+            EvadeMain = HoyerMain.Add(new Menu("Evade.MainMenu", "Evade", true));
 
             EvadeMain.Add(new MenuLabel("Evade"));
             _enabledSkillsBox = new MenuCheckBox("evade_skills", "Use skills to dodge dangerous skillshots");
@@ -43,11 +52,16 @@ namespace Hoyer.Evade
 
             _jumpMode = EvadeMain.Add(new MenuComboBox("evade_jumpmode", "Jump Logic", 1, new[] {"Mouse Cursor", "DaPip's BestJumpPos"}));
             _jumpMode.OnValueChange += delegate(ChangedValueArgs<int> args) { JumpMode = args.NewValue; };
-            
-            EvadeSkillsInit();
+
             try
             {
+                EvadeStatusInit();
+                EvadeSkillsInit();
                 EvadeEnemySkillsInit();
+                EvadeOverrideInit();
+
+                AddDodgeableEntries();
+                AddEvadeEntries();
             }
             catch (Exception e)
             {
@@ -57,43 +71,8 @@ namespace Hoyer.Evade
             FirstRun();
         }
 
-        private static void EvadeEnemySkillsInit()
+        private static void AddEvadeEntries()
         {
-            EvadeEnemySkillsMenu = EvadeMain.Add(new Menu("EnemySkills", "Dodgeable Skills", true));
-
-            var sorted = new SortedDictionary<string, List<AbilityInfo>>();
-            foreach (var ability in AbilityDatabase.Abilites.Where(a=>a.Danger > 0 && a.ObjectName != ""))
-            {
-                if (sorted.ContainsKey(ability.Champion))
-                {
-                    sorted[ability.Champion].Add(ability);
-                }
-                else
-                {
-                    sorted.Add(ability.Champion, new List<AbilityInfo> { ability });
-                }
-            }
-            foreach (var champion in sorted)
-            {
-                EnemySkillMenuByChampion.Add(champion.Key, new List<MenuItem> { EvadeEnemySkillsMenu.AddLabel(champion.Key) });
-                foreach (var abilityInfo in champion.Value)
-                {
-                    EnemySkillMenuByChampion[champion.Key].Add(EvadeEnemySkillsMenu.Add(new MenuCheckBox(
-                        "dodge_" + champion.Key + abilityInfo.ObjectName + abilityInfo.AbilityId,
-                        "Dodge " + abilityInfo.ObjectName + " (" + abilityInfo.AbilitySlot.ToKeyString() + ")")));
-                    EnemySkillMenuByChampion[champion.Key].Add(EvadeEnemySkillsMenu.Add(new MenuIntSlider(
-                        "danger_" + champion.Key + abilityInfo.ObjectName + abilityInfo.AbilityId, "Danger", abilityInfo.Danger, 5, 1)));
-                    EnemySkillMenuByChampion[champion.Key].Add(EvadeEnemySkillsMenu.AddSeparator(5));
-                }
-
-                EnemySkillMenuByChampion[champion.Key].Add(EvadeEnemySkillsMenu.AddSeparator());
-            }
-        }
-
-        private static void EvadeSkillsInit()
-        {
-            EvadeSkillsMenu = EvadeMain.Add(new Menu("EvadeSkills", "Evade Skills", true));
-
             var sorted = new SortedDictionary<string, List<DodgeAbilityInfo>>();
             foreach (var dodgeAbility in AbilityDatabase.DodgeAbilities.Where(a => a.UseInEvade))
             {
@@ -109,45 +88,158 @@ namespace Hoyer.Evade
 
             foreach (var champion in sorted)
             {
-                SkillMenuByChampion.Add(champion.Key, new List<MenuItem> {EvadeSkillsMenu.AddLabel(champion.Key)});
+                var champ = champion.Key;
+                EvadeSkillsMenuByChampion.Add(champ, new List<MenuItem> {EvadeSkillsMenu.AddLabel(champ)});
+                EvadeStatusMenuByChampion.Add(champ, new List<MenuItem> {EvadeStatusMenu.AddLabel(champ)});
+
+                EvadeOverrideMenuByChampion.Add(champ, new List<MenuItem> {EvadeOverrideMenu.AddLabel(champ)});
+                EvadeOverrideMenuByChampion[champ][0].Hidden = true;
+
                 foreach (var abilityInfo in champion.Value)
                 {
-                    SkillMenuByChampion[champion.Key].Add(EvadeSkillsMenu.Add(new MenuCheckBox(
-                        "use_" + champion.Key + abilityInfo.AbilitySlot.ToKeyString(),
-                        "Use " + abilityInfo.AbilitySlot.ToKeyString() + " (" + abilityInfo.AbilityType.ToFriendlyString() + ")")));
-                    SkillMenuByChampion[champion.Key].Add(EvadeSkillsMenu.Add(new MenuIntSlider(
-                        "danger_" + champion.Key + abilityInfo.AbilitySlot.ToKeyString(), "Minimum danger", abilityInfo.MinDanger, 5, 1)));
-                    SkillMenuByChampion[champion.Key].Add(EvadeSkillsMenu.AddSeparator(5));
+                    AddEvadeSkillsEntry(champ, abilityInfo);
+                    AddEvadeStatusEntry(champ, abilityInfo);
+                    AddEvadeOverrideEntry(champ, abilityInfo);
                 }
 
-                SkillMenuByChampion[champion.Key].Add(EvadeSkillsMenu.AddSeparator());
+                EvadeSkillsMenuByChampion[champ].Add(EvadeSkillsMenu.AddSeparator());
+            }
+        }
+
+        private static void AddEvadeOverrideEntry(string champ, DodgeAbilityInfo abilityInfo)
+        {
+            var abilityKey = abilityInfo.AbilitySlot.ToFriendlyString();
+            var comboBox = EvadeOverrideMenu.Add(new MenuComboBox("override_" + champ + abilityKey,
+                "Choose logic for " + champ + "'s " + abilityKey + " (" + abilityInfo.AbilityType.ToFriendlyString() + ")", 0, new[] {"Default"}));
+            comboBox.Hidden = true;
+            EvadeOverrideMenuByChampion[champ].Add(comboBox);
+        }
+
+        private static void AddEvadeSkillsEntry(string champ, DodgeAbilityInfo abilityInfo)
+        {
+            var abilityKey = abilityInfo.AbilitySlot.ToFriendlyString();
+            EvadeSkillsMenuByChampion[champ].Add(EvadeSkillsMenu.Add(new MenuCheckBox(
+                "use_" + champ + abilityKey,
+                "Use " + abilityKey + " (" + abilityInfo.AbilityType.ToFriendlyString() + ")")));
+            EvadeSkillsMenuByChampion[champ].Add(EvadeSkillsMenu.Add(new MenuIntSlider(
+                "danger_" + champ + abilityKey, "Minimum danger", abilityInfo.MinDanger, 5, 1)));
+            EvadeSkillsMenuByChampion[champ].Add(EvadeSkillsMenu.AddSeparator(5));
+        }
+
+        private static void AddDodgeableEntries()
+        {
+            var sorted = new SortedDictionary<string, List<AbilityInfo>>();
+            foreach (var ability in AbilityDatabase.Abilites.Where(a => a.Danger > 0 && a.ObjectName != ""))
+            {
+                if (sorted.ContainsKey(ability.Champion))
+                {
+                    sorted[ability.Champion].Add(ability);
+                }
+                else
+                {
+                    sorted.Add(ability.Champion, new List<AbilityInfo> {ability});
+                }
+            }
+
+            foreach (var champion in sorted)
+            {
+                var champ = champion.Key;
+                DodgeableSkillsMenuByChampion.Add(champ, new List<MenuItem> {DodgeableSkillsMenu.AddLabel(champ)});
+                foreach (var abilityInfo in champion.Value)
+                {
+                    AddDodgeableEntry(champ, abilityInfo);
+                }
+
+                DodgeableSkillsMenuByChampion[champ].Add(DodgeableSkillsMenu.AddSeparator());
+            }
+        }
+
+        private static void EvadeStatusInit()
+        {
+            EvadeStatusMenu = EvadeMain.Add(new Menu("Evade.StatusMenu", "Evade Status", true));
+            EvadeStatusMenu.Hidden = true;
+        }
+
+        private static void AddEvadeStatusEntry(string champ, DodgeAbilityInfo abilityInfo)
+        {
+            EvadeStatusMenuByChampion[champ].Add(EvadeStatusMenu.Add(new MenuCheckBox(
+                "isActive_" + champ + abilityInfo.AbilitySlot.ToFriendlyString(),
+                "Active: " + champ + abilityInfo.AbilityId)));
+        }
+
+        private static void EvadeOverrideInit()
+        {
+            EvadeOverrideMenu = EvadeMain.Add(new Menu("Evade.OverrideMenu", "External Logic", true));
+            EvadeOverrideMenu.AddLabel("   ↓ Evade logic from other addons will be available here ↓");
+            EvadeOverrideMenu.AddSeparator(40);
+        }
+
+        private static void EvadeEnemySkillsInit()
+        {
+            DodgeableSkillsMenu = EvadeMain.Add(new Menu("EnemySkills", "Dodgeable Skills", true));
+        }
+
+        private static void AddDodgeableEntry(string champ, AbilityInfo abilityInfo)
+        {
+            DodgeableSkillsMenuByChampion[champ].Add(DodgeableSkillsMenu.Add(new MenuCheckBox(
+                "dodge_" + champ + abilityInfo.ObjectName + abilityInfo.AbilityId,
+                "Dodge " + abilityInfo.ObjectName + " (" + abilityInfo.AbilitySlot.ToFriendlyString() + ")")));
+            DodgeableSkillsMenuByChampion[champ].Add(DodgeableSkillsMenu.Add(new MenuIntSlider(
+                "danger_" + champ + abilityInfo.ObjectName + abilityInfo.AbilityId, "Danger", abilityInfo.Danger, 5, 1)));
+            DodgeableSkillsMenuByChampion[champ].Add(DodgeableSkillsMenu.AddSeparator(5));
+        }
+
+        private static void EvadeSkillsInit()
+        {
+            EvadeSkillsMenu = EvadeMain.Add(new Menu("EvadeSkills", "Evade Skills", true));
+        }
+
+        public static int OverrideValue(this DodgeAbilityInfo info)
+        {
+            return ((MenuComboBox) EvadeOverrideMenuByChampion[info.Champion]
+                    .First(s => s.Name == "override_" + info.Champion + info.AbilitySlot.ToFriendlyString()))
+                .CurrentValue;
+        }
+
+        public static void SetStatus(this DodgeAbilityInfo info, bool newValue)
+        {
+            if (newValue && _activeSpell == null)
+            {
+                _activeSpell = (MenuCheckBox) EvadeStatusMenuByChampion[info.Champion]
+                    .First(s => s.Name == "isActive_" + info.Champion + info.AbilitySlot.ToFriendlyString());
+                _activeSpell.CurrentValue = true;
+            }
+            else if (!newValue)
+            {
+                _activeSpell.CurrentValue = false;
+                _activeSpell = null;
             }
         }
 
         public static bool ShouldUse(this DodgeAbilityInfo info)
         {
-            return ((MenuCheckBox)SkillMenuByChampion[info.Champion]
-                .First(s=>s.Name == "use_" + info.Champion + info.AbilitySlot.ToKeyString()))
+            return ((MenuCheckBox) EvadeSkillsMenuByChampion[info.Champion]
+                    .First(s => s.Name == "use_" + info.Champion + info.AbilitySlot.ToFriendlyString()))
                 .CurrentValue;
         }
 
         public static int GetDanger(this DodgeAbilityInfo info)
         {
-            return ((MenuIntSlider)SkillMenuByChampion[info.Champion]
-                .First(s => s.Name == "danger_" + info.Champion + info.AbilitySlot.ToKeyString()))
+            return ((MenuIntSlider) EvadeSkillsMenuByChampion[info.Champion]
+                    .First(s => s.Name == "danger_" + info.Champion + info.AbilitySlot.ToFriendlyString()))
                 .CurrentValue;
         }
 
         public static bool ShouldUse(this AbilityInfo info)
         {
-            return ((MenuCheckBox)EnemySkillMenuByChampion[info.Champion]
+            return ((MenuCheckBox) DodgeableSkillsMenuByChampion[info.Champion]
                     .First(s => s.Name == "dodge_" + info.Champion + info.ObjectName + info.AbilityId))
                 .CurrentValue;
         }
 
         public static int GetDanger(this AbilityInfo info)
         {
-            return ((MenuIntSlider)EnemySkillMenuByChampion[info.Champion]
+            return ((MenuIntSlider) DodgeableSkillsMenuByChampion[info.Champion]
                     .First(s => s.Name == "danger_" + info.Champion + info.ObjectName + info.AbilityId))
                 .CurrentValue;
         }
@@ -166,7 +258,7 @@ namespace Hoyer.Evade
                 var champ = LocalPlayer.Instance.CharName;
                 var enemychamps = EntitiesManager.EnemyTeam.Select(e => e.CharName).ToArray();
 
-                foreach (var pair in SkillMenuByChampion)
+                foreach (var pair in EvadeSkillsMenuByChampion)
                 {
                     if (pair.Key == champ)
                     {
@@ -183,7 +275,8 @@ namespace Hoyer.Evade
                         }
                     }
                 }
-                foreach (var pair in EnemySkillMenuByChampion)
+
+                foreach (var pair in DodgeableSkillsMenuByChampion)
                 {
                     if (enemychamps.Contains(pair.Key))
                     {
@@ -203,14 +296,15 @@ namespace Hoyer.Evade
             }
             else
             {
-                foreach (var pair in SkillMenuByChampion)
+                foreach (var pair in EvadeSkillsMenuByChampion)
                 {
                     foreach (var menuItem in pair.Value)
                     {
                         menuItem.Hidden = false;
                     }
                 }
-                foreach (var pair in EnemySkillMenuByChampion)
+
+                foreach (var pair in DodgeableSkillsMenuByChampion)
                 {
                     foreach (var menuItem in pair.Value)
                     {

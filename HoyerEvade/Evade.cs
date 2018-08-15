@@ -3,12 +3,13 @@ using System.Linq;
 using BattleRight.Core;
 using BattleRight.Core.Enumeration;
 using BattleRight.Core.GameObjects;
+using BattleRight.Core.GameObjects.Models;
+using BattleRight.Core.Math;
 using BattleRight.SDK;
 using Hoyer.Common.Data.Abilites;
 using Hoyer.Common.Extensions;
 using Hoyer.Common.Local;
 using Hoyer.Common.Utilities;
-using UnityEngine;
 
 // ReSharper disable ArrangeAccessorOwnerBody
 
@@ -19,18 +20,14 @@ namespace Hoyer.Evade
         public static bool UseWalk;
         public static bool UseSkills;
 
+        private static DodgeAbilityInfo _castingLastFrame = null;
+
         public static void Init()
         {
             CommonEvents.PostUpdate += OnUpdate;
-            InGameObject.OnCreate += InGameObject_OnCreate;
             MenuEvents.Initialize += MenuHandler.Init;
             MenuEvents.Update += MenuHandler.Update;
         }
-
-        private static void InGameObject_OnCreate(InGameObject inGameObject)
-        {
-        }
-
         public static void OnUpdate()
         {
             EvadeLogic();
@@ -45,12 +42,21 @@ namespace Hoyer.Evade
                 {
                     var projectiles = AbilityTracker.Enemy.Projectiles.Active
                         .Where(p => p.WillCollideWithPlayer(LocalPlayer.Instance, p.Radius / 2)).ToArray();
+                    if (!projectiles.Any()) return;
+                    var circularThrows = AbilityTracker.Enemy.CircularThrows.Active
+                        .Where(t => t.TargetPosition.Distance(LocalPlayer.Instance) < t.SpellCollisionRadius).ToArray();
+                    if (!circularThrows.Any()) return;
+
+                    _castingLastFrame = casting;
+                    casting.SetStatus(true);
+
+                    if (casting.OverrideValue() != 0) return;
+
                     if (casting.AbilityType == DodgeAbilityType.Jump && casting.UsesMousePos)
                     {
                         LocalPlayer.EditAimPosition = true;
                         LocalPlayer.Aim(casting.GetJumpPos());
                     }
-                    if (!projectiles.Any()) return;
                     if (casting.AbilityType == DodgeAbilityType.Shield && casting.UsesMousePos)
                     {
                         LocalPlayer.EditAimPosition = true;
@@ -65,7 +71,12 @@ namespace Hoyer.Evade
                     }
                     return;
                 }
-                else if (!LocalPlayer.Instance.AbilitySystem.IsCasting) LocalPlayer.EditAimPosition = false;
+                else if (!LocalPlayer.Instance.AbilitySystem.IsCasting && _castingLastFrame != null)
+                {
+                    _castingLastFrame.SetStatus(false);
+                    _castingLastFrame = null;
+                    LocalPlayer.EditAimPosition = false;
+                }
             }
 
             var dangerousProjectiles = AbilityTracker.Enemy.Projectiles.Active.Where(p => p.WillCollideWithPlayer(LocalPlayer.Instance, p.Radius / 2))
@@ -73,19 +84,48 @@ namespace Hoyer.Evade
             if (dangerousProjectiles.Any())
             {
                 var mostDangerous = dangerousProjectiles.OrderByDescending(p => p.Data().Danger).First();
-                if (UseWalk && CanDodge(mostDangerous)) DodgeWithWalk(mostDangerous);
+                var data = mostDangerous.Data();
+                if (UseWalk && CanDodge(mostDangerous, data)) DodgeWithWalk(mostDangerous);
                 else if (UseSkills)
-                    DodgeWithAbilities(mostDangerous);
+                {
+                    try
+                    {
+                        DodgeWithAbilities(mostDangerous, data);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }
+                }
                 return;
             }
 
-            var dangerousCasts = AbilityTracker.Enemy.Projectiles.Casting.Where(p => p.WillCollideWithPlayer).ToArray();
-            if (dangerousCasts.Any())
+            var dangerousCircularThrows = AbilityTracker.Enemy.CircularThrows.Active
+                .Where(t => t.TargetPosition.Distance(LocalPlayer.Instance) < t.SpellCollisionRadius).ToArray();
+            if (dangerousCircularThrows.Any())
             {
-                var mostDangerous = dangerousCasts.OrderByDescending(p => p.Data.Danger).First();
-                if (UseWalk) DodgeWithWalk(mostDangerous);
+                var mostDangerous = dangerousCircularThrows.OrderByDescending(p => p.Data().Danger).First();
+                var data = mostDangerous.Data();
+                var closestPoint = LocalPlayer.Instance.GetClosestExitPointFromCircle(mostDangerous.TargetPosition, data.Radius);
+                if (UseWalk && CanDodge(mostDangerous, data, closestPoint)) DodgeWithWalk(closestPoint);
+                else if (UseSkills)
+                {
+                    try
+                    {
+                        DodgeWithAbilities(mostDangerous, data);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }
+                }
                 return;
             }
+        }
+
+        private static bool CanDodge(ThrowObject throwObj, AbilityInfo data, Vector2 closestExit)
+        {
+            return data.Duration - throwObj.GameObject.Get<AgeObject>().Age < LocalPlayer.Instance.Distance(closestExit) / 3.4f;
         }
 
         private static DodgeAbilityInfo CastingEvadeSpell()
@@ -103,11 +143,17 @@ namespace Hoyer.Evade
             return null;
         }
 
-        private static bool CanDodge(Projectile projectile)
+        private static void DodgeWithWalk(Vector2 towards)
+        {
+            LocalPlayer.BlockAllInput = true;
+            LocalPlayer.Move(towards.Normalized);
+        }
+
+        private static bool CanDodge(Projectile projectile, AbilityInfo data)
         {
             var timeToImpact = (LocalPlayer.Instance.Distance(projectile.MapObject.Position) -
                                 LocalPlayer.Instance.MapCollision.MapCollisionRadius) /
-                               projectile.Data().ProjectileSpeed;
+                               data.ProjectileSpeed;
             var closestPointOnLine =
                 Geometry.ClosestPointOnLine(projectile.StartPosition, projectile.CalculatedEndPosition, LocalPlayer.Instance.Pos());
             var timeToDodge = (projectile.Radius + LocalPlayer.Instance.MapCollision.MapCollisionRadius -
@@ -133,16 +179,44 @@ namespace Hoyer.Evade
             LocalPlayer.Move(dir);
         }
 
-        private static void DodgeWithAbilities(Projectile projectile)
+        private static void DodgeWithAbilities(ThrowObject throwObj, AbilityInfo data)
         {
+            var timeToImpact = data.Duration - throwObj.GameObject.Get<AgeObject>().Age;
+
+            if (PlayerIsSafe() || timeToImpact > 0.3f) return;
+            foreach (var ability in AbilityDatabase.GetDodge(LocalPlayer.Instance.CharName).OrderBy(a => a.Priority))
+            {
+                if (ability.ShouldUse() && ability.AbilityType != DodgeAbilityType.Counter && 
+                    ability.AbilityType != DodgeAbilityType.Shield && ability.GetDanger() <= data.GetDanger() &&
+                    LocalPlayer.GetAbilityHudData(ability.AbilitySlot).CooldownLeft <= 0.01)
+                {
+                    if (ability.NeedsSelfCast)
+                    {
+                        LocalPlayer.PressAbility(ability.AbilitySlot, true);
+                    }
+                    else
+                    {
+                        LocalPlayer.PressAbility(ability.AbilitySlot, true);
+                    }
+                    return;
+                }
+            }
+        }
+
+        private static void DodgeWithAbilities(Projectile projectile, AbilityInfo data)
+        {
+            if (data == null)
+            {
+                Console.WriteLine("[HoyerEvade] DEBUG: Unknown Projectile Detected: " + projectile.ObjectName);
+                return;
+            }
             var timeToImpact = (LocalPlayer.Instance.Distance(projectile.MapObject.Position) -
                                 LocalPlayer.Instance.MapCollision.MapCollisionRadius) /
-                               projectile.Data().ProjectileSpeed;
-
+                               data.ProjectileSpeed;
             if (PlayerIsSafe(timeToImpact)) return;
             foreach (var ability in AbilityDatabase.GetDodge(LocalPlayer.Instance.CharName).OrderBy(a => a.Priority))
             {
-                if (ability.ShouldUse() && ability.GetDanger() <= projectile.Data().GetDanger() &&
+                if (ability.ShouldUse() && ability.GetDanger() <= data.GetDanger() &&
                     LocalPlayer.GetAbilityHudData(ability.AbilitySlot).CooldownLeft <= 0.01 &&
                     !LocalPlayer.Instance.PhysicsCollision.IsImmaterial && !LocalPlayer.Instance.IsCountering)
                 {
@@ -159,9 +233,11 @@ namespace Hoyer.Evade
             }
         }
 
-        private static bool PlayerIsSafe(float time = 0)
+        private static bool PlayerIsSafe(float time = 0, bool isProjectile = true)
         {
-            if (LocalPlayer.Instance.PhysicsCollision.IsImmaterial) return true;
+            if (LocalPlayer.Instance.PhysicsCollision.IsImmaterial || LocalPlayer.Instance.CharacterModel.IsModelInvisible) return true;
+            if (!isProjectile) return false;
+
             foreach (var buff in LocalPlayer.Instance.Buffs)
             {
                 if (buff.BuffType == BuffType.Counter || buff.BuffType == BuffType.Consume || buff.ObjectName == "GustBuff" ||
