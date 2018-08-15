@@ -1024,13 +1024,25 @@ namespace Hoyer.Common.Data.Abilites
             });
             Add(new DodgeAbilityInfo
             {
-                Champion = "Rook",
+                Champion = "Glutton",
                 AbilitySlot = AbilitySlot.Ability4,
                 AbilityId = 1413535840,
                 AbilityIndex = 9,
                 AbilityType = DodgeAbilityType.Counter,
                 MinDanger = 1,
                 Priority = 1,
+                CastTime = 0.1f
+            });
+            Add(new DodgeAbilityInfo
+            {
+                Champion = "Glutton",
+                AbilitySlot = AbilitySlot.Ability2,
+                AbilityId = 1397275147,
+                AbilityIndex = 2,
+                AbilityType = DodgeAbilityType.Jump,
+                Range = 0,
+                MinDanger = 3,
+                Priority = 2,
                 CastTime = 0.1f
             });
             Add(new DodgeAbilityInfo

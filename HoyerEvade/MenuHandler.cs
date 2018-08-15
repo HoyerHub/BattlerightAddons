@@ -69,6 +69,7 @@ namespace Hoyer.Evade
             }
 
             FirstRun();
+            Console.WriteLine("[Evade/MenuHandler] Evade Menu Init");
         }
 
         private static void AddEvadeEntries()
@@ -255,6 +256,7 @@ namespace Hoyer.Evade
         {
             if (Game.IsInGame)
             {
+                Console.WriteLine("[Evade/MenuHandler] Hiding unnecessary options");
                 var champ = LocalPlayer.Instance.CharName;
                 var enemychamps = EntitiesManager.EnemyTeam.Select(e => e.CharName).ToArray();
 
@@ -296,6 +298,7 @@ namespace Hoyer.Evade
             }
             else
             {
+                Console.WriteLine("[Evade/MenuHandler] Showing all spell options");
                 foreach (var pair in EvadeSkillsMenuByChampion)
                 {
                     foreach (var menuItem in pair.Value)
