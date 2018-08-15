@@ -58,6 +58,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DrawEvade.cs" />
     <Compile Include="Evade.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Loader.cs" />

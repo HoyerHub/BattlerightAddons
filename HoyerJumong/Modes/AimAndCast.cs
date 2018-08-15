@@ -71,8 +71,8 @@ namespace Hoyer.Champions.Jumong.Modes
                     return;
                 }
 
-                if (MenuHandler.UseSkill(AbilitySlot.EXAbility2) && AbilitySlot.EXAbility2.IsReady() &&
-                    AbilitySlot.EXAbility2.InRange(closestRange) && validForBigProjectiles)
+                if (MenuHandler.UseSkill(AbilitySlot.EXAbility2) && AbilitySlot.Ability2.IsReady() &&
+                    LocalPlayer.Instance.Energized.Energy >= 25 && AbilitySlot.EXAbility2.InRange(closestRange) && validForBigProjectiles)
                 {
                     if (!MenuHandler.SkillBool("save_a6") || LocalPlayer.Instance.Energized.Energy >= 50)
                     {
@@ -91,8 +91,8 @@ namespace Hoyer.Champions.Jumong.Modes
                     }
                 }
 
-                if (MenuHandler.UseSkill(AbilitySlot.EXAbility1) && AbilitySlot.EXAbility1.IsReady() &&
-                    AbilitySlot.EXAbility1.InRange(closestRange) && validForProjectiles)
+                if (MenuHandler.UseSkill(AbilitySlot.EXAbility1) && AbilitySlot.Ability1.IsReady() &&
+                    LocalPlayer.Instance.Energized.Energy >= 25 && AbilitySlot.EXAbility1.InRange(closestRange) && validForProjectiles)
                 {
                     if (!MenuHandler.SkillBool("save_a6") || LocalPlayer.Instance.Energized.Energy >= 50)
                     {

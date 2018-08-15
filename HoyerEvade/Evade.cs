@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BattleRight.Core;
 using BattleRight.Core.Enumeration;
@@ -22,12 +23,16 @@ namespace Hoyer.Evade
 
         private static DodgeAbilityInfo _castingLastFrame = null;
 
+        private static List<Projectile> _dangerousProjectiles;
+        private static List<ThrowObject> _dangerousCircularThrows;
+
         public static void Init()
         {
             CommonEvents.PostUpdate += OnUpdate;
             MenuEvents.Initialize += MenuHandler.Init;
             MenuEvents.Update += MenuHandler.Update;
         }
+
         public static void OnUpdate()
         {
             EvadeLogic();

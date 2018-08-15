@@ -32,7 +32,6 @@ namespace Hoyer.Common
             StealthPrediction.Setup();
             HideNames.Setup();
             Skills.Setup();
-            DrawProjectiles.Setup();
             AbilityTracker.Setup();
             MenuEvents.Setup();
             CommonEvents.Setup();

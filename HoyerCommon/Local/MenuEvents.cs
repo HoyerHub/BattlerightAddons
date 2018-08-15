@@ -54,9 +54,9 @@ namespace Hoyer.Common.Local
             showStealth.OnValueChange += delegate(ChangedValueArgs<bool> args) { StealthPrediction.DrawStealthed = args.NewValue; };
             HoyerMenu.Add(showStealth);
 
-            var drawProjectiles = new MenuCheckBox("draw_projectiles", "Draw Projectile Paths", false);
+            /*var drawProjectiles = new MenuCheckBox("draw_projectiles", "Draw Projectile Paths", false);
             drawProjectiles.OnValueChange += delegate(ChangedValueArgs<bool> args) { DrawProjectiles.Active = args.NewValue; };
-            HoyerMenu.Add(drawProjectiles);
+            HoyerMenu.Add(drawProjectiles);*/
 
             HoyerMenu.AddSeparator();
 
