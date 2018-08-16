@@ -7,6 +7,7 @@ using BattleRight.Core.GameObjects;
 using BattleRight.SDK.UI;
 using BattleRight.SDK.UI.Models;
 using BattleRight.SDK.UI.Values;
+using Hoyer.Champions.Jumong.Modes;
 using UnityEngine;
 
 namespace Hoyer.Champions.Jumong
@@ -17,9 +18,13 @@ namespace Hoyer.Champions.Jumong
         public static Menu JumongMenu;
         public static Menu SkillMenu;
 
-        public static MenuCheckBox AvoidStealthed;
-        public static MenuCheckBox UseCursor;
-        public static MenuCheckBox AimUserInput;
+        public static bool AvoidStealthed;
+        public static bool UseCursor;
+        public static bool AimUserInput;
+
+        private static MenuCheckBox _avoidStealthed;
+        private static MenuCheckBox _useCursor;
+        private static MenuCheckBox _aimUserInput;
 
         private static MenuKeybind _comboKey;
         private static MenuCheckBox _enabledBox;
@@ -47,14 +52,17 @@ namespace Hoyer.Champions.Jumong
             _comboToggle.OnValueChange += delegate(ChangedValueArgs<bool> args) { _comboKey.IsToggle = args.NewValue; };
             JumongMenu.Add(_comboToggle);
 
-            AimUserInput = new MenuCheckBox("jumong_aimuserinput", "Apply aim logic when combo isn't active");
-            JumongMenu.Add(AimUserInput);
+            _aimUserInput = new MenuCheckBox("jumong_aimuserinput", "Apply aim logic when combo isn't active");
+            _aimUserInput.OnValueChange += delegate(ChangedValueArgs<bool> args) { AimUserInput = args.NewValue; };
+            JumongMenu.Add(_aimUserInput);
 
-            UseCursor = new MenuCheckBox("jumong_usecursor", "Use cursor pos for target selection");
-            JumongMenu.Add(UseCursor);
+            _useCursor = new MenuCheckBox("jumong_usecursor", "Use cursor pos for target selection");
+            _useCursor.OnValueChange += delegate (ChangedValueArgs<bool> args) { UseCursor = args.NewValue; };
+            JumongMenu.Add(_useCursor);
 
-            AvoidStealthed = new MenuCheckBox("jumong_ignorestealthed", "Ignore stealthed enemies", false);
-            JumongMenu.Add(AvoidStealthed);
+            _avoidStealthed = new MenuCheckBox("jumong_ignorestealthed", "Ignore stealthed enemies", false);
+            _avoidStealthed.OnValueChange += delegate (ChangedValueArgs<bool> args) { AvoidStealthed = args.NewValue; };
+            JumongMenu.Add(_avoidStealthed);
 
             InitSkillMenu();
 

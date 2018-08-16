@@ -14,7 +14,8 @@ namespace Hoyer.Common.Data.Abilites
     public enum AbilityType
     {
         LineProjectile,
-        CircleThrowObject
+        CircleThrowObject,
+        CircleJump
     }
 
     public struct Field

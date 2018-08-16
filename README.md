@@ -6,8 +6,7 @@ Addons for https://battleright.net/forum/
 ### Ready for use
 - Common
 - Jumong
+- Evade
 
 ### Needs more work (WIP)
-- Evade
-- Alysia
-
+- <Empty>

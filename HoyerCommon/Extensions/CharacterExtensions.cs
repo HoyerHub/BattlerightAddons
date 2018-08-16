@@ -70,7 +70,7 @@ namespace Hoyer.Common.Extensions
                 timeLeft = spell.FixedDelay;
             }
             else timeLeft = enemy.Distance(LocalPlayer.Instance) / spell.Speed;
-            timeLeft += 0.1f;
+            timeLeft += 0.2f;
 
             var ret = true;
             foreach (var buff in enemy.Buffs.Where(b => b != null && b.ObjectName != null))

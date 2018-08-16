@@ -4,44 +4,100 @@ using System.Linq;
 using BattleRight.Core;
 using BattleRight.Core.GameObjects;
 using BattleRight.Core.GameObjects.Models;
+using BattleRight.Core.Math;
 using BattleRight.SDK;
 using BattleRight.SDK.Events;
 using Hoyer.Common.Data.Abilites;
 using Hoyer.Common.Extensions;
 using Hoyer.Common.Local;
-using UnityEngine;
 using Projectile = BattleRight.Core.GameObjects.Projectile;
 
 namespace Hoyer.Common.Debug
 {
     public static class DebugHelper
     {
+        public static Dictionary<int, Vector2> JumpStartPosDictionary = new Dictionary<int, Vector2>();
+        public static Dictionary<int, Vector2> DashStartPosDictionary = new Dictionary<int, Vector2>();
+        
         public static void Setup()
         {
             CommonEvents.Update += Game_OnUpdate;
             SpellDetector.OnSpellCast += SpellDetector_OnSpellCast;
             InGameObject.OnCreate += InGameObject_OnCreate;
+            InGameObject.OnDestroy += InGameObject_OnDestroy;
+        }
+
+        private static void InGameObject_OnDestroy(InGameObject inGameObject)
+        {
+            var baseObj = inGameObject.Get<BaseGameObject>();
+            if (baseObj.Owner != LocalPlayer.Instance) return;
+            
+            if (inGameObject is Projectile)
+            {
+                var projectile = (Projectile) inGameObject;
+                Console.WriteLine("Name: " + inGameObject.ObjectName);
+                Console.WriteLine("Range: " + projectile.Range);
+                Console.WriteLine("Speed: " + projectile.StartPosition.Distance(projectile.LastPosition)/projectile.Get<AgeObject>().Age);
+                Console.WriteLine("MapColRadius: " + projectile.Radius);
+                Console.WriteLine("----");
+            }
+            var baseTypes = inGameObject.GetBaseTypes().ToArray();
+
+            if (baseTypes.Contains("TravelBuff"))
+            {
+                var startPos = JumpStartPosDictionary[inGameObject.Id];
+                JumpStartPosDictionary.Remove(inGameObject.Id);
+                Console.WriteLine("Name: " + inGameObject.ObjectName);
+                Console.WriteLine("Range: " + LocalPlayer.Instance.Pos().Distance(startPos));
+                Console.WriteLine("Duration: " + inGameObject.Get<AgeObject>().Age);
+                Console.WriteLine("Speed: " + LocalPlayer.Instance.Pos().Distance(startPos) / inGameObject.Get<AgeObject>().Age);
+                Console.WriteLine("----");
+            }
+
+            if (baseTypes.Contains("Dash"))
+            {
+                var startPos = DashStartPosDictionary[inGameObject.Id];
+                DashStartPosDictionary.Remove(inGameObject.Id);
+                Console.WriteLine("Name: " + inGameObject.ObjectName);
+                Console.WriteLine("Range: " + LocalPlayer.Instance.Pos().Distance(startPos));
+                Console.WriteLine("Duration: " + inGameObject.Get<AgeObject>().Age);
+                Console.WriteLine("Speed: " + LocalPlayer.Instance.Pos().Distance(startPos) / inGameObject.Get<AgeObject>().Age);
+                Console.WriteLine("----");
+            }
         }
 
         private static void InGameObject_OnCreate(InGameObject inGameObject)
         {
+            var baseObj = inGameObject.Get<BaseGameObject>();
+            if (baseObj.Owner != LocalPlayer.Instance) return;
             Console.WriteLine("New Object:");
-            foreach (var baseType in inGameObject.GetBaseTypes())
+            Console.WriteLine("Name: " + inGameObject.ObjectName);
+            var baseTypes = inGameObject.GetBaseTypes().ToArray();
+            foreach (var baseType in baseTypes)
             {
                 Console.WriteLine(baseType);
-                if (baseType == "Throw")
-                {
-                    var throwObj = inGameObject.Get<ThrowObject>();
-                    Console.WriteLine("Name: " + inGameObject.ObjectName);
-                    Console.WriteLine("Start: " + throwObj.StartPosition);
-                    Console.WriteLine("Target: " + throwObj.TargetPosition);
-                    Console.WriteLine("Distance: " + throwObj.StartPosition.Distance(throwObj.TargetPosition));
-                    Console.WriteLine("Duration: " + throwObj.Duration);
-                    Console.WriteLine("MapColRadius: " + throwObj.MapCollisionRadius);
-                    Console.WriteLine("SpellRadius: " + throwObj.SpellCollisionRadius);
-                }
             }
+
             Console.WriteLine("----");
+            if (baseTypes.Contains("Throw"))
+            {
+                var throwObj = inGameObject.Get<ThrowObject>();
+                Console.WriteLine("Distance: " + throwObj.StartPosition.Distance(throwObj.TargetPosition));
+                Console.WriteLine("Duration: " + throwObj.Duration);
+                Console.WriteLine("MapColRadius: " + throwObj.MapCollisionRadius);
+                Console.WriteLine("SpellRadius: " + throwObj.SpellCollisionRadius);
+                Console.WriteLine("----");
+            }
+
+            if (baseTypes.Contains("TravelBuff"))
+            {
+                JumpStartPosDictionary.Add(inGameObject.Id, LocalPlayer.Instance.Pos());
+            }
+
+            if (baseTypes.Contains("Dash"))
+            {
+                DashStartPosDictionary.Add(inGameObject.Id, LocalPlayer.Instance.Pos());
+            }
         }
 
         private static void SpellDetector_OnSpellCast(BattleRight.SDK.EventsArgs.SpellCastArgs args)
@@ -51,6 +107,7 @@ namespace Hoyer.Common.Debug
             var absys = args.Caster.AbilitySystem;
             Console.WriteLine("New Cast:");
             Console.WriteLine("Owner: " + args.Caster.CharName);
+            Console.WriteLine("Name: " + args.Caster.AbilitySystem.CastingAbilityName);
             Console.WriteLine("Id: " + absys.CastingAbilityId);
             Console.WriteLine("Index: " + args.AbilityIndex);
             Console.WriteLine("----"); 

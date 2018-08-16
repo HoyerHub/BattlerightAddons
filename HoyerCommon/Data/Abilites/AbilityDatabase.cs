@@ -583,6 +583,18 @@ namespace Hoyer.Common.Data.Abilites
             });
             Add(new AbilityInfo
             {
+                Champion = "Bakko",
+                ObjectName = "ValiantLeap",
+                AbilitySlot = AbilitySlot.Ability3,
+                AbilityId = 1353508382,
+                AbilityType = AbilityType.CircleJump,
+                Range = 8,
+                Radius = 2,
+                FixedDelay = 1.25f,
+                Danger = 3,
+            });
+            Add(new AbilityInfo
+            {
                 Champion = "Freya",
                 ObjectName = "StormMace",
                 AbilitySlot = AbilitySlot.Ability2,

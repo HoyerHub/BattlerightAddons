@@ -17,16 +17,6 @@ namespace Hoyer.Champions.Jumong.Modes
 {
     public static class AimAndCast 
     {
-        private static bool UseCursor
-        {
-            get { return MenuHandler.UseCursor.CurrentValue; }
-        }
-
-        private static bool AvoidStealthed
-        {
-            get { return MenuHandler.AvoidStealthed.CurrentValue; }
-        }
-
         public static void Update()
         {
             if (!LocalPlayer.Instance.AbilitySystem.IsCasting || LocalPlayer.Instance.AbilitySystem.IsPostCasting)
@@ -124,24 +114,17 @@ namespace Hoyer.Champions.Jumong.Modes
 
         private static void GetTargetAndAim(SkillBase skill)
         {
-            try
-            {
-                if (OrbLogic(skill, true)) return;
+            if (OrbLogic(skill, true)) return;
                 var prediction = GetTargetPrediction(skill);
 
-                if (!prediction.CanHit && !OrbLogic(skill))
-                {
-                    LocalPlayer.PressAbility(AbilitySlot.Interrupt, true);
+            if (!prediction.CanHit && !OrbLogic(skill))
+            {
+                LocalPlayer.PressAbility(AbilitySlot.Interrupt, true);
                     return;
                 }
 
                 LocalPlayer.EditAimPosition = true;
                 LocalPlayer.Aim(prediction.CastPosition);
-            }
-            catch (Exception e)
-            {
-                Console.Error.WriteLine(e);
-            }
         }
 
         private static bool OrbLogic(SkillBase skill, bool shouldCheckHover = false)
@@ -191,8 +174,12 @@ namespace Hoyer.Champions.Jumong.Modes
                         output = Prediction.Basic(tryGetTarget, castingSpell);
                         output.CanHit = true;
                     }
+                    else
+                    {
+                        possibleTargets.Remove(tryGetTarget);
+                    }
                 }
-                else if (tryGetTarget.IsValidTarget(castingSpell, isProjectile, useOnIncaps, AvoidStealthed))
+                else if (tryGetTarget.IsValidTarget(castingSpell, isProjectile, useOnIncaps, MenuHandler.AvoidStealthed))
                 {
                     var pred = tryGetTarget.GetPrediction(castingSpell);
                     if (pred.CanHit)
@@ -214,7 +201,7 @@ namespace Hoyer.Champions.Jumong.Modes
 
         private static TargetingMode GetTargetingMode(IEnumerable<Character> possibleTargets)
         {
-            if (UseCursor) return TargetingMode.NearMouse;
+            if (MenuHandler.UseCursor) return TargetingMode.NearMouse;
             return possibleTargets.Any(o => o.Distance(LocalPlayer.Instance) < 5) ? TargetingMode.Closest : TargetingMode.LowestHealth;
         }
     }
