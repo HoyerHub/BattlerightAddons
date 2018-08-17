@@ -27,12 +27,6 @@ namespace Hoyer.Evade
         public static void Init()
         {
             CommonEvents.PostUpdate += OnUpdate;
-            AbilityTracker.Enemy.Projectiles.OnDangerous += Projectiles_OnDangerous;
-        }
-
-        private static void Projectiles_OnDangerous(TrackedProjectile obj)
-        {
-            Console.WriteLine("tracked obj " + obj.Projectile.ObjectName);
         }
 
         public static void OnUpdate()
