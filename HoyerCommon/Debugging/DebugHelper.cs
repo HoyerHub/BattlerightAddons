@@ -7,6 +7,8 @@ using BattleRight.Core.GameObjects.Models;
 using BattleRight.Core.Math;
 using BattleRight.SDK;
 using BattleRight.SDK.Events;
+using BattleRight.SDK.UI;
+using BattleRight.SDK.UI.Values;
 using Hoyer.Common.Data.Abilites;
 using Hoyer.Common.Extensions;
 using Hoyer.Common.Local;
@@ -18,6 +20,8 @@ namespace Hoyer.Common.Debug
     {
         public static Dictionary<int, Vector2> JumpStartPosDictionary = new Dictionary<int, Vector2>();
         public static Dictionary<int, Vector2> DashStartPosDictionary = new Dictionary<int, Vector2>();
+
+        private static bool _onlyLocal;
         
         public static void Setup()
         {
@@ -25,12 +29,21 @@ namespace Hoyer.Common.Debug
             SpellDetector.OnSpellCast += SpellDetector_OnSpellCast;
             InGameObject.OnCreate += InGameObject_OnCreate;
             InGameObject.OnDestroy += InGameObject_OnDestroy;
+            MenuEvents.Initialize += MenuEvents_Initialize;
+        }
+
+        private static void MenuEvents_Initialize()
+        {
+            var debugMenu = MainMenu.AddMenu("debugmenu", "Hoyer's Debug");
+            var onlyLocalPlayer = debugMenu.Add(new MenuCheckBox("debug_onlyLocal", "Only log localPlayer"));
+            onlyLocalPlayer.OnValueChange += args => _onlyLocal = onlyLocalPlayer;
+            _onlyLocal = onlyLocalPlayer;
         }
 
         private static void InGameObject_OnDestroy(InGameObject inGameObject)
         {
             var baseObj = inGameObject.Get<BaseGameObject>();
-            if (baseObj.Owner != LocalPlayer.Instance) return;
+            if (_onlyLocal && baseObj.Owner != LocalPlayer.Instance) return;
             
             if (inGameObject is Projectile)
             {
@@ -43,7 +56,7 @@ namespace Hoyer.Common.Debug
             }
             var baseTypes = inGameObject.GetBaseTypes().ToArray();
 
-            if (baseTypes.Contains("TravelBuff"))
+            if (baseTypes.Contains("TravelBuff") && JumpStartPosDictionary.ContainsKey(inGameObject.Id))
             {
                 var startPos = JumpStartPosDictionary[inGameObject.Id];
                 JumpStartPosDictionary.Remove(inGameObject.Id);
@@ -54,7 +67,7 @@ namespace Hoyer.Common.Debug
                 Console.WriteLine("----");
             }
 
-            if (baseTypes.Contains("Dash"))
+            if (baseTypes.Contains("Dash") && DashStartPosDictionary.ContainsKey(inGameObject.Id))
             {
                 var startPos = DashStartPosDictionary[inGameObject.Id];
                 DashStartPosDictionary.Remove(inGameObject.Id);
@@ -69,7 +82,7 @@ namespace Hoyer.Common.Debug
         private static void InGameObject_OnCreate(InGameObject inGameObject)
         {
             var baseObj = inGameObject.Get<BaseGameObject>();
-            if (baseObj.Owner != LocalPlayer.Instance) return;
+            if (_onlyLocal && baseObj.Owner != LocalPlayer.Instance) return;
             Console.WriteLine("New Object:");
             Console.WriteLine("Name: " + inGameObject.ObjectName);
             var baseTypes = inGameObject.GetBaseTypes().ToArray();
@@ -91,18 +104,24 @@ namespace Hoyer.Common.Debug
 
             if (baseTypes.Contains("TravelBuff"))
             {
-                JumpStartPosDictionary.Add(inGameObject.Id, LocalPlayer.Instance.Pos());
+                if (!JumpStartPosDictionary.ContainsKey(inGameObject.Id))
+                    JumpStartPosDictionary.Add(inGameObject.Id, LocalPlayer.Instance.Pos());
+                else
+                    JumpStartPosDictionary[inGameObject.Id] = LocalPlayer.Instance.Pos();
             }
 
             if (baseTypes.Contains("Dash"))
             {
-                DashStartPosDictionary.Add(inGameObject.Id, LocalPlayer.Instance.Pos());
+                if (!DashStartPosDictionary.ContainsKey(inGameObject.Id))
+                    DashStartPosDictionary.Add(inGameObject.Id, LocalPlayer.Instance.Pos());
+                else
+                    DashStartPosDictionary[inGameObject.Id] = LocalPlayer.Instance.Pos();
             }
         }
 
         private static void SpellDetector_OnSpellCast(BattleRight.SDK.EventsArgs.SpellCastArgs args)
         {
-            if(args.Caster.Name != LocalPlayer.Instance.Name) return;
+            if(_onlyLocal && args.Caster.Name != LocalPlayer.Instance.Name) return;
 
             var absys = args.Caster.AbilitySystem;
             Console.WriteLine("New Cast:");

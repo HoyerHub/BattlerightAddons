@@ -3,6 +3,7 @@ using BattleRight.Core;
 using BattleRight.SDK.UI;
 using BattleRight.SDK.UI.Models;
 using BattleRight.SDK.UI.Values;
+using Hoyer.Common.Data.Abilites;
 using Hoyer.Common.Debug;
 using Hoyer.Common.Extensions;
 using Hoyer.Common.Utilities;
@@ -19,6 +20,7 @@ namespace Hoyer.Common.Local
 
         public static Menu HoyerMenu;
         public static Menu PredMenu;
+        public static Menu TrackerMenu;
 
         public static void Setup()
         {

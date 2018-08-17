@@ -21,6 +21,8 @@ namespace Hoyer.Common.Data.Abilites
             {
                 Champion = "Dummy McFuckFace",
                 ObjectName = "CannonShot",
+                Range = 7.4f,
+                Radius = 0.3f,
                 AbilitySlot = AbilitySlot.Ability1,
                 AbilityType = AbilityType.LineProjectile,
                 ProjectileSpeed = 12,
@@ -99,7 +101,7 @@ namespace Hoyer.Common.Data.Abilites
             Add(new AbilityInfo
             {
                 Champion = "Ashka",
-                ObjectName = "FirestormProjectile",
+                ObjectName = "FireStormProjectile",
                 AbilitySlot = AbilitySlot.Ability2,
                 AbilityId = 1755790702,
                 AbilityType = AbilityType.LineProjectile,
@@ -111,7 +113,7 @@ namespace Hoyer.Common.Data.Abilites
             Add(new AbilityInfo
             {
                 Champion = "Ashka",
-                ObjectName = "Volcano",
+                ObjectName = "VolcanoEruption",
                 AbilitySlot = AbilitySlot.Ability4,
                 AbilityType = AbilityType.CircleThrowObject,
                 Range = 9,

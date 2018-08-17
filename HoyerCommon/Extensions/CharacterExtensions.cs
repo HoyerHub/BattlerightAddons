@@ -75,7 +75,7 @@ namespace Hoyer.Common.Extensions
             var ret = true;
             foreach (var buff in enemy.Buffs.Where(b => b != null && b.ObjectName != null))
             {
-                if (isProjectile && (buff.BuffType == BuffType.Counter || buff.BuffType == BuffType.Consume || buff.ObjectName == "GustBuff" || buff.ObjectName == "BulwarkBuff" || buff.ObjectName == "TractorBeam"))
+                if (isProjectile && (buff.BuffType == BuffType.Counter || buff.BuffType == BuffType.Consume || buff.ObjectName == "GustBuff" || buff.ObjectName == "BulwarkBuff" || buff.ObjectName == "TractorBeam" || buff.ObjectName == "TimeBenderBuff" || buff.ObjectName == "DivineShieldBuff"))
                 {
                     if (timeLeft < buff.TimeToExpire)
                     {

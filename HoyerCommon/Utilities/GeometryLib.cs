@@ -3,16 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using BattleRight.Core;
 using BattleRight.Core.GameObjects;
-using BattleRight.Core.Math;
 using BattleRight.SDK;
 using BattleRight.SDK.ClipperLib;
 using Hoyer.Common.Extensions;
+using UnityEngine;
+using Vector2 = BattleRight.Core.Math.Vector2;
 
 namespace Hoyer.Common.Utilities
 {
     public static class GeometryLib
     {
         private static Clipper _clipper = new Clipper();
+
+        public static Vector2 NearestPointOnFiniteLine(Vector2 start, Vector2 end, Vector2 pnt)
+        {
+            var line = (end - start);
+            var len = Mathf.Sqrt(line.X * line.X + line.Y * line.Y);
+            line = line.Normalized;
+            var v = pnt - start;
+            var d = Vector2.Dot(v, line);
+            d = Mathf.Clamp(d, 0f, len);
+            return start + line * d;
+        }
         public static ProjectionInfo ProjectOn(this Vector2 point, Vector2 segmentStart, Vector2 segmentEnd)
         {
             var cx = point.X;

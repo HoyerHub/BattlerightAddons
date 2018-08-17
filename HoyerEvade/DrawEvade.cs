@@ -47,29 +47,15 @@ namespace Hoyer.Evade
         private static void Game_OnDraw(EventArgs args)
         {
             if(!Game.IsInGame || !Active) return;
-            foreach (var projectile in AbilityTracker.Enemy.Projectiles.Dangerous)
+            foreach (var projectile in AbilityTracker.Enemy.Projectiles.TrackedProjectiles)
             {
-                DrawRectangle(projectile.StartPosition, projectile.CalculatedEndPosition, projectile.Radius, Color.red);
-                Drawing.DrawCircle(projectile.MapObject.Position, projectile.Radius / 2, Color.red);
+                DrawRectangle(projectile.Projectile.StartPosition, projectile.Projectile.CalculatedEndPosition, projectile.Data.Radius, projectile.IsDangerous ? Color.red : Color.white);
+                Drawing.DrawCircle(projectile.Projectile.LastPosition, projectile.Data.Radius / 2, projectile.IsDangerous ? Color.red : Color.white);
             }
-            foreach (var projectile in AbilityTracker.Enemy.Projectiles.NonDangerous)
+            foreach (var throwObj in AbilityTracker.Enemy.CircularThrows.TrackedThrows)
             {
-                DrawRectangle(projectile.StartPosition, projectile.CalculatedEndPosition, projectile.Radius, Color.white);
-                Drawing.DrawCircle(projectile.MapObject.Position, projectile.Radius / 2, Color.gray);
-            }
-            foreach (var throwObj in AbilityTracker.Enemy.CircularThrows.Dangerous)
-            {
-                var data = throwObj.Data();
-                var age = throwObj.GameObject.Get<AgeObject>();
-                Drawing.DrawCircle(throwObj.TargetPosition, data.Radius, Color.red);
-                Drawing.DrawString(throwObj.TargetPosition, (data.Duration - age.Age).ToString(), Color.white);
-            }
-            foreach (var throwObj in AbilityTracker.Enemy.CircularThrows.NonDangerous)
-            {
-                var data = throwObj.Data();
-                var age = throwObj.GameObject.Get<AgeObject>();
-                Drawing.DrawCircle(throwObj.TargetPosition, data.Radius, Color.white);
-                Drawing.DrawString(throwObj.TargetPosition, (data.Duration - age.Age).ToString(), Color.white);
+                Drawing.DrawCircle(throwObj.ThrowObject.TargetPosition, throwObj.Data.Radius, throwObj.IsDangerous ? Color.red : Color.white);
+                Drawing.DrawString(throwObj.ThrowObject.TargetPosition, (throwObj.EstimatedImpact - Time.time).ToString(), Color.white);
             }
         }
     }

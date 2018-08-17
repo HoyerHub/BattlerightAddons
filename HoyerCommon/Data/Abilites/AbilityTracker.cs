@@ -10,6 +10,8 @@ using BattleRight.SDK.Events;
 using Hoyer.Common.Extensions;
 using Hoyer.Common.Local;
 using Hoyer.Common.Utilities;
+using UnityEngine;
+using CollisionFlags = BattleRight.Core.Enumeration.CollisionFlags;
 using Vector2 = BattleRight.Core.Math.Vector2;
 
 namespace Hoyer.Common.Data.Abilites
@@ -65,11 +67,10 @@ namespace Hoyer.Common.Data.Abilites
 
             public static class CircularThrows
             {
-                public static event Action<ThrowObject> OnDangerous = delegate { };
-                public static event Action<ThrowObject> OnDangerousDestroyed = delegate { };
+                public static event Action<TrackedThrowObject> OnDangerous = delegate { };
+                public static event Action<TrackedThrowObject> OnDangerousDestroyed = delegate { };
 
-                public static List<ThrowObject> Dangerous = new List<ThrowObject>();
-                public static List<ThrowObject> NonDangerous = new List<ThrowObject>();
+                public static List<TrackedThrowObject> TrackedThrows = new List<TrackedThrowObject>();
 
                 public static void Setup()
                 {
@@ -79,45 +80,41 @@ namespace Hoyer.Common.Data.Abilites
 
                 private static void InGameObject_OnDestroy(InGameObject inGameObject)
                 {
-                    var tryNonDanger = NonDangerous.FirstOrDefault(t => t.GameObject.Id == inGameObject.Id);
-                    if (tryNonDanger != default(ThrowObject))
+                    var tryDanger = TrackedThrows.FirstOrDefault(t => t.ThrowObject.GameObject == inGameObject);
+                    if (tryDanger != default(TrackedThrowObject))
                     {
-                        NonDangerous.Remove(tryNonDanger);
-                    }
-                    var tryDanger = Dangerous.FirstOrDefault(t => t.GameObject.Id == inGameObject.Id);
-                    if (tryDanger != default(ThrowObject))
-                    {
-                        Dangerous.Remove(tryDanger);
+                        TrackedThrows.Remove(tryDanger);
                         OnDangerousDestroyed.Invoke(tryDanger);
                     }
                 }
 
                 private static void InGameObject_OnCreate(InGameObject inGameObject)
                 {
-                    if (inGameObject.GetBaseTypes().Contains("Throw") && inGameObject.Get<BaseGameObject>().TeamId != LocalPlayer.Instance.BaseObject.TeamId)
+                    if (inGameObject.GetBaseTypes().Contains("Throw") &&
+                        inGameObject.Get<BaseGameObject>().TeamId != LocalPlayer.Instance.BaseObject.TeamId)
                     {
                         var throwObj = inGameObject.Get<ThrowObject>();
                         var data = throwObj.Data();
-                        if (data != null)
+                        if (data == null)
                         {
-                            if (throwObj.TargetPosition.Distance(LocalPlayer.Instance) < data.Radius)
-                            {
-                                Dangerous.Add(throwObj);
-                                OnDangerous.Invoke(throwObj);
-                            }
-                            else NonDangerous.Add(throwObj);
+                            return;
                         }
+                        if (LocalPlayer.Instance.Pos().Distance(throwObj.TargetPosition) > 5)
+                        {
+                            return;
+                        }
+                        var tto = new TrackedThrowObject(throwObj, data);
+                        TrackedThrows.Add(tto);
+                        OnDangerous.Invoke(tto);
                     }
                 }
             }
 
             public static class Projectiles
             {
-                public static event Action<Projectile> OnDangerous = delegate { };
-                public static event Action<Projectile> OnDangerousDestroyed = delegate { };
+                public static event Action<TrackedProjectile> OnDangerous = delegate { };
 
-                public static List<Projectile> Dangerous = new List<Projectile>();
-                public static List<Projectile> NonDangerous = new List<Projectile>();
+                public static List<TrackedProjectile> TrackedProjectiles = new List<TrackedProjectile>();
 
                 public static void Setup()
                 {
@@ -127,34 +124,128 @@ namespace Hoyer.Common.Data.Abilites
 
                 private static void InGameObject_OnDestroy(InGameObject inGameObject)
                 {
-                    var tryNonDanger = NonDangerous.FirstOrDefault(t => t.Id == inGameObject.Id);
-                    if (tryNonDanger != default(Projectile))
+                    var tryFind = TrackedProjectiles.FirstOrDefault(t =>
+                        t.Projectile == inGameObject);
+                    if (tryFind != default(TrackedProjectile))
                     {
-                        NonDangerous.Remove(tryNonDanger);
-                    }
-                    var tryDanger = Dangerous.FirstOrDefault(t => t.Id == inGameObject.Id);
-                    if (tryDanger != default(Projectile))
-                    {
-                        Dangerous.Remove(tryDanger);
-                        OnDangerousDestroyed.Invoke(tryDanger);
+                        TrackedProjectiles.Remove(tryFind);
                     }
                 }
 
                 private static void InGameObject_OnCreate(InGameObject inGameObject)
                 {
-                    var data = AbilityDatabase.Get(inGameObject.ObjectName);
-                    if (data != null && data.AbilityType == AbilityType.LineProjectile && inGameObject.Get<BaseGameObject>().TeamId != LocalPlayer.Instance.BaseObject.TeamId)
+                    var projectile = inGameObject as Projectile;
+                    if (projectile != null && inGameObject.Get<BaseGameObject>().TeamId != LocalPlayer.Instance.BaseObject.TeamId)
                     {
-                        var projectile = inGameObject as Projectile;
-                        if (projectile.WillCollideWithPlayer(LocalPlayer.Instance, data.Radius / 2))
+                        var data = AbilityDatabase.Get(inGameObject.ObjectName);
+                        if (data == null)
                         {
-                            Dangerous.Add(projectile);
-                            OnDangerous.Invoke(projectile);
+                            return;
                         }
-                        else NonDangerous.Add(projectile);
+                        var pos = LocalPlayer.Instance.Pos();
+
+                        var closest = GeometryLib.NearestPointOnFiniteLine(projectile.StartPosition,
+                            projectile.CalculatedEndPosition, pos);
+                        if (pos.Distance(closest) > 5)
+                        {
+                            return;
+                        }
+
+                        var tp = new TrackedProjectile(projectile, data);
+                        TrackedProjectiles.Add(tp);
+                        OnDangerous.Invoke(tp);
                     }
                 }
             }
+        }
+    }
+
+    public class TrackedProjectile
+    {
+        public bool IsDangerous;
+        public Projectile Projectile;
+        public AbilityInfo Data;
+        public float EstimatedImpact;
+        public Vector2 ClosestPoint;
+
+        public TrackedProjectile(Projectile projectile, AbilityInfo data)
+        {
+            Projectile = projectile;
+            Data = data;
+            Update();
+        }
+
+        public void Update()
+        {
+            var pos = LocalPlayer.Instance.Pos();
+            ClosestPoint = GeometryLib.NearestPointOnFiniteLine(Projectile.StartPosition,
+                Projectile.CalculatedEndPosition, pos);
+            EstimatedImpact = Time.time +((pos.Distance(Projectile.LastPosition) -
+                                            LocalPlayer.Instance.MapCollision.MapCollisionRadius) /
+                                           Data.ProjectileSpeed);
+            IsDangerous = GetIsDangerous(pos);
+        }
+
+        private bool GetIsDangerous(Vector2 pos)
+        {
+            return IsInsideHitbox(pos) && !CheckForCollision(pos);
+        }
+
+        private bool CheckForCollision(Vector2 pos)
+        {
+            var targetCollision = CollisionSolver.CheckThickLineCollision(ClosestPoint, Projectile.StartPosition, LocalPlayer.Instance.MapCollision.MapCollisionRadius);
+            return targetCollision != null && targetCollision.IsColliding &&
+                   targetCollision.CollisionFlags.HasFlag(CollisionFlags.LowBlock | CollisionFlags.HighBlock) ;
+        }
+
+        private bool IsInsideHitbox(Vector2 pos)
+        {
+            float num = Vector2.DistanceSquared(ClosestPoint, pos);
+            float num2 = LocalPlayer.Instance.MapCollision.MapCollisionRadius + Data.Radius;
+            if (num <= num2 * num2)
+            {
+                Vector2 normalized = (Projectile.CalculatedEndPosition - Projectile.StartPosition).Normalized;
+                Vector2 value = pos + normalized * Data.Radius;
+                if (Vector2.Dot(normalized, value - Projectile.StartPosition) > 0f)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    public class TrackedThrowObject
+    {
+        public bool IsDangerous;
+        public ThrowObject ThrowObject;
+        public AbilityInfo Data;
+        public float EstimatedImpact;
+        public Vector2 ClosestOutsidePoint;
+
+        public TrackedThrowObject(ThrowObject throwObject, AbilityInfo data)
+        {
+            ThrowObject = throwObject;
+            Data = data;
+            Update();
+        }
+
+        public void Update()
+        {
+            var pos = LocalPlayer.Instance.Pos();
+            ClosestOutsidePoint = LocalPlayer.Instance.GetClosestExitPointFromCircle(ThrowObject.TargetPosition, Data.Radius);
+            EstimatedImpact = Data.Duration - ThrowObject.GameObject.Get<AgeObject>().Age + Time.time;
+            IsDangerous = GetIsDangerous(pos);
+        }
+
+        private bool GetIsDangerous(Vector2 pos)
+        {
+            return IsInsideHitbox(pos);
+        }
+
+        private bool IsInsideHitbox(Vector2 pos)
+        {
+            return Geometry.CircleVsCircle(ThrowObject.TargetPosition, Data.Radius, pos, LocalPlayer.Instance.MapCollision.MapCollisionRadius);
         }
     }
 
