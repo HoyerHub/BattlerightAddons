@@ -606,18 +606,6 @@ namespace Hoyer.Common.Data.Abilites
             Add(new AbilityInfo
             {
                 Champion = "Bakko",
-                ObjectName = "BloodAxe",
-                AbilitySlot = AbilitySlot.Ability2,
-                AbilityId = 375275413,
-                AbilityType = AbilityType.LineProjectile,
-                Range = 9.3f,
-                Radius = 0.35f,
-                Speed = 23.5f,
-                Danger = 2,
-            });
-            Add(new AbilityInfo
-            {
-                Champion = "Bakko",
                 ObjectName = "ValiantLeap",
                 AbilitySlot = AbilitySlot.Ability3,
                 AbilityId = 1353508382,
