@@ -85,6 +85,8 @@ namespace Hoyer.Common.Extensions
                     return "Ghost";
                 case DodgeAbilityType.HealthShield:
                     return "HP Shield";
+                case DodgeAbilityType.AoEHealthShield:
+                    return "AOE HP Shield";
             }
             Console.WriteLine("Error in parsing of DodgeAbilityType");
             return "Error";

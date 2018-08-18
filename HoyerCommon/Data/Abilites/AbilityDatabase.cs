@@ -1303,6 +1303,56 @@ namespace Hoyer.Common.Data.Abilites
                 Priority = 1,
                 CastTime = 0.1f
             });
+            Add(new DodgeAbilityInfo
+            {
+                Champion = "Alysia",
+                AbilitySlot = AbilitySlot.Ability4,
+                AbilityId = 1086412191,
+                AbilityIndex = 7,
+                AbilityType = DodgeAbilityType.HealthShield,
+                NeedsSelfCast = true,
+                MinDanger = 2,
+                Priority = 3,
+                CastTime = 0.1f
+            });
+            Add(new DodgeAbilityInfo
+            {
+                Champion = "Alysia",
+                AbilitySlot = AbilitySlot.Ability3,
+                AbilityId = 2022133500,
+                AbilityIndex = 6,
+                AbilityType = DodgeAbilityType.Jump,
+                UsesMousePos = true,
+                Range = 9,
+                MinDanger = 3,
+                Priority = 2,
+                CastTime = 0.1f
+            });
+            Add(new DodgeAbilityInfo
+            {
+                Champion = "Alysia",
+                AbilitySlot = AbilitySlot.Ability6,
+                AbilityId = 612469406,
+                AbilityIndex = 12,
+                AbilityType = DodgeAbilityType.Shield,
+                UsesMousePos = true,
+                Range = 7.5f,
+                MinDanger = 3,
+                Priority = 1,
+                CastTime = 0.2f
+            });
+            Add(new DodgeAbilityInfo
+            {
+                Champion = "Alysia",
+                AbilitySlot = AbilitySlot.EXAbility1,
+                AbilityId = 1600213570,
+                AbilityIndex = 8,
+                AbilityType = DodgeAbilityType.HealthShield,
+                NeedsSelfCast = true,
+                MinDanger = 4,
+                Priority = 4,
+                CastTime = 0.1f
+            });
             #endregion
         }
 
