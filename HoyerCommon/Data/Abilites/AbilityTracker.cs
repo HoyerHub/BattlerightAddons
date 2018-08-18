@@ -182,7 +182,7 @@ namespace Hoyer.Common.Data.Abilites
                 Projectile.CalculatedEndPosition, pos);
             EstimatedImpact = Time.time +((pos.Distance(Projectile.LastPosition) -
                                             LocalPlayer.Instance.MapCollision.MapCollisionRadius) /
-                                           Data.ProjectileSpeed);
+                                           Data.Speed);
             IsDangerous = GetIsDangerous(pos);
         }
 
@@ -245,12 +245,14 @@ namespace Hoyer.Common.Data.Abilites
 
         private bool IsInsideHitbox(Vector2 pos)
         {
-            return Geometry.CircleVsCircle(ThrowObject.TargetPosition, Data.Radius, pos, LocalPlayer.Instance.MapCollision.MapCollisionRadius);
+            return pos.Distance(ThrowObject.TargetPosition) < Data.Radius + LocalPlayer.Instance.MapCollision.MapCollisionRadius;
+
         }
     }
 
     public class CastingProjectile
     {
+        public string[] Elements { get; set; }
         public Character Caster;
         public AbilityInfo Data;
         public Vector2 EndPos;

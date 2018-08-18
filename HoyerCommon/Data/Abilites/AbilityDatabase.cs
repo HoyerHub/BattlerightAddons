@@ -25,7 +25,7 @@ namespace Hoyer.Common.Data.Abilites
                 Radius = 0.3f,
                 AbilitySlot = AbilitySlot.Ability1,
                 AbilityType = AbilityType.LineProjectile,
-                ProjectileSpeed = 12,
+                Speed = 12,
                 Danger = 3,
             });
             Add(new AbilityInfo
@@ -37,7 +37,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 7.4f,
                 Radius = 0.25f,
-                ProjectileSpeed = 15.8f,
+                Speed = 15.8f,
                 Danger = 1,
             });
             Add(new AbilityInfo
@@ -49,7 +49,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 7.4f,
                 Radius = 0.25f,
-                ProjectileSpeed = 15.8f,
+                Speed = 15.8f,
                 Danger = 1,
             });
             Add(new AbilityInfo
@@ -61,7 +61,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 9.5f,
                 Radius = 0.3f,
-                ProjectileSpeed = 22,
+                Speed = 22,
                 Danger = 2,
                 CollideCount = 1,
                 ImportantBattlerites = new[]
@@ -83,7 +83,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 9.5f,
                 Radius = 0.3f,
-                ProjectileSpeed = 15.8f,
+                Speed = 15.8f,
                 Danger = 1,
             });
             Add(new AbilityInfo
@@ -95,7 +95,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 9.5f,
                 Radius = 0.3f,
-                ProjectileSpeed = 15.8f,
+                Speed = 15.8f,
                 Danger = 1,
             });
             Add(new AbilityInfo
@@ -107,7 +107,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 9,
                 Radius = 0.35f,
-                ProjectileSpeed = 20.8f,
+                Speed = 20.8f,
                 Danger = 2,
             });
             Add(new AbilityInfo
@@ -130,7 +130,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 7.2f,
                 Radius = 0.3f,
-                ProjectileSpeed = 15.8f,
+                Speed = 15.8f,
                 Danger = 1,
             });
             Add(new AbilityInfo
@@ -144,7 +144,7 @@ namespace Hoyer.Common.Data.Abilites
                 MinRange = 5.2f,
                 MaxRange = 10,
                 Radius = 0.4f,
-                ProjectileSpeed = 23.2f,
+                Speed = 23.2f,
                 Danger = 2,
             });
             Add(new AbilityInfo
@@ -156,7 +156,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 7,
                 Radius = 0.3f,
-                ProjectileSpeed = 15.8f,
+                Speed = 15.8f,
                 Danger = 1,
             });
             Add(new AbilityInfo
@@ -168,7 +168,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 5.3f,
                 Radius = 0.25f,
-                ProjectileSpeed = 17.9f,
+                Speed = 17.9f,
                 Danger = 1,
             });
             Add(new AbilityInfo
@@ -181,7 +181,7 @@ namespace Hoyer.Common.Data.Abilites
                 RequiresCharging = true,
                 MinRange = 5.1f,
                 MaxRange = 10,
-                ProjectileSpeed = 23.5f,
+                Speed = 23.5f,
                 Danger = 3,
             });
             Add(new AbilityInfo
@@ -193,7 +193,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 9,
                 Radius = 0.35f,
-                ProjectileSpeed = 18,
+                Speed = 18,
                 Danger = 2,
             });
             Add(new AbilityInfo
@@ -205,7 +205,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 9.6f,
                 Radius = 0.3f,
-                ProjectileSpeed = 24,
+                Speed = 24,
                 Danger = 3,
             });
             Add(new AbilityInfo
@@ -217,7 +217,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 10,
                 Radius = 0.35f,
-                ProjectileSpeed = 27.75f,
+                Speed = 27.75f,
                 Danger = 4,
             });
             Add(new AbilityInfo
@@ -229,7 +229,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 6.8f,
                 Radius = 0.25f,
-                ProjectileSpeed = 17.5f,
+                Speed = 17.5f,
                 Danger = 1,
             });
             Add(new AbilityInfo
@@ -241,7 +241,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 6.8f,
                 Radius = 0.25f,
-                ProjectileSpeed = 17.5f,
+                Speed = 17.5f,
                 Danger = 1,
             });
             Add(new AbilityInfo
@@ -255,7 +255,7 @@ namespace Hoyer.Common.Data.Abilites
                 Radius = 0.4f,
                 CollisionType = CollisionType.Walls,
                 CollideCount = 99,
-                ProjectileSpeed = 29,
+                Speed = 29,
                 Danger = 4,
             });
             Add(new AbilityInfo
@@ -267,7 +267,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 9.5f,
                 Radius = 0.35f,
-                ProjectileSpeed = 29.5f,
+                Speed = 29.5f,
                 Danger = 3,
             });
             Add(new AbilityInfo
@@ -280,7 +280,7 @@ namespace Hoyer.Common.Data.Abilites
                 Range = 11.5f,
                 Radius = 0.35f,
                 CollisionType = CollisionType.Walls,
-                ProjectileSpeed = 29.5f,
+                Speed = 29.5f,
                 Danger = 3,
             });
             Add(new AbilityInfo
@@ -292,7 +292,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 11.6f,
                 Radius = 0.4f,
-                ProjectileSpeed = 23.5f,
+                Speed = 23.5f,
                 Danger = 3,
             });
             Add(new AbilityInfo
@@ -304,7 +304,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 7.9f,
                 Radius = 0.25f,
-                ProjectileSpeed = 17.9f,
+                Speed = 17.9f,
                 Danger = 1,
             });
             Add(new AbilityInfo
@@ -316,7 +316,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 10.5f,
                 Radius = 0.35f,
-                ProjectileSpeed = 29.5f,
+                Speed = 29.5f,
                 Danger = 3,
             });
             Add(new AbilityInfo
@@ -328,7 +328,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 7.8f,
                 Radius = 0.35f,
-                ProjectileSpeed = 17f,
+                Speed = 17f,
                 Danger = 1,
             });
             Add(new AbilityInfo
@@ -349,7 +349,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 6.8f,
                 Radius = 1,
-                ProjectileSpeed = 12
+                Speed = 12
             });
             Add(new AbilityInfo
             {
@@ -360,7 +360,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 10.5f,
                 Radius = 0.4f,
-                ProjectileSpeed = 25.75f,
+                Speed = 25.75f,
                 Danger = 1,
             });
             Add(new AbilityInfo
@@ -372,7 +372,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 8.8f,
                 Radius = 0.3f,
-                ProjectileSpeed = 23.75f,
+                Speed = 23.75f,
                 Danger = 4,
             });
             Add(new AbilityInfo
@@ -389,7 +389,7 @@ namespace Hoyer.Common.Data.Abilites
                 MinRange = 9.8f,
                 MaxRange = 16.7f,
                 Radius = 0.6f,
-                ProjectileSpeed = 27.5f,
+                Speed = 27.5f,
                 Danger = 5,
             });
             Add(new AbilityInfo
@@ -401,7 +401,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 7f,
                 Radius = 0.25f,
-                ProjectileSpeed = 15.25f,
+                Speed = 15.25f,
                 Danger = 1,
             });
             Add(new AbilityInfo
@@ -413,7 +413,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 9.5f,
                 Radius = 0.3f,
-                ProjectileSpeed = 17.8f,
+                Speed = 17.8f,
                 Danger = 2,
             });
             Add(new AbilityInfo
@@ -425,7 +425,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 8.3f,
                 Radius = 0.3f,
-                ProjectileSpeed = 17.8f,
+                Speed = 17.8f,
                 Danger = 2,
             });
             Add(new AbilityInfo
@@ -448,7 +448,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 10,
                 Radius = 0.35f,
-                ProjectileSpeed = 18.5f,
+                Speed = 18.5f,
                 Danger = 3,
             });
             Add(new AbilityInfo
@@ -460,7 +460,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 10,
                 Radius = 0.35f,
-                ProjectileSpeed = 15.25f,
+                Speed = 15.25f,
                 Danger = 4,
             });
             Add(new AbilityInfo
@@ -472,7 +472,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 8.1f,
                 Radius = 0.35f,
-                ProjectileSpeed = 23.5f,
+                Speed = 23.5f,
                 Danger = 3,
             });
             Add(new AbilityInfo
@@ -484,7 +484,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 7.6f,
                 Radius = 0.35f,
-                ProjectileSpeed = 21.5f,
+                Speed = 21.5f,
                 Danger = 1,
             });
             Add(new AbilityInfo
@@ -496,7 +496,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 8.5f,
                 Radius = 0.35f,
-                ProjectileSpeed = 21.5f,
+                Speed = 21.5f,
                 Danger = 3,
             });
             Add(new AbilityInfo
@@ -508,7 +508,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 9f,
                 Radius = 0.35f,
-                ProjectileSpeed = 21.5f,
+                Speed = 21.5f,
                 Danger = 4,
             });
             Add(new AbilityInfo
@@ -520,7 +520,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 8.5f,
                 Radius = 0.35f,
-                ProjectileSpeed = 21.5f,
+                Speed = 21.5f,
                 Danger = 3,
             });
             Add(new AbilityInfo
@@ -532,7 +532,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 8.5f,
                 Radius = 0.3f,
-                ProjectileSpeed = 21.5f,
+                Speed = 21.5f,
                 Danger = 1,
             });
             Add(new AbilityInfo
@@ -544,7 +544,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 9,
                 Radius = 0.3f,
-                ProjectileSpeed = 21.5f,
+                Speed = 21.5f,
                 Danger = 1,
             });
             Add(new AbilityInfo
@@ -556,7 +556,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 9.5f,
                 Radius = 0.35f,
-                ProjectileSpeed = 21.5f,
+                Speed = 21.5f,
                 Danger = 3,
             });
             Add(new AbilityInfo
@@ -568,8 +568,28 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 7.1f,
                 Radius = 0.35f,
-                ProjectileSpeed = 23.2f,
+                Speed = 23.2f,
                 Danger = 3,
+            });
+            Add(new AbilityInfo
+            {
+                Champion = "Bakko",
+                ObjectName = "WarAxe",
+                AbilitySlot = AbilitySlot.Ability1,
+                AbilityId = 713928362,
+                AbilityType = AbilityType.Melee,
+                Range = 2.5f,
+                Danger = 1,
+            });
+            Add(new AbilityInfo
+            {
+                Champion = "Bakko",
+                ObjectName = "WarAxeSecond",
+                AbilitySlot = AbilitySlot.Ability1,
+                AbilityId = 1029450594,
+                AbilityType = AbilityType.Melee,
+                Range = 2.5f,
+                Danger = 1,
             });
             Add(new AbilityInfo
             {
@@ -580,7 +600,19 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 9.3f,
                 Radius = 0.35f,
-                ProjectileSpeed = 23.5f,
+                Speed = 23.5f,
+                Danger = 2,
+            });
+            Add(new AbilityInfo
+            {
+                Champion = "Bakko",
+                ObjectName = "BloodAxe",
+                AbilitySlot = AbilitySlot.Ability2,
+                AbilityId = 375275413,
+                AbilityType = AbilityType.LineProjectile,
+                Range = 9.3f,
+                Radius = 0.35f,
+                Speed = 23.5f,
                 Danger = 2,
             });
             Add(new AbilityInfo
@@ -597,6 +629,54 @@ namespace Hoyer.Common.Data.Abilites
             });
             Add(new AbilityInfo
             {
+                Champion = "Bakko",
+                ObjectName = "WarStomp",
+                AbilitySlot = AbilitySlot.EXAbility1,
+                AbilityId = 1383890402,
+                AbilityType = AbilityType.CircleJump,
+                Range = 8,
+                Radius = 2,
+                FixedDelay = 1f,
+                Danger = 4,
+            });
+            Add(new AbilityInfo
+            {
+                Champion = "Bakko",
+                ObjectName = "ExtendedShieldDash",
+                AbilitySlot = AbilitySlot.Ability5,
+                AbilityId = 1860143224,
+                AbilityType = AbilityType.Dash,
+                Range = 6,
+                Speed = 12f,
+                Radius = 0.6f,
+                Danger = 2,
+            });
+            Add(new AbilityInfo
+            {
+                Champion = "Bakko",
+                ObjectName = "ShieldDash",
+                AbilitySlot = AbilitySlot.Ability5,
+                AbilityId = 1546404495,
+                AbilityType = AbilityType.Dash,
+                Range = 4.8f,
+                Radius = 0.6f,
+                Speed = 9.6f,
+                Danger = 2,
+            });
+            Add(new AbilityInfo
+            {
+                Champion = "Bakko",
+                ObjectName = "HeroicCharge",
+                AbilitySlot = AbilitySlot.Ability7,
+                AbilityId = 16920816,
+                AbilityType = AbilityType.Dash,
+                Range = 14,
+                Radius = 1f,
+                Speed = 11.6f,
+                Danger = 5,
+            });
+            Add(new AbilityInfo
+            {
                 Champion = "Freya",
                 ObjectName = "StormMace",
                 AbilitySlot = AbilitySlot.Ability2,
@@ -604,7 +684,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 8.5f,
                 Radius = 0.35f,
-                ProjectileSpeed = 19.5f,
+                Speed = 19.5f,
                 Danger = 2,
             });
             Add(new AbilityInfo
@@ -616,7 +696,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 6.5f,
                 Radius = 0.3f,
-                ProjectileSpeed = 15.5f,
+                Speed = 15.5f,
                 Danger = 1,
             });
             Add(new AbilityInfo
@@ -628,7 +708,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 6.5f,
                 Radius = 0.3f,
-                ProjectileSpeed = 15.5f,
+                Speed = 15.5f,
                 Danger = 2,
             });
             Add(new AbilityInfo
@@ -640,7 +720,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 8.3f,
                 Radius = 0.35f,
-                ProjectileSpeed = 23.5f,
+                Speed = 23.5f,
                 Danger = 2,
             });
             Add(new AbilityInfo
@@ -652,7 +732,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 9.6f,
                 Radius = 0.8f,
-                ProjectileSpeed = 17.8f,
+                Speed = 17.8f,
                 Danger = 3,
             });
             Add(new AbilityInfo
@@ -664,7 +744,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 7.4f,
                 Radius = 0.25f,
-                ProjectileSpeed = 17.5f,
+                Speed = 17.5f,
                 Danger = 1,
             });
             Add(new AbilityInfo
@@ -676,7 +756,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 6.8f,
                 Radius = 0.35f,
-                ProjectileSpeed = 23.75f,
+                Speed = 23.75f,
                 Danger = 3,
             });
             Add(new AbilityInfo
@@ -688,7 +768,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 8.8f,
                 Radius = 0.35f,
-                ProjectileSpeed = 23.5f,
+                Speed = 23.5f,
                 Danger = 2,
             });
             Add(new AbilityInfo
@@ -700,7 +780,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 9.8f,
                 Radius = 0.35f,
-                ProjectileSpeed = 23.75f,
+                Speed = 23.75f,
                 Danger = 4,
             });
             Add(new AbilityInfo
@@ -712,7 +792,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 6.5f,
                 Radius = 0.35f,
-                ProjectileSpeed = 15.5f,
+                Speed = 15.5f,
                 Danger = 1,
             });
             Add(new AbilityInfo
@@ -724,7 +804,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 10,
                 Radius = 0.35f,
-                ProjectileSpeed = 23.5f,
+                Speed = 23.5f,
                 Danger = 2,
             });
             Add(new AbilityInfo
@@ -736,7 +816,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 7.2f,
                 Radius = 0.25f,
-                ProjectileSpeed = 18f,
+                Speed = 18f,
                 Danger = 1,
             });
             Add(new AbilityInfo
@@ -748,7 +828,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 7.6f,
                 Radius = 0.25f,
-                ProjectileSpeed = 24f,
+                Speed = 24f,
                 Danger = 3,
             });
             Add(new AbilityInfo
@@ -760,7 +840,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 7,
                 Radius = 0.25f,
-                ProjectileSpeed = 15.75f,
+                Speed = 15.75f,
                 Danger = 1,
             });
             Add(new AbilityInfo
@@ -772,7 +852,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 9,
                 Radius = 0.4f,
-                ProjectileSpeed = 25.5f,
+                Speed = 25.5f,
                 Danger = 2,
             });
             Add(new AbilityInfo
@@ -784,7 +864,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 7.3f,
                 Radius = 0.35f,
-                ProjectileSpeed = 24f,
+                Speed = 24f,
                 Danger = 4,
             });
             Add(new AbilityInfo
@@ -796,7 +876,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 12,
                 Radius = 0.45f,
-                ProjectileSpeed = 24f,
+                Speed = 24f,
                 Danger = 3,
             });
             Add(new AbilityInfo
@@ -808,7 +888,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 12,
                 Radius = 0.45f,
-                ProjectileSpeed = 24f,
+                Speed = 24f,
                 Danger = 3,
             });
             Add(new AbilityInfo
@@ -820,7 +900,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 12,
                 Radius = 0.45f,
-                ProjectileSpeed = 24f,
+                Speed = 24f,
                 Danger = 3,
             });
             Add(new AbilityInfo
@@ -832,7 +912,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 6.8f,
                 Radius = 0.25f,
-                ProjectileSpeed = 15.75f,
+                Speed = 15.75f,
                 Danger = 1,
             });
             Add(new AbilityInfo
@@ -845,7 +925,7 @@ namespace Hoyer.Common.Data.Abilites
                 CanCounter = false,
                 Range = 8.5f,
                 Radius = 0.45f,
-                ProjectileSpeed = 23.5f,
+                Speed = 23.5f,
                 Danger = 2,
             });
             Add(new AbilityInfo
@@ -858,7 +938,7 @@ namespace Hoyer.Common.Data.Abilites
                 CanCounter = false,
                 Range = 9,
                 Radius = 0.45f,
-                ProjectileSpeed = 23.5f,
+                Speed = 23.5f,
                 Danger = 3,
             });
             Add(new AbilityInfo
@@ -870,7 +950,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 9,
                 Radius = 0.4f,
-                ProjectileSpeed = 18f,
+                Speed = 18f,
                 Danger = 2,
             });
             Add(new AbilityInfo
@@ -882,7 +962,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 9.5f,
                 Radius = 0.5f,
-                ProjectileSpeed = 23.5f,
+                Speed = 23.5f,
                 Danger = 2,
             });
             Add(new AbilityInfo
@@ -905,7 +985,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 8.5f,
                 Radius = 0.3f,
-                ProjectileSpeed = 21.5f,
+                Speed = 21.5f,
                 Danger = 1,
             });
             Add(new AbilityInfo
@@ -917,7 +997,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 8.5f,
                 Radius = 0.3f,
-                ProjectileSpeed = 21.5f,
+                Speed = 21.5f,
                 Danger = 1,
             });
             Add(new AbilityInfo
@@ -929,7 +1009,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 8.5f,
                 Radius = 0.3f,
-                ProjectileSpeed = 21.5f,
+                Speed = 21.5f,
                 Danger = 2,
             });
             Add(new AbilityInfo
@@ -941,7 +1021,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 6.5f,
                 Radius = 0.35f,
-                ProjectileSpeed = 15.25f,
+                Speed = 15.25f,
                 Danger = 1,
             });
             Add(new AbilityInfo
@@ -953,7 +1033,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 6.5f,
                 Radius = 0.35f,
-                ProjectileSpeed = 15.25f,
+                Speed = 15.25f,
                 Danger = 1,
             });
             Add(new AbilityInfo
@@ -965,7 +1045,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 10,
                 Radius = 0.4f,
-                ProjectileSpeed = 25f,
+                Speed = 25f,
                 Danger = 3,
             });
             Add(new AbilityInfo
@@ -976,7 +1056,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.LineProjectile,
                 Range = 10,
                 Radius = 0.4f,
-                ProjectileSpeed = 25.5f,
+                Speed = 25.5f,
                 Danger = 3,
             });
 
@@ -1160,6 +1240,16 @@ namespace Hoyer.Common.Data.Abilites
                 Range = 8,
                 CastTime = 0.1f
             });
+            Add(new DodgeAbilityInfo
+            {
+                Champion = "Bakko",
+                AbilitySlot = AbilitySlot.Ability6,
+                AbilityId = 1283963825,
+                AbilityIndex = 13,
+                AbilityType = DodgeAbilityType.AoEHealthShield,
+                Range = 3f,
+                CastTime = 0.15f
+            }); 
             Add(new DodgeAbilityInfo
             {
                 Champion = "Freya",

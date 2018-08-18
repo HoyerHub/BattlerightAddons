@@ -13,9 +13,11 @@ namespace Hoyer.Common.Data.Abilites
 
     public enum AbilityType
     {
+        Melee,
         LineProjectile,
         CircleThrowObject,
-        CircleJump
+        CircleJump,
+        Dash
     }
 
     public struct Field
@@ -54,7 +56,7 @@ namespace Hoyer.Common.Data.Abilites
         public float MaxCastTime = 0;
         public float Radius = 0;
         public float CollideCount = 1;
-        public float ProjectileSpeed = 0;
+        public float Speed = 0;
         public float FixedDelay = 0;                
         public bool RequiresCharging;
         public bool CanCounter = true;

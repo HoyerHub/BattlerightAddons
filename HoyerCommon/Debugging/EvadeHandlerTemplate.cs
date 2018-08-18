@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
+using BattleRight.Core.GameObjects.Models;
 using BattleRight.SDK.UI;
 using BattleRight.SDK.UI.Models;
 using BattleRight.SDK.UI.Values;
@@ -76,8 +79,8 @@ public static class EvadeHandler
         {
             _overrideComboBox = evadeOverrideMenu.Get<MenuComboBox>("override_" + _abilityString);
             _overrideComboBox.Hidden = false;
-            //TODO add element to _overrideComboBox
-            //TODO set _overrideComboBox.CurrentValue to _overrideComboBox.Elements.length - 1
+            _overrideComboBox.Elements = new List<string>(_overrideComboBox.Elements) { "Addon Name" }.ToArray();
+            _overrideComboBox.CurrentValue = _overrideComboBox.Elements.Length - 1;
             _overrideIndex = _overrideComboBox.CurrentValue;
         }
 

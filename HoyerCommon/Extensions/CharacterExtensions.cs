@@ -24,7 +24,7 @@ namespace Hoyer.Common.Extensions
 
         public static bool IsValidTarget(this Character enemy)
         {
-            if (enemy == null || enemy.Buffs == null || enemy.Living.IsDead || enemy.PhysicsCollision.IsImmaterial && !enemy.CharacterModel.IsModelInvisible)
+            if (enemy == null || enemy.Buffs == null || enemy.Living.IsDead || (enemy.PhysicsCollision.IsImmaterial && !enemy.CharacterModel.IsModelInvisible))
             {
                 return false;
             }

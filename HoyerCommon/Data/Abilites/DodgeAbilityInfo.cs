@@ -14,6 +14,7 @@ namespace Hoyer.Common.Data.Abilites
         Jump,
         Shield,
         HealthShield,
+        AoEHealthShield,
         Ghost
     }
     public class DodgeAbilityInfo
