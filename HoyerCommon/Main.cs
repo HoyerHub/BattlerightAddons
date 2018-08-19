@@ -35,7 +35,7 @@ namespace Hoyer.Common
             AbilityTracker.Setup();
             MenuEvents.Setup();
             CommonEvents.Setup();
-            //DebugHelper.Setup();
+            DebugHelper.Setup();
             DelayAction(Init.Invoke, 0.5f);
         }
 

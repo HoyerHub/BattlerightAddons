@@ -8,6 +8,7 @@ using BattleRight.Core.Math;
 using BattleRight.SDK;
 using BattleRight.SDK.Events;
 using BattleRight.SDK.UI;
+using BattleRight.SDK.UI.Models;
 using BattleRight.SDK.UI.Values;
 using Hoyer.Common.Data.Abilites;
 using Hoyer.Common.Extensions;
@@ -18,14 +19,11 @@ namespace Hoyer.Common.Debug
 {
     public static class DebugHelper
     {
-        public static Dictionary<int, Vector2> JumpStartPosDictionary = new Dictionary<int, Vector2>();
-        public static Dictionary<int, Vector2> DashStartPosDictionary = new Dictionary<int, Vector2>();
-
         private static bool _onlyLocal;
+        private static bool _enabled;
         
         public static void Setup()
         {
-            CommonEvents.Update += Game_OnUpdate;
             SpellDetector.OnSpellCast += SpellDetector_OnSpellCast;
             InGameObject.OnCreate += InGameObject_OnCreate;
             InGameObject.OnDestroy += InGameObject_OnDestroy;
@@ -34,14 +32,26 @@ namespace Hoyer.Common.Debug
 
         private static void MenuEvents_Initialize()
         {
-            var debugMenu = MainMenu.AddMenu("debugmenu", "Hoyer's Debug");
-            var onlyLocalPlayer = debugMenu.Add(new MenuCheckBox("debug_onlyLocal", "Only log localPlayer"));
-            onlyLocalPlayer.OnValueChange += args => _onlyLocal = onlyLocalPlayer;
-            _onlyLocal = onlyLocalPlayer;
+            Main.DelayAction(delegate
+            {
+                var hoyerMainMenu = MainMenu.GetMenu("Hoyer.MainMenu");
+                var debugMenu = hoyerMainMenu.Add(new Menu("Hoyer.DebugMenu", "Debug", true));
+
+                var enabled = debugMenu.Add(new MenuCheckBox("debug_enabled", "Enable Debug logging", false));
+                enabled.OnValueChange += delegate(ChangedValueArgs<bool> args)
+                {
+                    _enabled = args.NewValue;
+                };
+                var onlyLocalPlayer = debugMenu.Add(new MenuCheckBox("debug_onlyLocal", "Only log LocalPlayer"));
+                onlyLocalPlayer.OnValueChange += args => _onlyLocal = args.NewValue;
+                _enabled = enabled;
+                _onlyLocal = onlyLocalPlayer;
+            }, 0.1f);
         }
 
         private static void InGameObject_OnDestroy(InGameObject inGameObject)
         {
+            if(!_enabled) return;
             var baseObj = inGameObject.Get<BaseGameObject>();
             if (_onlyLocal && baseObj.Owner != LocalPlayer.Instance) return;
             
@@ -56,21 +66,18 @@ namespace Hoyer.Common.Debug
             }
             var baseTypes = inGameObject.GetBaseTypes().ToArray();
 
-            if (baseTypes.Contains("TravelBuff") && JumpStartPosDictionary.ContainsKey(inGameObject.Id))
+            if (baseTypes.Contains("TravelBuff"))
             {
-                var startPos = JumpStartPosDictionary[inGameObject.Id];
-                JumpStartPosDictionary.Remove(inGameObject.Id);
+                var startPos = inGameObject.Get<TravelBuffObject>().StartPosition;
                 Console.WriteLine("Name: " + inGameObject.ObjectName);
                 Console.WriteLine("Range: " + LocalPlayer.Instance.Pos().Distance(startPos));
                 Console.WriteLine("Duration: " + inGameObject.Get<AgeObject>().Age);
                 Console.WriteLine("Speed: " + LocalPlayer.Instance.Pos().Distance(startPos) / inGameObject.Get<AgeObject>().Age);
                 Console.WriteLine("----");
             }
-
-            if (baseTypes.Contains("Dash") && DashStartPosDictionary.ContainsKey(inGameObject.Id))
+            if (baseTypes.Contains("Dash"))
             {
-                var startPos = DashStartPosDictionary[inGameObject.Id];
-                DashStartPosDictionary.Remove(inGameObject.Id);
+                var startPos = inGameObject.Get<DashObject>().StartPosition;
                 Console.WriteLine("Name: " + inGameObject.ObjectName);
                 Console.WriteLine("Range: " + LocalPlayer.Instance.Pos().Distance(startPos));
                 Console.WriteLine("Duration: " + inGameObject.Get<AgeObject>().Age);
@@ -81,6 +88,7 @@ namespace Hoyer.Common.Debug
 
         private static void InGameObject_OnCreate(InGameObject inGameObject)
         {
+            if (!_enabled) return;
             var baseObj = inGameObject.Get<BaseGameObject>();
             if (_onlyLocal && baseObj.Owner != LocalPlayer.Instance) return;
             Console.WriteLine("New Object:");
@@ -101,27 +109,12 @@ namespace Hoyer.Common.Debug
                 Console.WriteLine("SpellRadius: " + throwObj.SpellCollisionRadius);
                 Console.WriteLine("----");
             }
-
-            if (baseTypes.Contains("TravelBuff"))
-            {
-                if (!JumpStartPosDictionary.ContainsKey(inGameObject.Id))
-                    JumpStartPosDictionary.Add(inGameObject.Id, LocalPlayer.Instance.Pos());
-                else
-                    JumpStartPosDictionary[inGameObject.Id] = LocalPlayer.Instance.Pos();
-            }
-
-            if (baseTypes.Contains("Dash"))
-            {
-                if (!DashStartPosDictionary.ContainsKey(inGameObject.Id))
-                    DashStartPosDictionary.Add(inGameObject.Id, LocalPlayer.Instance.Pos());
-                else
-                    DashStartPosDictionary[inGameObject.Id] = LocalPlayer.Instance.Pos();
-            }
         }
 
         private static void SpellDetector_OnSpellCast(BattleRight.SDK.EventsArgs.SpellCastArgs args)
         {
-            if(_onlyLocal && args.Caster.Name != LocalPlayer.Instance.Name) return;
+            if (!_enabled) return;
+            if (_onlyLocal && args.Caster.Name != LocalPlayer.Instance.Name) return;
 
             var absys = args.Caster.AbilitySystem;
             Console.WriteLine("New Cast:");
@@ -130,45 +123,6 @@ namespace Hoyer.Common.Debug
             Console.WriteLine("Id: " + absys.CastingAbilityId);
             Console.WriteLine("Index: " + args.AbilityIndex);
             Console.WriteLine("----"); 
-        }
-
-        private static void Game_OnUpdate()
-        {
-            /*foreach (var activeProjectile in EntitiesManager.ActiveProjectiles)
-            {
-                if (activeProjectile.MapObject.Position.Distance(activeProjectile.CalculatedEndPosition) < 0.2)
-                {
-                    if (Math.Abs(activeProjectile.Age.Age) > 0.001)
-                    {
-                        Console.WriteLine(activeProjectile.ObjectName);
-                        Console.WriteLine(activeProjectile.Range);
-                        Console.WriteLine(activeProjectile.Radius);
-                        Console.WriteLine(activeProjectile.SpellCollision.SpellCollisionRadius);
-                        Console.WriteLine(activeProjectile.MapObject.Position.Distance(activeProjectile.StartPosition) / activeProjectile.Age.Age);
-                        Console.WriteLine("----");
-                    }
-                }
-            }*/
-        }
-
-        public static readonly List<Projectile> ActiveProjectiles = new List<Projectile>();
-
-        public static void CheckProjectiles()
-        {
-            foreach (var activeGameObject in EntitiesManager.ActiveProjectiles)
-            {
-                if (ActiveProjectiles.Any(p => p.ObjectName == activeGameObject.ObjectName))
-                {
-                    return;
-                }
-                var info = AbilityDatabase.Get(activeGameObject.ObjectName);
-                if (info != null)
-                {
-                    Console.WriteLine("Found " + info.ObjectName + " as " + info.Champion + "'s " + info.AbilitySlot + " in the Database!");
-                    ActiveProjectiles.Add(activeGameObject);
-                }
-                else Console.WriteLine("Didn't find " + activeGameObject.ObjectName + " in the Database!");
-            }
         }
     }
 }
