@@ -22,6 +22,7 @@ namespace Hoyer.Common.Data.Abilites
         {
             Enemy.Projectiles.Setup();
             Enemy.CircularThrows.Setup();
+            Enemy.Dashes.Setup();
             Enemy.Cooldowns.Setup();
         }
 
@@ -157,6 +158,53 @@ namespace Hoyer.Common.Data.Abilites
                     }
                 }
             }
+
+            public static class Dashes
+            {
+                public static event Action<TrackedDash> OnDangerous = delegate { };
+
+                public static List<TrackedDash> TrackedDashes = new List<TrackedDash>();
+
+                public static void Setup()
+                {
+                    InGameObject.OnCreate += InGameObject_OnCreate;
+                    InGameObject.OnDestroy += InGameObject_OnDestroy;
+                }
+
+                private static void InGameObject_OnDestroy(InGameObject inGameObject)
+                {
+                    var tryFind = TrackedDashes.FirstOrDefault(t =>
+                        t.DashObject.GameObject == inGameObject);
+                    if (tryFind != default(TrackedDash))
+                    {
+                        TrackedDashes.Remove(tryFind);
+                    }
+                }
+
+                private static void InGameObject_OnCreate(InGameObject inGameObject)
+                {
+                    if (inGameObject.GetBaseTypes().Contains("Dash") &&
+                        inGameObject.Get<BaseGameObject>().TeamId != LocalPlayer.Instance.BaseObject.TeamId)
+                    {
+                        var dashObj = inGameObject.Get<DashObject>();
+                        var data = dashObj.Data();
+                        if (data == null)
+                        {
+                            return;
+                        }
+                        var pos = LocalPlayer.Instance.Pos();
+                        var closest = GeometryLib.NearestPointOnFiniteLine(dashObj.StartPosition,
+                            dashObj.TargetPosition, pos);
+                        if (pos.Distance(closest) > 5)
+                        {
+                            return;
+                        }
+                        var tto = new TrackedDash(dashObj, data);
+                        TrackedDashes.Add(tto);
+                        OnDangerous.Invoke(tto);
+                    }
+                }
+            }
         }
     }
 
@@ -207,6 +255,61 @@ namespace Hoyer.Common.Data.Abilites
                 Vector2 normalized = (Projectile.CalculatedEndPosition - Projectile.StartPosition).Normalized;
                 Vector2 value = pos + normalized * Data.Radius;
                 if (Vector2.Dot(normalized, value - Projectile.StartPosition) > 0f)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    public class TrackedDash
+    {
+        public bool IsDangerous;
+        public DashObject DashObject;
+        public AbilityInfo Data;
+        public float EstimatedImpact;
+        public Vector2 ClosestPoint;
+
+        public TrackedDash(DashObject dashObject, AbilityInfo data)
+        {
+            DashObject = dashObject;
+            Data = data;
+            Update();
+        }
+
+        public void Update()
+        {
+            var pos = LocalPlayer.Instance.Pos();
+            ClosestPoint = GeometryLib.NearestPointOnFiniteLine(DashObject.StartPosition,
+                DashObject.TargetPosition, pos);
+            EstimatedImpact = Time.time + ((pos.Distance(DashObject.GameObject.Get<BaseGameObject>().Owner as Character) -
+                                            LocalPlayer.Instance.MapCollision.MapCollisionRadius) /
+                                           Data.Speed);
+            IsDangerous = GetIsDangerous(pos);
+        }
+
+        private bool GetIsDangerous(Vector2 pos)
+        {
+            return IsInsideHitbox(pos) && !CheckForCollision(pos);
+        }
+
+        private bool CheckForCollision(Vector2 pos)
+        {
+            var targetCollision = CollisionSolver.CheckThickLineCollision(ClosestPoint, DashObject.StartPosition, LocalPlayer.Instance.MapCollision.MapCollisionRadius);
+            return targetCollision != null && targetCollision.IsColliding &&
+                   targetCollision.CollisionFlags.HasFlag(CollisionFlags.LowBlock | CollisionFlags.HighBlock);
+        }
+
+        private bool IsInsideHitbox(Vector2 pos)
+        {
+            float num = Vector2.DistanceSquared(ClosestPoint, pos);
+            float num2 = LocalPlayer.Instance.MapCollision.MapCollisionRadius + Data.Radius;
+            if (num <= num2 * num2)
+            {
+                Vector2 normalized = (DashObject.TargetPosition - DashObject.StartPosition).Normalized;
+                Vector2 value = pos + normalized * Data.Radius;
+                if (Vector2.Dot(normalized, value - DashObject.StartPosition) > 0f)
                 {
                     return true;
                 }

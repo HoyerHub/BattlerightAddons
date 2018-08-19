@@ -441,6 +441,18 @@ namespace Hoyer.Common.Data.Abilites
             });
             Add(new AbilityInfo
             {
+                Champion = "Glutton",
+                ObjectName = "Rush",
+                AbilitySlot = AbilitySlot.Ability3,
+                AbilityType = AbilityType.Dash,
+                AbilityId = 1077458428,
+                Range = 11.5f,
+                Radius = 0.8f,
+                Speed = 20,
+                Danger = 4,
+            });
+            Add(new AbilityInfo
+            {
                 Champion = "Raigon",
                 ObjectName = "SeismicShock",
                 AbilitySlot = AbilitySlot.Ability5,
@@ -658,6 +670,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilitySlot = AbilitySlot.Ability7,
                 AbilityId = 16920816,
                 AbilityType = AbilityType.Dash,
+                CanCounter = false,
                 Range = 14,
                 Radius = 1f,
                 Speed = 11.6f,

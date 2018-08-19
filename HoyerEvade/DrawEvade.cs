@@ -52,6 +52,10 @@ namespace Hoyer.Evade
                 DrawRectangle(projectile.Projectile.StartPosition, projectile.Projectile.CalculatedEndPosition, projectile.Data.Radius, projectile.IsDangerous ? Color.red : Color.white);
                 Drawing.DrawCircle(projectile.Projectile.LastPosition, projectile.Data.Radius / 2, projectile.IsDangerous ? Color.red : Color.white);
             }
+            foreach (var dash in AbilityTracker.Enemy.Dashes.TrackedDashes)
+            {
+                DrawRectangle(dash.DashObject.StartPosition, dash.DashObject.TargetPosition, dash.Data.Radius, dash.IsDangerous ? Color.red : Color.white);
+            }
             foreach (var throwObj in AbilityTracker.Enemy.CircularThrows.TrackedThrows)
             {
                 Drawing.DrawCircle(throwObj.ThrowObject.TargetPosition, throwObj.Data.Radius, throwObj.IsDangerous ? Color.red : Color.white);

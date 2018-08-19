@@ -33,7 +33,9 @@ namespace Hoyer.Champions.Jumong.Modes
 
         private static void SpellCastLogic()
         {
-            if (MenuHandler.SkillBool("close_a3") && EnemiesInRange(2).Count > 0)
+            if(EnemiesInRange(4.5f).Count > 0 && LocalPlayer.Instance.PhysicsCollision.IsImmaterial) return;
+
+            if (MenuHandler.SkillBool("close_a3") && EnemiesInRange(2.5f).Count > 0)
             {
                 if (AbilitySlot.Ability3.IsReady())
                 {

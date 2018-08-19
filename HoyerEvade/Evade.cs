@@ -48,13 +48,12 @@ namespace Hoyer.Evade
         private static void EvadeLogic()
         {
             var trackedProjectiles = AbilityTracker.Enemy.Projectiles.TrackedProjectiles;
-            var dangerousProjectiles = trackedProjectiles.Where(p => p.IsDangerous).ToArray();
             var trackedCircularThrows = AbilityTracker.Enemy.CircularThrows.TrackedThrows;
-            var dangerousThrows = trackedCircularThrows.Where(t => t.IsDangerous).ToArray();
+            var trackedDashes = AbilityTracker.Enemy.Dashes.TrackedDashes;
 
             if (UseSkills)
             {
-                SkillAimLogic(dangerousProjectiles, dangerousThrows);
+                if (SkillAimLogic()) return;
             }
 
             if (trackedProjectiles.Any())
@@ -64,9 +63,31 @@ namespace Hoyer.Evade
                     trackedProjectile.Update();
                 }
 
+                var dangerousProjectiles = trackedProjectiles.Where(p => p.IsDangerous).ToArray();
                 if (dangerousProjectiles.Any())
                 {
                     var mostDangerous = dangerousProjectiles.OrderByDescending(p => p.Data.Danger).First();
+                    if (UseWalk && CanDodge(mostDangerous)) DodgeWithWalk(mostDangerous);
+                    else if (UseSkills)
+                    {
+                        DodgeWithAbilities(mostDangerous);
+                    }
+
+                    return;
+                }
+            }
+
+            if (trackedDashes.Any())
+            {
+                foreach (var trackedDash in trackedDashes)
+                {
+                    trackedDash.Update();
+                }
+
+                var dangerousDashes = trackedDashes.Where(d => d.IsDangerous).ToArray();
+                if (dangerousDashes.Any())
+                {
+                    var mostDangerous = dangerousDashes.OrderByDescending(p => p.Data.Danger).First();
                     if (UseWalk && CanDodge(mostDangerous)) DodgeWithWalk(mostDangerous);
                     else if (UseSkills)
                     {
@@ -84,6 +105,7 @@ namespace Hoyer.Evade
                     trackedThrow.Update();
                 }
 
+                var dangerousThrows = trackedCircularThrows.Where(t => t.IsDangerous).ToArray();
                 if (dangerousThrows.Any())
                 {
                     var mostDangerous = dangerousThrows.OrderByDescending(p => p.Data.Danger).First();
@@ -106,22 +128,23 @@ namespace Hoyer.Evade
             }
         }
 
-        private static void SkillAimLogic(TrackedProjectile[] dangerousProjectiles, TrackedThrowObject[] dangerousThrowObjects)
+        private static bool SkillAimLogic()
         {
+            var dangerousProjectiles = AbilityTracker.Enemy.Projectiles.TrackedProjectiles.Where(p => p.IsDangerous).ToArray();
+            var dangerousThrows = AbilityTracker.Enemy.CircularThrows.TrackedThrows.Where(t => t.IsDangerous).ToArray();
             if (_castingLastFrame != null && LocalPlayer.Instance.AbilitySystem.IsCasting && LocalPlayer.Instance.AbilitySystem.CastingAbilityId == _castingLastFrame.AbilityId)
             {
                 var casting = _castingLastFrame;
                 casting.SetStatus(true);
 
-                if (casting.OverrideValue() != 0) return;
+                if (casting.OverrideValue() != 0) return false;
 
                 if (casting.AbilityType == DodgeAbilityType.Jump && casting.UsesMousePos)
                 {
                     LocalPlayer.EditAimPosition = true;
                     LocalPlayer.Aim(casting.GetJumpPos());
                 }
-
-                if (casting.AbilityType == DodgeAbilityType.Shield && casting.UsesMousePos)
+                else if (casting.AbilityType == DodgeAbilityType.Shield && casting.UsesMousePos)
                 {
                     LocalPlayer.EditAimPosition = true;
                     LocalPlayer.Aim(dangerousProjectiles
@@ -133,8 +156,7 @@ namespace Hoyer.Evade
                     LocalPlayer.EditAimPosition = true;
                     LocalPlayer.Aim(LocalPlayer.Instance.MapObject.Position);
                 }
-
-                return;
+                return true;
             }
             else if (!LocalPlayer.Instance.AbilitySystem.IsCasting && _castingLastFrame != null)
             {
@@ -142,6 +164,8 @@ namespace Hoyer.Evade
                 _castingLastFrame = null;
                 LocalPlayer.EditAimPosition = false;
             }
+
+            return false;
         }
 
         private static bool CanDodge(TrackedThrowObject throwObj)
@@ -170,10 +194,25 @@ namespace Hoyer.Evade
             return projectile.EstimatedImpact - Time.time < timeToDodge;
         }
 
+        private static bool CanDodge(TrackedDash dash)
+        {
+            var timeToDodge = ((dash.Data.Radius + LocalPlayer.Instance.MapCollision.MapCollisionRadius -
+                                LocalPlayer.Instance.Distance(dash.ClosestPoint)) / 3.4f);
+
+            return dash.EstimatedImpact - Time.time < timeToDodge;
+        }
+
         private static void DodgeWithWalk(TrackedProjectile projectile)
         {
             LocalPlayer.BlockAllInput = true;
             var dir = projectile.ClosestPoint.Extend(LocalPlayer.Instance.Pos(), 10).Normalized;
+            LocalPlayer.Move(dir);
+        }
+
+        private static void DodgeWithWalk(TrackedDash dash)
+        {
+            LocalPlayer.BlockAllInput = true;
+            var dir = dash.ClosestPoint.Extend(LocalPlayer.Instance.Pos(), 10).Normalized;
             LocalPlayer.Move(dir);
         }
 
@@ -209,6 +248,31 @@ namespace Hoyer.Evade
             foreach (var ability in AbilityDatabase.GetDodge(LocalPlayer.Instance.CharName).OrderBy(a => a.Priority))
             {
                 if (ability.ShouldUse() && ability.GetDanger() <= projectile.Data.GetDanger())
+                {
+                    if (ability.NeedsSelfCast)
+                    {
+                        LocalPlayer.PressAbility(ability.AbilitySlot, true);
+                    }
+                    else
+                    {
+                        LocalPlayer.PressAbility(ability.AbilitySlot, true);
+                    }
+
+                    return;
+                }
+            }
+        }
+
+        private static void DodgeWithAbilities(TrackedDash dash)
+        {
+            var timeToImpact = dash.EstimatedImpact - Time.time;
+
+            if (timeToImpact > 0.3f || PlayerIsSafe(timeToImpact)) return;
+            foreach (var ability in AbilityDatabase.GetDodge(LocalPlayer.Instance.CharName).OrderBy(a => a.Priority))
+            {
+                if (ability.ShouldUse() && ability.GetDanger() <= dash.Data.GetDanger() &&
+                    (dash.Data.CanCounter || ability.AbilityType != DodgeAbilityType.Counter) &&
+                    (dash.Data.CanCounter || ability.AbilityType != DodgeAbilityType.Shield))
                 {
                     if (ability.NeedsSelfCast)
                     {
