@@ -236,36 +236,44 @@ namespace Hoyer.Evade
         {
             var timeToImpact = throwObj.EstimatedImpact - Time.time;
 
-            if (timeToImpact > 0.3f || PlayerIsSafe()) return;
+            if (PlayerIsSafe()) return;
             foreach (var ability in AbilityDatabase.GetDodge(LocalPlayer.Instance.CharName).OrderBy(a => a.Priority))
+            {
+                if (timeToImpact > ability.CastTime + 0.25f || timeToImpact < ability.CastTime + 0.05f) continue;
                 if (ability.ShouldUse() && ability.AbilityType != DodgeAbilityType.Counter &&
                     ability.AbilityType != DodgeAbilityType.Shield && ability.GetDanger() <= throwObj.Data.GetDanger())
                 {
                     LocalPlayer.PressAbility(ability.AbilitySlot, true);
                     return;
                 }
+            }
         }
 
         private static void DodgeWithAbilities(TrackedCircularJump jumpObj)
         {
             var timeToImpact = jumpObj.EstimatedImpact - Time.time;
 
-            if (timeToImpact > 0.3f || PlayerIsSafe()) return;
+            if (PlayerIsSafe()) return;
             foreach (var ability in AbilityDatabase.GetDodge(LocalPlayer.Instance.CharName).OrderBy(a => a.Priority))
+            {
+                if (timeToImpact > ability.CastTime + 0.25f || timeToImpact < ability.CastTime + 0.05f) continue;
                 if (ability.ShouldUse() && ability.AbilityType != DodgeAbilityType.Counter &&
                     ability.AbilityType != DodgeAbilityType.Shield && ability.GetDanger() <= jumpObj.Data.GetDanger())
                 {
                     LocalPlayer.PressAbility(ability.AbilitySlot, true);
                     return;
                 }
+            }
         }
 
         private static void DodgeWithAbilities(TrackedProjectile projectile)
         {
             var timeToImpact = projectile.EstimatedImpact - Time.time;
 
-            if (timeToImpact > 0.3f || PlayerIsSafe(timeToImpact)) return;
+            if (PlayerIsSafe(timeToImpact)) return;
             foreach (var ability in AbilityDatabase.GetDodge(LocalPlayer.Instance.CharName).OrderBy(a => a.Priority))
+            {
+                if (timeToImpact > ability.CastTime + 0.25f || timeToImpact < ability.CastTime + 0.05f) continue;
                 if (ability.ShouldUse() && ability.GetDanger() <= projectile.Data.GetDanger())
                 {
                     if (ability.NeedsSelfCast)
@@ -275,14 +283,17 @@ namespace Hoyer.Evade
 
                     return;
                 }
+            }
         }
 
         private static void DodgeWithAbilities(TrackedDash dash)
         {
             var timeToImpact = dash.EstimatedImpact - Time.time;
 
-            if (timeToImpact > 0.3f || PlayerIsSafe(timeToImpact)) return;
+            if (PlayerIsSafe(timeToImpact)) return;
             foreach (var ability in AbilityDatabase.GetDodge(LocalPlayer.Instance.CharName).OrderBy(a => a.Priority))
+            {
+                if (timeToImpact > ability.CastTime + 0.25f || timeToImpact < ability.CastTime + 0.05f) continue;
                 if (ability.ShouldUse() && ability.GetDanger() <= dash.Data.GetDanger() &&
                     (dash.Data.CanCounter || ability.AbilityType != DodgeAbilityType.Counter) &&
                     (dash.Data.CanCounter || ability.AbilityType != DodgeAbilityType.Shield))
@@ -294,6 +305,7 @@ namespace Hoyer.Evade
 
                     return;
                 }
+            }
         }
 
         private static bool PlayerIsSafe(float time = 0, bool isProjectile = true)
