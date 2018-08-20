@@ -623,7 +623,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityId = 1353508382,
                 AbilityType = AbilityType.CircleJump,
                 Range = 8,
-                Radius = 2,
+                Radius = 2.3f,
                 FixedDelay = 1f,
                 Danger = 3,
             });
@@ -635,7 +635,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityId = 1383890402,
                 AbilityType = AbilityType.CircleJump,
                 Range = 8,
-                Radius = 2,
+                Radius = 2.3f,
                 FixedDelay = 0.8f,
                 Danger = 4,
             });
@@ -686,6 +686,18 @@ namespace Hoyer.Common.Data.Abilites
                 Range = 8.5f,
                 Radius = 0.35f,
                 Speed = 19.5f,
+                Danger = 2,
+            });
+            Add(new AbilityInfo
+            {
+                Champion = "Freya",
+                ObjectName = "LightningStrikeLeap",
+                AbilitySlot = AbilitySlot.Ability7,
+                AbilityId = 773505836,
+                AbilityType = AbilityType.CircleJump,
+                Range = 7,
+                Radius = 2.8f,
+                FixedDelay = 1,
                 Danger = 2,
             });
             Add(new AbilityInfo
