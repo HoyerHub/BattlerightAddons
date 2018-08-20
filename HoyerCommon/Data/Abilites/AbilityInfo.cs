@@ -60,6 +60,5 @@ namespace Hoyer.Common.Data.Abilites
         public float FixedDelay = 0;                
         public bool RequiresCharging;
         public bool CanCounter = true;
-        public float Duration = 0;
     }
 }

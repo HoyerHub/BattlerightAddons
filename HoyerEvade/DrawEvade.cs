@@ -61,6 +61,11 @@ namespace Hoyer.Evade
                 Drawing.DrawCircle(throwObj.ThrowObject.TargetPosition, throwObj.Data.Radius, throwObj.IsDangerous ? Color.red : Color.white);
                 Drawing.DrawString(throwObj.ThrowObject.TargetPosition, (throwObj.EstimatedImpact - Time.time).ToString(), Color.white);
             }
+            foreach (var jumpObj in AbilityTracker.Enemy.CircularJumps.TrackedCircularJumps)
+            {
+                Drawing.DrawCircle(jumpObj.TravelObject.TargetPosition, jumpObj.Data.Radius, jumpObj.IsDangerous ? Color.red : Color.white);
+                Drawing.DrawString(jumpObj.TravelObject.TargetPosition, (jumpObj.EstimatedImpact - Time.time).ToString(), Color.white);
+            }
         }
     }
 

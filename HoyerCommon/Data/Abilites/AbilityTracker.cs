@@ -22,6 +22,7 @@ namespace Hoyer.Common.Data.Abilites
         {
             Enemy.Projectiles.Setup();
             Enemy.CircularThrows.Setup();
+            Enemy.CircularJumps.Setup();
             Enemy.Dashes.Setup();
             Enemy.Cooldowns.Setup();
         }
@@ -107,6 +108,51 @@ namespace Hoyer.Common.Data.Abilites
                         var tto = new TrackedThrowObject(throwObj, data);
                         TrackedThrows.Add(tto);
                         OnDangerous.Invoke(tto);
+                    }
+                }
+            }
+
+            public static class CircularJumps
+            {
+                public static event Action<TrackedCircularJump> OnDangerous = delegate { };
+                public static event Action<TrackedCircularJump> OnDangerousDestroyed = delegate { };
+
+                public static List<TrackedCircularJump> TrackedCircularJumps = new List<TrackedCircularJump>();
+
+                public static void Setup()
+                {
+                    InGameObject.OnCreate += InGameObject_OnCreate;
+                    InGameObject.OnDestroy += InGameObject_OnDestroy;
+                }
+
+                private static void InGameObject_OnDestroy(InGameObject inGameObject)
+                {
+                    var tryDanger = TrackedCircularJumps.FirstOrDefault(t => t.TravelObject.GameObject == inGameObject);
+                    if (tryDanger != default(TrackedCircularJump))
+                    {
+                        TrackedCircularJumps.Remove(tryDanger);
+                        OnDangerousDestroyed.Invoke(tryDanger);
+                    }
+                }
+
+                private static void InGameObject_OnCreate(InGameObject inGameObject)
+                {
+                    if (inGameObject.GetBaseTypes().Contains("TravelBuff") &&
+                        inGameObject.Get<BaseGameObject>().TeamId != LocalPlayer.Instance.BaseObject.TeamId)
+                    {
+                        var travelObj = inGameObject.Get<TravelBuffObject>();
+                        var data = travelObj.Data();
+                        if (data == null || data.AbilityType != AbilityType.CircleJump)
+                        {
+                            return;
+                        }
+                        if (LocalPlayer.Instance.Pos().Distance(travelObj.TargetPosition) > 5)
+                        {
+                            return;
+                        }
+                        var tcj = new TrackedCircularJump(travelObj, data);
+                        TrackedCircularJumps.Add(tcj);
+                        OnDangerous.Invoke(tcj);
                     }
                 }
             }
@@ -199,9 +245,9 @@ namespace Hoyer.Common.Data.Abilites
                         {
                             return;
                         }
-                        var tto = new TrackedDash(dashObj, data);
-                        TrackedDashes.Add(tto);
-                        OnDangerous.Invoke(tto);
+                        var dash = new TrackedDash(dashObj, data);
+                        TrackedDashes.Add(dash);
+                        OnDangerous.Invoke(dash);
                     }
                 }
             }
@@ -337,7 +383,7 @@ namespace Hoyer.Common.Data.Abilites
         {
             var pos = LocalPlayer.Instance.Pos();
             ClosestOutsidePoint = LocalPlayer.Instance.GetClosestExitPointFromCircle(ThrowObject.TargetPosition, Data.Radius);
-            EstimatedImpact = Data.Duration - ThrowObject.GameObject.Get<AgeObject>().Age + Time.time;
+            EstimatedImpact = Data.FixedDelay - ThrowObject.GameObject.Get<AgeObject>().Age + Time.time;
             IsDangerous = GetIsDangerous(pos);
         }
 
@@ -353,9 +399,43 @@ namespace Hoyer.Common.Data.Abilites
         }
     }
 
+    public class TrackedCircularJump
+    {
+        public bool IsDangerous;
+        public TravelBuffObject TravelObject;
+        public AbilityInfo Data;
+        public float EstimatedImpact;
+        public Vector2 ClosestOutsidePoint;
+
+        public TrackedCircularJump(TravelBuffObject travelObject, AbilityInfo data)
+        {
+            TravelObject = travelObject;
+            Data = data;
+            Update();
+        }
+
+        public void Update()
+        {
+            var pos = LocalPlayer.Instance.Pos();
+            ClosestOutsidePoint = LocalPlayer.Instance.GetClosestExitPointFromCircle(TravelObject.TargetPosition, Data.Radius);
+            EstimatedImpact = Data.FixedDelay - TravelObject.GameObject.Get<AgeObject>().Age + Time.time;
+            IsDangerous = GetIsDangerous(pos);
+        }
+
+        private bool GetIsDangerous(Vector2 pos)
+        {
+            return IsInsideHitbox(pos);
+        }
+
+        private bool IsInsideHitbox(Vector2 pos)
+        {
+            return pos.Distance(TravelObject.TargetPosition) < Data.Radius + LocalPlayer.Instance.MapCollision.MapCollisionRadius;
+
+        }
+    }
+
     public class CastingProjectile
     {
-        public string[] Elements { get; set; }
         public Character Caster;
         public AbilityInfo Data;
         public Vector2 EndPos;

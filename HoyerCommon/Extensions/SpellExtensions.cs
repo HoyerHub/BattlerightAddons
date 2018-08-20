@@ -45,6 +45,11 @@ namespace Hoyer.Common.Extensions
             return AbilityDatabase.Get(dashObject.GameObject.ObjectName);
         }
 
+        public static AbilityInfo Data(this TravelBuffObject travelObject)
+        {
+            return AbilityDatabase.Get(travelObject.GameObject.ObjectName);
+        }
+
         public static SkillBase Get(this List<SkillBase> skills, AbilitySlot slot)
         {
             return skills.FirstOrDefault(skill => skill.Slot == slot);

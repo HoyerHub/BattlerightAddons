@@ -118,7 +118,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.CircleThrowObject,
                 Range = 9,
                 Radius = 2,
-                Duration = 1.1f,
+                FixedDelay = 1.1f,
                 Danger = 3,
             });
             Add(new AbilityInfo
@@ -436,7 +436,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.CircleThrowObject,
                 Range = 10,
                 Radius = 2,
-                Duration = 0.9f,
+                FixedDelay = 0.9f,
                 Danger = 2,
             });
             Add(new AbilityInfo
@@ -624,7 +624,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.CircleJump,
                 Range = 8,
                 Radius = 2,
-                FixedDelay = 1.25f,
+                FixedDelay = 1f,
                 Danger = 3,
             });
             Add(new AbilityInfo
@@ -636,7 +636,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.CircleJump,
                 Range = 8,
                 Radius = 2,
-                FixedDelay = 1f,
+                FixedDelay = 0.8f,
                 Danger = 4,
             });
             Add(new AbilityInfo
@@ -974,7 +974,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.CircleThrowObject,
                 Range = 9,
                 Radius = 2,
-                Duration = 0.9f,
+                FixedDelay = 0.9f,
                 Danger = 4,
             });
             Add(new AbilityInfo
@@ -1104,7 +1104,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilitySlot = AbilitySlot.Ability3,
                 AbilityType = DodgeAbilityType.Jump,
                 MinDanger = 2,
-                Priority = 1,
+                Priority = 2,
                 CastTime = 0.2f
             });
             Add(new DodgeAbilityInfo
@@ -1112,8 +1112,8 @@ namespace Hoyer.Common.Data.Abilites
                 Champion = "Jumong",
                 AbilitySlot = AbilitySlot.Ability6,
                 AbilityType = DodgeAbilityType.Ghost,
-                MinDanger = 3,
-                Priority = 2,
+                MinDanger = 4,
+                Priority = 1,
                 CastTime = 0.1f
             });
             Add(new DodgeAbilityInfo
