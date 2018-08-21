@@ -93,7 +93,7 @@ namespace Hoyer.Common.Extensions
                     }
                 }
             }
-            if (isProjectile) return !LocalPlayer.Instance.CheckCollisionToTarget(enemy, 0.35f);
+            if (isProjectile) return !LocalPlayer.Instance.CheckCollisionToTarget(enemy, spell.SpellCollisionRadius);
             return true;
         }
 
