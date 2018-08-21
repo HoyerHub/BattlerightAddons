@@ -71,6 +71,25 @@ namespace Hoyer.Common.Extensions
             }
         }
 
+        public static string ToFriendlyString(this AbilityType type)
+        {
+            switch (type)
+            {
+                case AbilityType.LineProjectile:
+                    return "Projectile";
+                case AbilityType.CircleJump:
+                    return "Jump";
+                case AbilityType.CircleThrowObject:
+                    return "Throw";
+                case AbilityType.Dash:
+                    return "Dash";
+                case AbilityType.Melee:
+                    return "Melee";
+            }
+            Console.WriteLine("Error in parsing of AbilityType");
+            return "Error";
+        }
+
         public static string ToFriendlyString(this DodgeAbilityType type)
         {
             switch (type)

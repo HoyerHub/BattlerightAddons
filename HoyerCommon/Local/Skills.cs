@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using BattleRight.Core;
 using BattleRight.Core.Enumeration;
 using BattleRight.Core.GameObjects;
@@ -12,6 +13,7 @@ namespace Hoyer.Common.Local
     public static class Skills
     {
         public static readonly List<SkillBase> Active = new List<SkillBase>();
+        public static readonly List<AbilityInfo> ActiveInfos = new List<AbilityInfo>();
         public static event Action Initialize = delegate {};
 
         public static void AddFromDatabase(AbilitySlot slot)
@@ -20,12 +22,27 @@ namespace Hoyer.Common.Local
             if (data != null)
             {
                 Active.Add(new SkillBase(slot, data.AbilityType.ToSkillType(), data.Range == 0 ? data.MaxRange : data.Range, data.Speed, data.Radius, data.FixedDelay));
+                ActiveInfos.Add(data);
+            }
+        }
+
+        public static void AddFromDatabase()
+        {
+            foreach (var ability in AbilityDatabase.Abilites.Where(a=>a.Champion == LocalPlayer.Instance.CharName))
+            {
+                ActiveInfos.Add(ability);
+                Active.Add(new SkillBase(ability.AbilitySlot, ability.AbilityType.ToSkillType(), ability.Range == 0 ? ability.MaxRange : ability.Range, ability.Speed, ability.Radius, ability.FixedDelay));
             }
         }
 
         public static SkillBase Get(int id)
         {
-            return Active.Get(AbilityDatabase.Get(id).AbilitySlot);
+            var data = ActiveInfos.FirstOrDefault(a => a.AbilityId == id);
+            if (data == null)
+            {
+                return null;
+            }
+            return Active.Get(data.AbilitySlot);
         }
 
         public static void Setup()
@@ -35,6 +52,7 @@ namespace Hoyer.Common.Local
 
         private static void Game_OnMatchStart(EventArgs args)
         {
+            ActiveInfos.Clear();
             Active.Clear();
             Initialize.Invoke();
         }

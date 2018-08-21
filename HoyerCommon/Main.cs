@@ -1,6 +1,8 @@
 ﻿using System;
 using BattleRight.Sandbox;
+using Hoyer.Common.AimBot;
 using Hoyer.Common.Data.Abilites;
+using Hoyer.Common.Data.Addons;
 using Hoyer.Common.Debug;
 using Hoyer.Common.Local;
 using Hoyer.Common.Utilities;
@@ -29,6 +31,8 @@ namespace Hoyer.Common
 
         private void InitializeStaticClasses()
         {
+            AddonMenus.Setup();
+            Aimbot.Setup();
             StealthPrediction.Setup();
             HideNames.Setup();
             Skills.Setup();

@@ -431,6 +431,18 @@ namespace Hoyer.Common.Data.Abilites
             });
             Add(new AbilityInfo
             {
+                Champion = "Varesh",
+                ObjectName = "Shatter",
+                AbilityId = 1302893033,
+                AbilitySlot = AbilitySlot.Ability5,
+                AbilityType = AbilityType.CircleThrowObject,
+                Range = 9,
+                Radius = 1.8f,
+                FixedDelay = 0.7f,
+                Danger = 1,
+            });
+            Add(new AbilityInfo
+            {
                 Champion = "Glutton",
                 ObjectName = "BoulderTossThrow",
                 AbilitySlot = AbilitySlot.Ability5,
