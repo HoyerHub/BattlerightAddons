@@ -24,6 +24,7 @@ namespace Hoyer.Common.Data.Abilites
             Enemy.CircularThrows.Setup();
             Enemy.CircularJumps.Setup();
             Enemy.Dashes.Setup();
+            Enemy.Obstacles.Setup();
             Enemy.Cooldowns.Setup();
         }
 
@@ -153,6 +154,41 @@ namespace Hoyer.Common.Data.Abilites
                         var tcj = new TrackedCircularJump(travelObj, data);
                         TrackedCircularJumps.Add(tcj);
                         OnDangerous.Invoke(tcj);
+                    }
+                }
+            }
+
+            public static class Obstacles
+            {
+                public static List<TrackedObstacleObject> TrackedObstacles = new List<TrackedObstacleObject>();
+
+                public static void Setup()
+                {
+                    InGameObject.OnCreate += InGameObject_OnCreate;
+                    InGameObject.OnDestroy += InGameObject_OnDestroy;
+                }
+
+                private static void InGameObject_OnDestroy(InGameObject inGameObject)
+                {
+                    var tryFind = TrackedObstacles.FirstOrDefault(t =>
+                        t.MapObject.GameObject == inGameObject);
+                    if (tryFind != default(TrackedObstacleObject))
+                    {
+                        TrackedObstacles.Remove(tryFind);
+                    }
+                }
+
+                private static void InGameObject_OnCreate(InGameObject inGameObject)
+                {
+                    if (inGameObject.Get<BaseGameObject>().TeamId != LocalPlayer.Instance.BaseObject.TeamId)
+                    {
+                        var data = AbilityDatabase.GetObstacle(inGameObject.ObjectName);
+                        if (data == null)
+                        {
+                            return;
+                        }
+
+                        TrackedObstacles.Add(new TrackedObstacleObject(inGameObject.Get<MapGameObject>(), data));
                     }
                 }
             }
@@ -361,6 +397,24 @@ namespace Hoyer.Common.Data.Abilites
                 }
             }
             return false;
+        }
+    }
+
+    public class TrackedObstacleObject
+    {
+        public MapGameObject MapObject;
+        public ObstacleAbilityInfo Data;
+
+        public TrackedObstacleObject(MapGameObject mapObject, ObstacleAbilityInfo data)
+        {
+            MapObject = mapObject;
+            Data = data;
+        }
+
+        public bool BlocksProjectileTo(Character character, float projectileRadius)
+        {
+            return Geometry.CircleVsThickLine(MapObject.Position, Data.Radius, LocalPlayer.Instance.Pos(),
+                character.Pos(), projectileRadius, true);
         }
     }
 

@@ -12,6 +12,7 @@ namespace Hoyer.Common.Data.Abilites
     {
         public static List<AbilityInfo> Abilites = new List<AbilityInfo>();
         public static List<DodgeAbilityInfo> DodgeAbilities = new List<DodgeAbilityInfo>();
+        public static List<ObstacleAbilityInfo> ObstacleAbilities = new List<ObstacleAbilityInfo>();
 
         static AbilityDatabase()
         {
@@ -1379,8 +1380,47 @@ namespace Hoyer.Common.Data.Abilites
                 CastTime = 0.1f
             });
             #endregion
-        }
 
+            #region Obstacles
+            Add(new ObstacleAbilityInfo
+            {
+                Champion = "Pearl",
+                ObjectName = "BubbleBarrierArea",
+                Radius = 2
+            });
+            Add(new ObstacleAbilityInfo
+            {
+                Champion = "Pearl",
+                ObjectName = "OceanSageWaterBarrierArea",
+                Radius = 1.5f
+            });
+            Add(new ObstacleAbilityInfo
+            {
+                Champion = "Pearl",
+                ObjectName = "UnstableBubbleArea",
+                Radius = 2
+            });
+            Add(new ObstacleAbilityInfo
+            {
+                Champion = "Oldur",
+                ObjectName = "ChronofluxArea",
+                Radius = 2
+            });
+            Add(new ObstacleAbilityInfo
+            {
+                Champion = "Oldur",
+                ObjectName = "ChronofluxAreaLesser",
+                Radius = 1.1f
+            });
+            Add(new ObstacleAbilityInfo
+            {
+                Champion = "Alysia",
+                ObjectName = "PolarBarrierProjectileAlt",
+                Radius = 1
+            });
+
+            #endregion
+        }
         public static AbilityInfo[] Get(string champ, AbilitySlot slot)
         {
             return Abilites.Where(a => a.Champion == champ && a.AbilitySlot == slot).ToArray();
@@ -1410,12 +1450,18 @@ namespace Hoyer.Common.Data.Abilites
         {
             return DodgeAbilities.FirstOrDefault(a => a.AbilityId == spellid);
         }
-
+        public static ObstacleAbilityInfo GetObstacle(string objectName)
+        {
+            return ObstacleAbilities.FirstOrDefault(a => a.ObjectName == objectName);
+        }
         private static void Add(DodgeAbilityInfo info)
         {
             DodgeAbilities.Add(info);
         }
-
+        private static void Add(ObstacleAbilityInfo info)
+        {
+            ObstacleAbilities.Add(info);
+        }
         private static void Add(AbilityInfo info)
         {
             Abilites.Add(info);

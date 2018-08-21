@@ -38,7 +38,6 @@ namespace Hoyer.Common.Extensions
             {
                 return false;
             }
-
             foreach (var buff in enemy.Buffs.Where(b => b != null && b.ObjectName != null))
             {
                 if (buff.BuffType == BuffType.Counter || buff.BuffType == BuffType.Consume || buff.ObjectName == "GustBuff" ||
@@ -51,9 +50,7 @@ namespace Hoyer.Common.Extensions
                     return false;
                 }
             }
-
-            if (LocalPlayer.Instance.CheckCollisionToTarget(enemy, 0.35f)) return false;
-            return true;
+            return !LocalPlayer.Instance.CheckCollisionToTarget(enemy, 0.35f);
         }
 
         // ReSharper disable once InconsistentNaming
