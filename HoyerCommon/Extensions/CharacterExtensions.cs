@@ -41,7 +41,7 @@ namespace Hoyer.Common.Extensions
             foreach (var buff in enemy.Buffs.Where(b => b != null && b.ObjectName != null))
             {
                 if (buff.BuffType == BuffType.Counter || buff.BuffType == BuffType.Consume || buff.ObjectName == "GustBuff" ||
-                                     buff.ObjectName == "BulwarkBuff" || buff.ObjectName == "TractorBeam")
+                                     buff.ObjectName == "BulwarkBuff" || buff.ObjectName == "TractorBeam" || buff.ObjectName == "TimeBenderBuff" || buff.ObjectName == "DivineShieldBuff")
                 {
                     return false;
                 }
@@ -68,34 +68,33 @@ namespace Hoyer.Common.Extensions
             }
             else timeLeft = enemy.Distance(LocalPlayer.Instance) / spell.Speed;
             timeLeft += 0.2f;
-
-            var ret = true;
+            
             foreach (var buff in enemy.Buffs.Where(b => b != null && b.ObjectName != null))
             {
                 if (isProjectile && (buff.BuffType == BuffType.Counter || buff.BuffType == BuffType.Consume || buff.ObjectName == "GustBuff" || buff.ObjectName == "BulwarkBuff" || buff.ObjectName == "TractorBeam" || buff.ObjectName == "TimeBenderBuff" || buff.ObjectName == "DivineShieldBuff"))
                 {
                     if (timeLeft < buff.TimeToExpire)
                     {
-                        ret = false;
+                        return false;
                     }
                 }
                 if (!useOnHardCC && (buff.ObjectName == "Incapacitate" || buff.ObjectName == "PetrifyStone"))
                 {
                     if (timeLeft < buff.TimeToExpire)
                     {
-                        ret = false;
+                        return false;
                     }
                 }
                 if (buff.ObjectName == "Jetpack")
                 {
                     if (timeLeft < buff.TimeToExpire)
                     {
-                        ret = false;
+                        return false;
                     }
                 }
             }
-
-            return ret;
+            if (isProjectile) return !LocalPlayer.Instance.CheckCollisionToTarget(enemy, 0.35f);
+            return true;
         }
 
         public static Prediction.Output GetPrediction(this Character target, SkillBase castingSpell)
