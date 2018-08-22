@@ -136,7 +136,7 @@ namespace Hoyer.Common.AimBot
             {
                 Character tryGetTarget = null;
                 tryGetTarget = TargetSelector.GetTarget(possibleTargets, TargetingMode.NearMouse, float.MaxValue);
-                if (data.AbilityType == AbilityType.CircleThrowObject)
+                if (data.AbilityType == AbilityType.CircleThrowObject || data.AbilityType == AbilityType.CircleJump)
                 {
                     if (tryGetTarget.IsValidTarget())
                     {
