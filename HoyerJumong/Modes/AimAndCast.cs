@@ -45,7 +45,7 @@ namespace Hoyer.Champions.Jumong.Modes
             }
 
             var enemyTeam = EntitiesManager.EnemyTeam;
-            var validEnemies = enemyTeam.Where(e => e.IsValidTarget()).ToList();
+            var validEnemies = enemyTeam.Where(e => e.IsValidTarget() && e.Pos().Distance(Vector2.Zero) > 0.3f).ToList();
             var validForProjectiles = validEnemies.Any(e => e.IsValidTargetProjectile());
             var validForBigProjectiles = validEnemies.Any(e => e.IsValidTargetProjectile(true));
             if (validEnemies.Any())
