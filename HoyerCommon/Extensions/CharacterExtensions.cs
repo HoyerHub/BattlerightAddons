@@ -15,11 +15,7 @@ namespace Hoyer.Common.Extensions
     {
         public static Vector2 Pos(this Character character)
         {
-            if (StealthPrediction.ShouldUse && character.Team == BattleRight.Core.Enumeration.Team.Enemy && character.CharacterModel.IsModelInvisible && StealthPrediction.Positions.ContainsKey(character.CharName))
-            {
-                return StealthPrediction.Positions[character.CharName];
-            }
-            return character.MapObject.Position;
+            return StealthPrediction.ShouldUse ? StealthPrediction.GetPosition(character) : character.MapObject.Position;
         }
 
         public static bool IsValidTarget(this Character enemy)

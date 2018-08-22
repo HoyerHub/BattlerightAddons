@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using BattleRight.Core;
 using BattleRight.Core.Enumeration;
+using BattleRight.Core.GameObjects;
+using BattleRight.SDK;
 using BattleRight.SDK.UI.Values;
 using Hoyer.Common.Local;
 using UnityEngine;
@@ -13,7 +15,7 @@ namespace Hoyer.Common.Utilities
     {
         public static bool ShouldUse;
         public static Dictionary<string, Vector2> Positions = new Dictionary<string, Vector2>();
-        public static List<string> HasSeen = new List<string>();
+        public static Dictionary<string, Vector2> LastSeenPositions = new Dictionary<string, Vector2>();
         public static bool DrawStealthed = true;
 
         private static readonly Dictionary<string, float> Widths = new Dictionary<string, float>();
@@ -28,10 +30,8 @@ namespace Hoyer.Common.Utilities
 
         private static void Game_OnMatchStateUpdate(MatchStateUpdate args)
         {
-            if (args.NewMatchState == MatchState.InRound)
-            {
-                HasSeen.Clear();
-            }
+            Positions.Clear();
+            LastSeenPositions.Clear();
         }
 
         private static void Game_OnMatchStart(EventArgs args)
@@ -63,26 +63,48 @@ namespace Hoyer.Common.Utilities
                 if (character.Living.IsDead)
                 {
                     if(Positions.ContainsKey(character.CharName)) Positions.Remove(character.CharName);
+                    if (LastSeenPositions.ContainsKey(character.CharName)) LastSeenPositions.Remove(character.CharName);
                     continue;
                 }
                 if (character.CharacterModel.IsModelInvisible)
                 {
-                    if (!HasSeen.Contains(character.CharName)) continue;
                     if (Positions.ContainsKey(character.CharName))
                     {
-                        Positions[character.CharName] = Positions[character.CharName] + character.NetworkMovement.Velocity * Time.deltaTime;
+                        if (LastSeenPositions[character.CharName].Distance(character.MapObject.Position) > 0.3f)
+                        {
+                            LastSeenPositions[character.CharName] = character.MapObject.Position;
+                            Positions[character.CharName] = character.MapObject.Position;
+                        }
+                        else
+                        {
+                            Positions[character.CharName] = Positions[character.CharName] + character.NetworkMovement.Velocity * Time.deltaTime;
+                        }
                     }
-                    else
+                    else if (character.MapObject.Position.Distance(Vector2.Zero) > 0.3f)
                     {
+                        LastSeenPositions.Add(character.CharName, character.MapObject.Position);
                         Positions.Add(character.CharName, character.MapObject.Position);
                     }
                 }
                 else
                 {
-                    if(!HasSeen.Contains(character.CharName)) HasSeen.Add(character.CharName);
+                    if (LastSeenPositions.ContainsKey(character.CharName)) LastSeenPositions.Remove(character.CharName);
                     if (Positions.ContainsKey(character.CharName)) Positions.Remove(character.CharName);
                 }
             }
+        }
+
+        public static Vector2 GetPosition(Character character)
+        {
+            if (ShouldUse && character.Team == BattleRight.Core.Enumeration.Team.Enemy &&
+                character.CharacterModel.IsModelInvisible &&
+                Positions.ContainsKey(character.CharName))
+            {
+                var pos = Positions[character.CharName];
+                if (pos.Distance(Vector2.Zero) > 0.1f) return pos;
+            }
+
+            return character.MapObject.Position;
         }
     }
 }

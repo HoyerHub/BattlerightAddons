@@ -240,12 +240,11 @@ namespace Hoyer.Evade
             foreach (var ability in AbilityDatabase.GetDodge(LocalPlayer.Instance.CharName).OrderBy(a => a.Priority))
             {
                 if (timeToImpact > ability.CastTime + 0.25f || timeToImpact < ability.CastTime + 0.05f) continue;
-                if (ability.ShouldUse() && ability.AbilityType != DodgeAbilityType.Counter &&
-                    ability.AbilityType != DodgeAbilityType.Shield && ability.GetDanger() <= throwObj.Data.GetDanger())
-                {
-                    LocalPlayer.PressAbility(ability.AbilitySlot, true);
-                    return;
-                }
+                if (!ability.ShouldUse() && ability.IsReady() || ability.AbilityType == DodgeAbilityType.Counter || ability.AbilityType == DodgeAbilityType.Shield ||
+                    ability.GetDanger() > throwObj.Data.GetDanger()) continue;
+
+                LocalPlayer.PressAbility(ability.AbilitySlot, true);
+                return;
             }
         }
 
