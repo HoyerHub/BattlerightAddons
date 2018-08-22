@@ -1304,8 +1304,32 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityId = 1729824531,
                 AbilityIndex = 4,
                 AbilityType = DodgeAbilityType.Counter,
-                MinDanger = 1,
+                MinDanger = 2,
                 Priority = 1,
+                CastTime = 0.1f
+            });
+            Add(new DodgeAbilityInfo
+            {
+                Champion = "Varesh",
+                AbilitySlot = AbilitySlot.Ability3,
+                AbilityId = 238454699,
+                AbilityIndex = 3,
+                AbilityType = DodgeAbilityType.HealthShield,
+                NeedsSelfCast = true,
+                MinDanger = 2,
+                Priority = 3,
+                CastTime = 0.1f
+            });
+            Add(new DodgeAbilityInfo
+            {
+                Champion = "Varesh",
+                AbilitySlot = AbilitySlot.Ability6,
+                AbilityId = 1939428505,
+                AbilityIndex = 8,
+                AbilityType = DodgeAbilityType.Jump,
+                Range = 7,
+                MinDanger = 3,
+                Priority = 2,
                 CastTime = 0.1f
             });
             Add(new DodgeAbilityInfo

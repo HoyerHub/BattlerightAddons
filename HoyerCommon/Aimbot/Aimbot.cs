@@ -39,6 +39,7 @@ namespace Hoyer.Common.AimBot
                 if (args.Caster.Name != LocalPlayer.Instance.Name) return;
                 _isCasting = false;
                 _castingId = 0;
+                if (_shouldUse) LocalPlayer.EditAimPosition = false;
             };
             Game.OnUpdate += Update;
             MenuEvents.Initialize += MenuHandler.Setup;
@@ -89,6 +90,7 @@ namespace Hoyer.Common.AimBot
                 if (!pred.CanHit && !OrbLogic(skill))
                 {
                     if (MenuHandler.Interrupt) LocalPlayer.PressAbility(AbilitySlot.Interrupt, true);
+                    LocalPlayer.EditAimPosition = false;
                     return;
                 }
 

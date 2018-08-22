@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BattleRight.Core;
 using BattleRight.Core.Enumeration;
@@ -74,6 +75,15 @@ namespace Hoyer.Common.Extensions
 
         public static bool IsReady(this AbilitySlot slot)
         {
+            var ability = LocalPlayer.GetAbilityHudData(slot);
+            return ability != null && ability.CooldownLeft <= 0 && ability.EnergyCost <= LocalPlayer.Instance.Energized.Energy;
+        }
+
+        public static bool IsReady(this DodgeAbilityInfo data)
+        {
+            var slot = data.AbilitySlot == AbilitySlot.EXAbility1 || data.AbilitySlot == AbilitySlot.EXAbility2
+                ? data.SharedCooldown
+                : data.AbilitySlot;
             var ability = LocalPlayer.GetAbilityHudData(slot);
             return ability != null && ability.CooldownLeft <= 0 && ability.EnergyCost <= LocalPlayer.Instance.Energized.Energy;
         }

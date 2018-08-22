@@ -257,7 +257,7 @@ namespace Hoyer.Evade
             foreach (var ability in AbilityDatabase.GetDodge(LocalPlayer.Instance.CharName).OrderBy(a => a.Priority))
             {
                 if (timeToImpact > ability.CastTime + 0.25f || timeToImpact < ability.CastTime + 0.05f) continue;
-                if (ability.ShouldUse() && ability.AbilityType != DodgeAbilityType.Counter &&
+                if (ability.ShouldUse() && ability.IsReady() && ability.AbilityType != DodgeAbilityType.Counter &&
                     ability.AbilityType != DodgeAbilityType.Shield && ability.GetDanger() <= jumpObj.Data.GetDanger())
                 {
                     LocalPlayer.PressAbility(ability.AbilitySlot, true);
@@ -274,7 +274,7 @@ namespace Hoyer.Evade
             foreach (var ability in AbilityDatabase.GetDodge(LocalPlayer.Instance.CharName).OrderBy(a => a.Priority))
             {
                 if (timeToImpact > ability.CastTime + 0.25f || timeToImpact < ability.CastTime + 0.05f) continue;
-                if (ability.ShouldUse() && ability.GetDanger() <= projectile.Data.GetDanger())
+                if (ability.ShouldUse() && ability.IsReady() && ability.GetDanger() <= projectile.Data.GetDanger())
                 {
                     if (ability.NeedsSelfCast)
                         LocalPlayer.PressAbility(ability.AbilitySlot, true);
@@ -294,7 +294,7 @@ namespace Hoyer.Evade
             foreach (var ability in AbilityDatabase.GetDodge(LocalPlayer.Instance.CharName).OrderBy(a => a.Priority))
             {
                 if (timeToImpact > ability.CastTime + 0.25f || timeToImpact < ability.CastTime + 0.05f) continue;
-                if (ability.ShouldUse() && ability.GetDanger() <= dash.Data.GetDanger() &&
+                if (ability.ShouldUse() && ability.IsReady() && ability.GetDanger() <= dash.Data.GetDanger() &&
                     (dash.Data.CanCounter || ability.AbilityType != DodgeAbilityType.Counter) &&
                     (dash.Data.CanCounter || ability.AbilityType != DodgeAbilityType.Shield))
                 {

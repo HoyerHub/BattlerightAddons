@@ -6,6 +6,7 @@ using BattleRight.Core.GameObjects;
 using BattleRight.Sandbox;
 using BattleRight.SDK;
 using BattleRight.SDK.Enumeration;
+using BattleRight.SDK.Events;
 using BattleRight.SDK.UI;
 using BattleRight.SDK.UI.Models;
 using BattleRight.SDK.UI.Values;
@@ -31,7 +32,13 @@ namespace Hoyer.Champions.Jumong
             MenuEvents.Initialize += MenuHandler.Init;
             MenuEvents.Update += MenuHandler.Update;
             Skills.Initialize += SpellInit;
+            SpellDetector.OnSpellStopCast += SpellDetector_OnSpellStopCast;
             CommonEvents.Update += OnUpdate;
+        }
+
+        private void SpellDetector_OnSpellStopCast(BattleRight.SDK.EventsArgs.SpellStopArgs args)
+        {
+            if (Game.IsInGame && LocalPlayer.Instance.CharName == "Jumong") LocalPlayer.EditAimPosition = false;
         }
 
         private void SpellInit()
@@ -59,7 +66,6 @@ namespace Hoyer.Champions.Jumong
         {
             if (!Enabled || !Game.IsInGame || Game.CurrentMatchState != MatchState.InRound || LocalPlayer.Instance.CharName != "Jumong" || LocalPlayer.Instance.HasBuff("SpellBlock"))
             {
-                LocalPlayer.EditAimPosition = false;
                 return;
             }
             if(_combo) AimAndCast.Update();
