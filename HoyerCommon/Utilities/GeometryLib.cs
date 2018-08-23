@@ -135,10 +135,5 @@ namespace Hoyer.Common.Utilities
                 new Vector2((float)(projectile.CalculatedEndPosition.X + xS), (float)(projectile.CalculatedEndPosition.Y - yS))
             };
         }
-
-        public static Vector2 Extend(this Vector2 source, Vector2 target, float range)
-        {
-            return source + range * (target - source).Normalized;
-        }
     }
 }
