@@ -427,12 +427,31 @@ namespace Hoyer.Common.Data.Abilites
             EstimatedImpact = Time.time + (pos.Distance(Projectile.GameObject.Get<BaseGameObject>().Owner as Character) -
                                            LocalPlayer.Instance.MapCollision.MapCollisionRadius) /
                               Data.Speed;
-            IsDangerous = GetIsDangerous(); 
+            IsDangerous = GetIsDangerous(pos); 
         }
 
-        private bool GetIsDangerous()
+        private bool GetIsDangerous(Vector2 pos)
         {
-            return GeometryLib.CheckForOverLaps(Path.ToClipperPath(), LocalPlayer.Instance.MapCollision.ToClipperPath());
+            if (Projectile.Reversed) return false;
+            return Math.Abs(Projectile.CurveWidth) > 0.1 ? 
+                GeometryLib.CheckForOverLaps(Path.ToClipperPath(), LocalPlayer.Instance.MapCollision.ToClipperPath()) : 
+                IsInsideHitbox(pos);
+        }
+
+        private bool IsInsideHitbox(Vector2 pos)
+        {
+            float num = Vector2.DistanceSquared(ClosestPoint, pos);
+            float num2 = LocalPlayer.Instance.MapCollision.MapCollisionRadius + Data.Radius;
+            if (num <= num2 * num2)
+            {
+                Vector2 normalized = (EndPosition - StartPosition).Normalized;
+                Vector2 value = pos + normalized * Data.Radius;
+                if (Vector2.Dot(normalized, value - StartPosition) > 0f)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 

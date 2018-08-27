@@ -83,12 +83,12 @@ namespace Hoyer.Evade
                     {
                         for (int i = 1; i < projectile.Path.Count; i++)
                         {
-                            Drawing.DrawLine(projectile.Path[i-1], projectile.Path[i], Color.white);
+                            Drawing.DrawLine(projectile.Path[i-1], projectile.Path[i], projectile.IsDangerous ? Color.red : Color.white);
                         }
                     }
                     else
                     {
-                        DrawRectangle(projectile.StartPosition, projectile.EndPosition, projectile.Data.Radius, Color.white);
+                        DrawRectangle(projectile.StartPosition, projectile.EndPosition, projectile.Data.Radius, projectile.IsDangerous ? Color.red : Color.white);
                     }
                 }
                 else
