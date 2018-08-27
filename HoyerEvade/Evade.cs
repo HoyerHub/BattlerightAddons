@@ -46,6 +46,7 @@ namespace Hoyer.Evade
             var trackedCircularThrows = AbilityTracker.Enemy.CircularThrows.TrackedThrows;
             var trackedDashes = AbilityTracker.Enemy.Dashes.TrackedDashes;
             var trackedCircularJumps = AbilityTracker.Enemy.CircularJumps.TrackedCircularJumps;
+            var trackedCurveProjectiles = AbilityTracker.Enemy.CurveProjectiles.TrackedProjectiles;
 
             if (UseSkills)
                 if (SkillAimLogic())
@@ -126,6 +127,21 @@ namespace Hoyer.Evade
                     }
                 }
             }
+
+            if (trackedCurveProjectiles.Any())
+            {
+                foreach (var trackedCurveProjectile in trackedCurveProjectiles) trackedCurveProjectile.Update();
+
+                var dangerousProjectiles = trackedCurveProjectiles.Where(p => p.IsDangerous).ToArray();
+                if (dangerousProjectiles.Any())
+                {
+                    var mostDangerous = dangerousProjectiles.OrderByDescending(p => p.Data.Danger).First();
+                    if (UseSkills)
+                        DodgeWithAbilities(mostDangerous);
+
+                    return;
+                }
+            }
         }
 
         private static bool SkillAimLogic()
@@ -202,6 +218,14 @@ namespace Hoyer.Evade
             return projectile.EstimatedImpact - Time.time < timeToDodge;
         }
 
+        private static bool CanDodge(TrackedCurveProjectile projectile)
+        {
+            var timeToDodge = (projectile.Data.Radius + LocalPlayer.Instance.MapCollision.MapCollisionRadius -
+                               LocalPlayer.Instance.Distance(projectile.ClosestPoint)) / 3.4f;
+
+            return projectile.EstimatedImpact - Time.time < timeToDodge;
+        }
+
         private static bool CanDodge(TrackedDash dash)
         {
             var timeToDodge = (dash.Data.Radius + LocalPlayer.Instance.MapCollision.MapCollisionRadius -
@@ -260,6 +284,25 @@ namespace Hoyer.Evade
                     ability.AbilityType != DodgeAbilityType.Shield && ability.GetDanger() <= jumpObj.Data.GetDanger())
                 {
                     LocalPlayer.PressAbility(ability.AbilitySlot, true);
+                    return;
+                }
+            }
+        }
+
+        private static void DodgeWithAbilities(TrackedCurveProjectile projectile)
+        {
+            var timeToImpact = projectile.EstimatedImpact - Time.time;
+            if (PlayerIsSafe(timeToImpact)) return;
+            foreach (var ability in AbilityDatabase.GetDodge(LocalPlayer.Instance.CharName).OrderBy(a => a.Priority))
+            {
+                if (timeToImpact > ability.CastTime + 0.25f || timeToImpact < ability.CastTime + 0.05f) continue;
+                if (ability.ShouldUse() && ability.IsReady() && ability.GetDanger() <= projectile.Data.GetDanger())
+                {
+                    if (ability.NeedsSelfCast)
+                        LocalPlayer.PressAbility(ability.AbilitySlot, true);
+                    else
+                        LocalPlayer.PressAbility(ability.AbilitySlot, true);
+
                     return;
                 }
             }

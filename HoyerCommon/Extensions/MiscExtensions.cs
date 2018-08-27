@@ -85,8 +85,10 @@ namespace Hoyer.Common.Extensions
                     return "Dash";
                 case AbilityType.Melee:
                     return "Melee";
+                case AbilityType.CurveProjectile:
+                    return "CurveProjectile";
             }
-            Console.WriteLine("Error in parsing of AbilityType");
+            Console.WriteLine("Error in parsing of AbilityType " + type);
             return "Error";
         }
 

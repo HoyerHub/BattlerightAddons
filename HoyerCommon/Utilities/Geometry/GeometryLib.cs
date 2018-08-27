@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BattleRight.Core;
 using BattleRight.Core.GameObjects;
+using BattleRight.Core.GameObjects.Models;
 using BattleRight.SDK;
 using BattleRight.SDK.ClipperLib;
 using Hoyer.Common.Extensions;
@@ -80,6 +81,20 @@ namespace Hoyer.Common.Utilities
             return result;
         }
 
+        public static List<IntPoint> ToClipperPath(this MapCollisionObject obj, int quality = 20)
+        {
+            var points = new List<IntPoint>();
+            var outRadius = obj.MapCollisionRadius / (float)Math.Cos(2 * Math.PI / quality);
+            for (var i = 1; i <= quality; i++)
+            {
+                var angle = i * 2 * Math.PI / quality;
+                var point = new IntPoint(
+                    obj.LastPosition.X + outRadius * (float)Math.Cos(angle), obj.LastPosition.Y + outRadius * (float)Math.Sin(angle));
+                points.Add(point);
+            }
+            return points;
+        }
+
         public static bool IsCollidingWithPlayer(this Projectile projectile, Character player)
         {
             return Geometry.CircleVsThickLine(new Vector2(player.Pos().X, player.Pos().Y), player.MapCollision.MapCollisionRadius + 0.1f,
@@ -104,6 +119,11 @@ namespace Hoyer.Common.Utilities
                 result.Add(from.Pos().ProjectOn(sideStart, sideEnd).SegmentPoint);
             }
             return result.OrderBy(vector2 => vector2.Distance(from.Pos())).FirstOrDefault();
+        }
+
+        public static Vector2 Perpendicular(this Vector2 v)
+        {
+            return new Vector2(-v.Y, v.X);
         }
 
         public static Vector2 GetClosestOutsidePoint(this Vector2 from, List<Vector2> points)
@@ -134,6 +154,48 @@ namespace Hoyer.Common.Utilities
                 new Vector2((float)(projectile.CalculatedEndPosition.X - xS), (float)(projectile.CalculatedEndPosition.Y + yS)),
                 new Vector2((float)(projectile.CalculatedEndPosition.X + xS), (float)(projectile.CalculatedEndPosition.Y - yS))
             };
+        }
+
+        public static bool CheckForOverLaps(List<IntPoint> shape1, List<IntPoint> shape2)
+        {
+            var clipper = Main.Clipper;
+            var solution = new List<List<IntPoint>>();
+            clipper.Clear();
+            solution.Clear();
+
+            clipper.AddPath(shape1, PolyType.ptSubject, true);
+            clipper.AddPath(shape2, PolyType.ptClip, true);
+            clipper.Execute(ClipType.ctIntersection, solution, PolyFillType.pftNonZero, PolyFillType.pftNonZero);
+
+            return solution.Count != 0;
+        }
+
+        public static Vector2[] MakeSmoothCurve(Vector2[] arrayToCurve, float smoothness)
+        {
+            if (smoothness < 1.0f) smoothness = 1.0f;
+
+            var pointsLength = arrayToCurve.Length;
+            var curvedLength = pointsLength * Mathf.RoundToInt(smoothness) - 1;
+            var curvedPoints = new List<Vector2>(curvedLength);
+
+            for (var pointInTimeOnCurve = 0; pointInTimeOnCurve < curvedLength + 1; pointInTimeOnCurve++)
+            {
+                var t = Mathf.InverseLerp(0, curvedLength, pointInTimeOnCurve);
+
+                var points = new List<Vector2>(arrayToCurve);
+
+                for (var j = pointsLength - 1; j > 0; j--)
+                {
+                    for (var i = 0; i < j; i++)
+                    {
+                        points[i] = (1 - t) * points[i] + t * points[i + 1];
+                    }
+                }
+
+                curvedPoints.Add(points[0]);
+            }
+
+            return curvedPoints.ToArray();
         }
     }
 }

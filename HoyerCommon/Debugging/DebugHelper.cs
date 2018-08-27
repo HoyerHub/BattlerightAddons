@@ -52,6 +52,8 @@ namespace Hoyer.Common.Debug
         private static void InGameObject_OnDestroy(InGameObject inGameObject)
         {
             if(!_enabled) return;
+            var baseTypes = inGameObject.GetBaseTypes().ToArray();
+            if (!baseTypes.Contains("BaseObject")) return;
             var baseObj = inGameObject.Get<BaseGameObject>();
             if (_onlyLocal && baseObj.Owner != LocalPlayer.Instance) return;
             
@@ -64,7 +66,6 @@ namespace Hoyer.Common.Debug
                 Console.WriteLine("MapColRadius: " + projectile.Radius);
                 Console.WriteLine("----");
             }
-            var baseTypes = inGameObject.GetBaseTypes().ToArray();
 
             if (baseTypes.Contains("TravelBuff"))
             {
@@ -89,16 +90,16 @@ namespace Hoyer.Common.Debug
         private static void InGameObject_OnCreate(InGameObject inGameObject)
         {
             if (!_enabled) return;
+            var baseTypes = inGameObject.GetBaseTypes().ToArray();
+            if (!baseTypes.Contains("BaseObject")) return;
             var baseObj = inGameObject.Get<BaseGameObject>();
-            if (_onlyLocal && baseObj.Owner != LocalPlayer.Instance) return;
+            if (_onlyLocal && baseObj != null && baseObj.Owner != LocalPlayer.Instance) return;
             Console.WriteLine("New Object:");
             Console.WriteLine("Name: " + inGameObject.ObjectName);
-            var baseTypes = inGameObject.GetBaseTypes().ToArray();
             foreach (var baseType in baseTypes)
             {
                 Console.WriteLine(baseType);
             }
-
             Console.WriteLine("----");
             if (baseTypes.Contains("Throw"))
             {

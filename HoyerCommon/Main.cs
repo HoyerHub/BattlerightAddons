@@ -1,5 +1,6 @@
 ﻿using System;
 using BattleRight.Sandbox;
+using BattleRight.SDK.ClipperLib;
 using Hoyer.Common.AimBot;
 using Hoyer.Common.Data.Abilites;
 using Hoyer.Common.Data.Addons;
@@ -11,6 +12,7 @@ namespace Hoyer.Common
 {
     public class Main:IAddon
     {
+        public static Clipper Clipper = new Clipper();
         public static event Action Init = delegate { };
 
         public static void DelayAction(Action action, float seconds)

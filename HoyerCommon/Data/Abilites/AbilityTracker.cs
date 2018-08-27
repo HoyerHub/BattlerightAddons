@@ -6,6 +6,7 @@ using BattleRight.Core.Enumeration;
 using BattleRight.Core.GameObjects;
 using BattleRight.Core.GameObjects.Models;
 using BattleRight.SDK;
+using BattleRight.SDK.ClipperLib;
 using BattleRight.SDK.Events;
 using Hoyer.Common.Extensions;
 using Hoyer.Common.Local;
@@ -18,21 +19,63 @@ namespace Hoyer.Common.Data.Abilites
 {
     public static class AbilityTracker
     {
+        internal static event Action<InGameObject> EnemyObjectSpawn = delegate {};
+
         public static void Setup()
         {
             Enemy.Projectiles.Setup();
+            Enemy.CurveProjectiles.Setup();
             Enemy.CircularThrows.Setup();
             Enemy.CircularJumps.Setup();
             Enemy.Dashes.Setup();
             Enemy.Obstacles.Setup();
             Enemy.Cooldowns.Setup();
+            Enemy.Casts.Setup();
+            InGameObject.OnCreate += gameObject =>
+            {
+                var baseTypes = gameObject.GetBaseTypes();
+                if (!baseTypes.Contains("BaseObject")) return;
+                var baseObj = gameObject.Get<BaseGameObject>();
+                if (baseObj != null && baseObj.TeamId != LocalPlayer.Instance.BaseObject.TeamId)
+                {
+                    EnemyObjectSpawn.Invoke(gameObject);
+                }
+            };
         }
 
         public static class Enemy
         {
+            public static class Casts
+            {
+                public static List<TrackedCast> TrackedCasts = new List<TrackedCast>();
+
+                public static void Setup()
+                {
+                    SpellDetector.OnSpellCast += SpellDetector_OnSpellCast;
+                    SpellDetector.OnSpellStopCast += SpellDetector_OnSpellStopCast;
+                }
+
+                private static void SpellDetector_OnSpellStopCast(BattleRight.SDK.EventsArgs.SpellStopArgs args)
+                {
+                    var tryGetCast = TrackedCasts.FirstOrDefault(t => t.Owner.Name == args.Caster.Name && t.Index == args.AbilityIndex);
+                    if (tryGetCast != default(TrackedCast))
+                    {
+                        TrackedCasts.Remove(tryGetCast);
+                    }
+                }
+
+                private static void SpellDetector_OnSpellCast(BattleRight.SDK.EventsArgs.SpellCastArgs args)
+                {
+                    if (args.Caster.Team == BattleRight.Core.Enumeration.Team.Enemy) return;
+                    var data = AbilityDatabase.Get(args.Caster.AbilitySystem.CastingAbilityId);
+                    if (data == null) return;
+                    TrackedCasts.Add(new TrackedCast(args.AbilityIndex, args.Caster, data));
+                }
+            }
+
             public static class Cooldowns
             {
-                private static Dictionary<string, Dictionary<int, bool>> _abilityStates = new Dictionary<string, Dictionary<int, bool>>();
+                private static readonly Dictionary<string, Dictionary<int, bool>> AbilityStates = new Dictionary<string, Dictionary<int, bool>>();
 
                 public static void Setup()
                 {
@@ -43,27 +86,36 @@ namespace Hoyer.Common.Data.Abilites
                 private static void Game_OnUpdate(EventArgs args)
                 {
                     return;
+                    /*if (Input.GetKeyDown(KeyCode.L))
+                    {
+                        for (int i = 0; i < 10; i++)
+                        {
+                            Console.Write(EntitiesManager.EnemyTeam[0].AbilitySystem.GetAbility(i).Name + " - ");
+                            Console.WriteLine(EntitiesManager.EnemyTeam[0].AbilitySystem.GetAbility(i).Cooldown);
+                            Console.Write(LocalPlayer.Instance.AbilitySystem.GetAbility(i).Name + " - ");
+                            Console.WriteLine(LocalPlayer.Instance.AbilitySystem.GetAbility(i).Cooldown);
+                        }
+                    }
                     foreach (var character in EntitiesManager.EnemyTeam)
                     {
-                        foreach (var abilityState in _abilityStates[character.CharName])
+                        foreach (var abilityState in AbilityStates[character.CharName])
                         {
                             var data = AbilityDatabase.GetDodge(abilityState.Key);
                             if (data.AbilityIndex != -1)
                             {
-                                //Console.WriteLine(character.AbilitySystem.GetAbility(data.AbilityIndex).CooldownEndTime);
                             }
                         }
-                    }
+                    }*/
                 }
 
                 private static void OnMatchStart(EventArgs args)
                 {
-                    _abilityStates.Clear();
+                    AbilityStates.Clear();
                     foreach (var character in EntitiesManager.EnemyTeam)
                     {
                         var abilities = AbilityDatabase.GetDodge(character.CharName);
                         var dict = abilities.ToDictionary(abilityInfo => abilityInfo.AbilityId, abilityInfo => true);
-                        _abilityStates.Add(character.CharName, dict);
+                        AbilityStates.Add(character.CharName, dict);
                     }
                 }
             }
@@ -77,7 +129,7 @@ namespace Hoyer.Common.Data.Abilites
 
                 public static void Setup()
                 {
-                    InGameObject.OnCreate += InGameObject_OnCreate;
+                    EnemyObjectSpawn += InGameObject_OnCreate;
                     InGameObject.OnDestroy += InGameObject_OnDestroy;
                 }
 
@@ -93,8 +145,7 @@ namespace Hoyer.Common.Data.Abilites
 
                 private static void InGameObject_OnCreate(InGameObject inGameObject)
                 {
-                    if (inGameObject.GetBaseTypes().Contains("Throw") &&
-                        inGameObject.Get<BaseGameObject>().TeamId != LocalPlayer.Instance.BaseObject.TeamId)
+                    if (inGameObject.GetBaseTypes().Contains("Throw"))
                     {
                         var throwObj = inGameObject.Get<ThrowObject>();
                         var data = throwObj.Data();
@@ -122,7 +173,7 @@ namespace Hoyer.Common.Data.Abilites
 
                 public static void Setup()
                 {
-                    InGameObject.OnCreate += InGameObject_OnCreate;
+                    EnemyObjectSpawn += InGameObject_OnCreate;
                     InGameObject.OnDestroy += InGameObject_OnDestroy;
                 }
 
@@ -138,8 +189,7 @@ namespace Hoyer.Common.Data.Abilites
 
                 private static void InGameObject_OnCreate(InGameObject inGameObject)
                 {
-                    if (inGameObject.GetBaseTypes().Contains("TravelBuff") &&
-                        inGameObject.Get<BaseGameObject>().TeamId != LocalPlayer.Instance.BaseObject.TeamId)
+                    if (inGameObject.GetBaseTypes().Contains("TravelBuff"))
                     {
                         var travelObj = inGameObject.Get<TravelBuffObject>();
                         var data = travelObj.Data();
@@ -164,7 +214,7 @@ namespace Hoyer.Common.Data.Abilites
 
                 public static void Setup()
                 {
-                    InGameObject.OnCreate += InGameObject_OnCreate;
+                    EnemyObjectSpawn += InGameObject_OnCreate;
                     InGameObject.OnDestroy += InGameObject_OnDestroy;
                 }
 
@@ -180,8 +230,6 @@ namespace Hoyer.Common.Data.Abilites
 
                 private static void InGameObject_OnCreate(InGameObject inGameObject)
                 {
-                    if (inGameObject.Get<BaseGameObject>().TeamId != LocalPlayer.Instance.BaseObject.TeamId)
-                    {
                         var data = AbilityDatabase.GetObstacle(inGameObject.ObjectName);
                         if (data == null)
                         {
@@ -189,7 +237,6 @@ namespace Hoyer.Common.Data.Abilites
                         }
 
                         TrackedObstacles.Add(new TrackedObstacleObject(inGameObject.Get<MapGameObject>(), data));
-                    }
                 }
             }
 
@@ -201,7 +248,7 @@ namespace Hoyer.Common.Data.Abilites
 
                 public static void Setup()
                 {
-                    InGameObject.OnCreate += InGameObject_OnCreate;
+                    EnemyObjectSpawn += InGameObject_OnCreate;
                     InGameObject.OnDestroy += InGameObject_OnDestroy;
                 }
 
@@ -218,7 +265,7 @@ namespace Hoyer.Common.Data.Abilites
                 private static void InGameObject_OnCreate(InGameObject inGameObject)
                 {
                     var projectile = inGameObject as Projectile;
-                    if (projectile != null && inGameObject.Get<BaseGameObject>().TeamId != LocalPlayer.Instance.BaseObject.TeamId)
+                    if (projectile != null)
                     {
                         var data = AbilityDatabase.Get(inGameObject.ObjectName);
                         if (data == null)
@@ -241,6 +288,55 @@ namespace Hoyer.Common.Data.Abilites
                 }
             }
 
+            public static class CurveProjectiles
+            {
+                public static event Action<TrackedCurveProjectile> OnDangerous = delegate { };
+
+                public static List<TrackedCurveProjectile> TrackedProjectiles = new List<TrackedCurveProjectile>();
+
+                public static void Setup()
+                {
+                    EnemyObjectSpawn += InGameObject_OnCreate;
+                    InGameObject.OnDestroy += InGameObject_OnDestroy;
+                }
+
+                private static void InGameObject_OnDestroy(InGameObject inGameObject)
+                {
+                    var tryFind = TrackedProjectiles.FirstOrDefault(t =>
+                        t.Projectile.GameObject == inGameObject);
+                    if (tryFind != default(TrackedCurveProjectile))
+                    {
+                        TrackedProjectiles.Remove(tryFind);
+                    }
+                }
+
+                private static void InGameObject_OnCreate(InGameObject inGameObject)
+                {
+                    var baseTypes = inGameObject.GetBaseTypes().ToArray();
+                    if (baseTypes.Contains("CurveProjectile") || baseTypes.Contains("CurveProjectile2"))
+                    { 
+                        var data = AbilityDatabase.Get(inGameObject.ObjectName);
+                        if (data == null)
+                        {
+                            return;
+                        }
+                        var pos = LocalPlayer.Instance.Pos();
+                        var projectile = inGameObject.Get<CurveProjectileObject>();
+
+                        var closest = GeometryLib.NearestPointOnFiniteLine(projectile.Position,
+                            projectile.TargetPosition, pos);
+                        if (pos.Distance(closest) > 6)
+                        {
+                            return;
+                        }
+
+                        var tp = new TrackedCurveProjectile(projectile, data);
+                        TrackedProjectiles.Add(tp);
+                        OnDangerous.Invoke(tp);
+                    }
+                }
+            }
+
             public static class Dashes
             {
                 public static event Action<TrackedDash> OnDangerous = delegate { };
@@ -249,7 +345,7 @@ namespace Hoyer.Common.Data.Abilites
 
                 public static void Setup()
                 {
-                    InGameObject.OnCreate += InGameObject_OnCreate;
+                    EnemyObjectSpawn += InGameObject_OnCreate;
                     InGameObject.OnDestroy += InGameObject_OnDestroy;
                 }
 
@@ -265,8 +361,8 @@ namespace Hoyer.Common.Data.Abilites
 
                 private static void InGameObject_OnCreate(InGameObject inGameObject)
                 {
-                    if (inGameObject.GetBaseTypes().Contains("Dash") &&
-                        inGameObject.Get<BaseGameObject>().TeamId != LocalPlayer.Instance.BaseObject.TeamId)
+                    var baseTypes = inGameObject.GetBaseTypes().ToArray();
+                    if (baseTypes.Contains("Dash"))
                     {
                         var dashObj = inGameObject.Get<DashObject>();
                         var data = dashObj.Data();
@@ -287,6 +383,70 @@ namespace Hoyer.Common.Data.Abilites
                     }
                 }
             }
+        }
+    }
+
+    public class TrackedCurveProjectile
+    {
+        public bool IsDangerous;
+        public CurveProjectileObject Projectile;
+        public AbilityInfo Data;
+        public List<Vector2> Path;
+        public float EstimatedImpact;
+        public Vector2 StartPosition;
+        public Vector2 EndPosition;
+        public Vector2 ClosestPoint;
+
+
+        public TrackedCurveProjectile(CurveProjectileObject curveProjectile, AbilityInfo data)
+        {
+            StartPosition = curveProjectile.Position;
+            EndPosition = curveProjectile.TargetPosition;
+            Projectile = curveProjectile;
+            Data = data;
+            Path = new List<Vector2>();
+            if (Math.Abs(Projectile.CurveWidth) > 0.1)
+            {
+                var middleLength = StartPosition.Distance(EndPosition) / 2;
+                var middleOfLine = StartPosition.Extend(EndPosition, middleLength);
+                var perpendicular = (EndPosition - StartPosition).Normalized.Perpendicular();
+                var offset = -perpendicular * Math.Sign(Projectile.CurveWidth) * data.Radius;
+                var middleOfArc = middleOfLine + -perpendicular * Projectile.CurveWidth;
+                Path.AddRange(GeometryLib.MakeSmoothCurve(new[] { StartPosition, middleOfArc + offset, EndPosition }, 3));
+                Path.AddRange(GeometryLib.MakeSmoothCurve(new[] { EndPosition + offset, middleOfArc + offset * 2, StartPosition + offset }, 3));
+                Path.Add(StartPosition);
+            }
+            Update();
+        }
+
+        public void Update()
+        {
+            var pos = LocalPlayer.Instance.Pos();
+            ClosestPoint = GeometryLib.NearestPointOnFiniteLine(StartPosition,
+                EndPosition, pos);
+            EstimatedImpact = Time.time + (pos.Distance(Projectile.GameObject.Get<BaseGameObject>().Owner as Character) -
+                                           LocalPlayer.Instance.MapCollision.MapCollisionRadius) /
+                              Data.Speed;
+            IsDangerous = GetIsDangerous(); 
+        }
+
+        private bool GetIsDangerous()
+        {
+            return GeometryLib.CheckForOverLaps(Path.ToClipperPath(), LocalPlayer.Instance.MapCollision.ToClipperPath());
+        }
+    }
+
+    public class TrackedCast
+    {
+        public int Index;
+        public Character Owner;
+        public AbilityInfo Data;
+
+        public TrackedCast(int index, Character owner, AbilityInfo data)
+        {
+            Index = index;
+            Owner = owner;
+            Data = data;
         }
     }
 

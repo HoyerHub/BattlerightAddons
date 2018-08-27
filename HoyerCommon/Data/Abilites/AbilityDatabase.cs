@@ -395,6 +395,146 @@ namespace Hoyer.Common.Data.Abilites
             });
             Add(new AbilityInfo
             {
+                Champion = "Taya",
+                ObjectName = "RazorBoomerang",
+                AbilitySlot = AbilitySlot.Ability1,
+                AbilityId = 1604073547,
+                AbilityType = AbilityType.CurveProjectile,
+                Range = 7.9f,
+                Radius = 0.25f,
+                Speed = 18,
+                Danger = 1,
+            });
+            Add(new AbilityInfo
+            {
+                Champion = "Taya",
+                ObjectName = "RazorBoomerangHaste",
+                AbilitySlot = AbilitySlot.Ability1,
+                AbilityId = 197673012,
+                AbilityType = AbilityType.CurveProjectile,
+                Range = 7.9f,
+                Radius = 0.25f,
+                Speed = 18,
+                Danger = 1,
+            });
+            Add(new AbilityInfo
+            {
+                Champion = "Taya",
+                ObjectName = "XStrikeBoomerangRight",
+                AbilitySlot = AbilitySlot.Ability2,
+                AbilityId = 373835089,
+                AbilityType = AbilityType.CurveProjectile,
+                MinRange = 5.8f,
+                MaxRange = 10,
+                Radius = 0.5f,
+                Speed = 18,
+                Danger = 2,
+            });
+            Add(new AbilityInfo
+            {
+                Champion = "Taya",
+                ObjectName = "XStrikeBoomerangLeft",
+                AbilitySlot = AbilitySlot.Ability2,
+                AbilityId = 373835089,
+                AbilityType = AbilityType.CurveProjectile,
+                MinRange = 5.8f,
+                MaxRange = 10,
+                Radius = 0.5f,
+                Speed = 18,
+                Danger = 2,
+            });
+            Add(new AbilityInfo
+            {
+                Champion = "Taya",
+                ObjectName = "XStrikeEmpoweredBoomerangRight",
+                AbilitySlot = AbilitySlot.Ability2,
+                AbilityId = 16252536,
+                AbilityType = AbilityType.CurveProjectile,
+                MinRange = 5.8f,
+                MaxRange = 10,
+                Radius = 0.5f,
+                Speed = 18,
+                Danger = 2,
+            });
+            Add(new AbilityInfo
+            {
+                Champion = "Taya",
+                ObjectName = "XStrikeEmpoweredBoomerangLeft",
+                AbilitySlot = AbilitySlot.Ability2,
+                AbilityId = 16252536,
+                AbilityType = AbilityType.CurveProjectile,
+                MinRange = 5.8f,
+                MaxRange = 10,
+                Radius = 0.5f,
+                Speed = 18,
+                Danger = 2,
+            });
+            Add(new AbilityInfo
+            {
+                Champion = "Taya",
+                ObjectName = "XStrikeThrowingTechniqueBoomerangRight",
+                AbilitySlot = AbilitySlot.Ability2,
+                AbilityId = 833668998,
+                AbilityType = AbilityType.CurveProjectile,
+                MinRange = 5.8f,
+                MaxRange = 11,
+                Radius = 0.5f,
+                Speed = 18,
+                Danger = 2,
+            });
+            Add(new AbilityInfo
+            {
+                Champion = "Taya",
+                ObjectName = "XStrikeThrowingTechniqueBoomerangLeft",
+                AbilitySlot = AbilitySlot.Ability2,
+                AbilityId = 833668998,
+                AbilityType = AbilityType.CurveProjectile,
+                MinRange = 5.8f,
+                MaxRange = 11,
+                Radius = 0.5f,
+                Speed = 18,
+                Danger = 2,
+            });
+            Add(new AbilityInfo
+            {
+                Champion = "Taya",
+                ObjectName = "XStrikeEmpoweredThrowingTechniqueBoomerangRight",
+                AbilitySlot = AbilitySlot.Ability2,
+                AbilityId = 37801162,
+                AbilityType = AbilityType.CurveProjectile,
+                MinRange = 5.8f,
+                MaxRange = 11,
+                Radius = 0.5f,
+                Speed = 18,
+                Danger = 2,
+            });
+            Add(new AbilityInfo
+            {
+                Champion = "Taya",
+                ObjectName = "XStrikeEmpoweredThrowingTechniqueBoomerangLeft",
+                AbilitySlot = AbilitySlot.Ability2,
+                AbilityId = 37801162,
+                AbilityType = AbilityType.CurveProjectile,
+                MinRange = 5.8f,
+                MaxRange = 11,
+                Radius = 0.5f,
+                Speed = 18,
+                Danger = 2,
+            });
+            Add(new AbilityInfo
+            {
+                Champion = "Taya",
+                ObjectName = "SpinningBoomerang",
+                AbilitySlot = AbilitySlot.EXAbility1,
+                AbilityId = 1333545630,
+                AbilityType = AbilityType.CurveProjectile,
+                Range = 11.5f,
+                Radius = 0.25f,
+                Speed = 18,
+                Danger = 2,
+            });
+            Add(new AbilityInfo
+            {
                 Champion = "Varesh",
                 ObjectName = "HandOfCorruption",
                 AbilitySlot = AbilitySlot.Ability1,

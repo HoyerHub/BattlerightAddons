@@ -15,6 +15,7 @@ namespace Hoyer.Common.Data.Abilites
     {
         Melee,
         LineProjectile,
+        CurveProjectile,
         CircleThrowObject,
         CircleJump,
         Dash

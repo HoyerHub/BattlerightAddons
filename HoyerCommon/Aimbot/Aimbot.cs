@@ -30,13 +30,13 @@ namespace Hoyer.Common.AimBot
             Game.OnMatchEnd += args => MenuHandler.AimbotMenu.Hidden = false;
             SpellDetector.OnSpellCast += args =>
             {
-                if (args.Caster.Name != LocalPlayer.Instance.Name) return;
+                if (!MenuHandler.Enabled || args.Caster.Name != LocalPlayer.Instance.Name) return;
                 _isCasting = true;
                 _castingId = args.Caster.AbilitySystem.CastingAbilityId;
             };
             SpellDetector.OnSpellStopCast += args =>
             {
-                if (args.Caster.Name != LocalPlayer.Instance.Name) return;
+                if (!MenuHandler.Enabled || args.Caster.Name != LocalPlayer.Instance.Name) return;
                 _isCasting = false;
                 _castingId = 0;
                 if (_shouldUse) LocalPlayer.EditAimPosition = false;
@@ -76,7 +76,7 @@ namespace Hoyer.Common.AimBot
 
         private static void Update(EventArgs args)
         {
-            if (!_shouldUse || !MenuHandler.Enabled || !_isCasting || Game.CurrentMatchState != MatchState.InRound) return;
+            if (!MenuHandler.Enabled || !_shouldUse || !_isCasting || Game.CurrentMatchState != MatchState.InRound) return;
             var skill = Skills.Get(_castingId);
             if (skill == null)
             {
