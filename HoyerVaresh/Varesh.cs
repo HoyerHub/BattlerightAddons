@@ -24,7 +24,7 @@ namespace Hoyer.Champions.Varesh
             MenuEvents.Update += MenuHandler.Update;
             Skills.Initialize += SpellInit;
             SpellDetector.OnSpellStopCast += SpellDetector_OnSpellStopCast;
-            CommonEvents.Update += OnUpdate;
+            Game.OnUpdate += OnUpdate;
         }
 
         private void SpellDetector_OnSpellStopCast(BattleRight.SDK.EventsArgs.SpellStopArgs args)
@@ -38,7 +38,7 @@ namespace Hoyer.Champions.Varesh
             Skills.AddFromDatabase();
         }
 
-        private void OnUpdate()
+        private void OnUpdate(EventArgs args)
         {
             if (!Enabled || !Game.IsInGame || Game.CurrentMatchState != MatchState.InRound || LocalPlayer.Instance.CharName != "Varesh" || LocalPlayer.Instance.HasBuff("SpellBlock"))
             {

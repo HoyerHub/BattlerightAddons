@@ -67,7 +67,6 @@ namespace Hoyer.Champions.Jumong
             InitSkillMenu();
 
             FirstRun();
-            Console.WriteLine("[HoyerJumong/MenuHandler] Jumong Menu Init");
         }
 
         public static void Unload()
@@ -138,20 +137,17 @@ namespace Hoyer.Champions.Jumong
             {
                 if (JumongMenu.Hidden)
                 {
-                    Console.WriteLine("[HoyerJumong/MenuHandler] Showing Menu");
                     JumongMenu.Hidden = false;
                 }
                 return;
             }
             if (LocalPlayer.Instance.ChampionEnum != Champion.Jumong && !JumongMenu.Hidden)
             {
-                Console.WriteLine("[HoyerJumong/MenuHandler] Hiding Menu");
                 JumongMenu.Hidden = true;
                 return;
             }
             if (LocalPlayer.Instance.ChampionEnum == Champion.Jumong && JumongMenu.Hidden)
             {
-                Console.WriteLine("[HoyerJumong/MenuHandler] Showing Menu");
                 JumongMenu.Hidden = false;
             }
         }

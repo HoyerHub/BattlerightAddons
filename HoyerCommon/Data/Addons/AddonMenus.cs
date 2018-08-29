@@ -64,7 +64,6 @@ namespace Hoyer.Common.Data.Addons
                     if (current == null) break;
                 }
                 if (current == null) continue;
-                Console.WriteLine(menu.Name);
                 Active.Add(menu);
             }
         }

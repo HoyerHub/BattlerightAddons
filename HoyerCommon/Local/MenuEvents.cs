@@ -72,12 +72,10 @@ namespace Hoyer.Common.Local
             InitPredMenu();
 
             LoadValues();
-
-            Console.WriteLine("[HoyerCommon/MenuEvents] Menu Init");
+            
             Initialize.Invoke();
             Main.DelayAction(delegate
             {
-                Console.WriteLine("[HoyerCommon/MenuEvents] Checking Menus");
                 Update.Invoke();
             }, 1);
             Game.OnMatchStart += MatchUpdate;
@@ -110,7 +108,6 @@ namespace Hoyer.Common.Local
 
         private static void MatchUpdate(EventArgs args)
         {
-            Console.WriteLine("[HoyerCommon/MenuEvents] Checking Menus");
             Update.Invoke();
         }
 

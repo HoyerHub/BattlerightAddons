@@ -76,13 +76,11 @@ namespace Hoyer.Evade
             }
 
             FirstRun();
-            Console.WriteLine("[Evade/MenuHandler] Evade Menu Init");
         }
 
         public static void Unload()
         {
             DodgeableSkillsMenuByChampion.Clear();
-            Console.WriteLine("Unload" + DodgeableSkillsMenuByChampion.Count);
             EvadeOverrideMenuByChampion.Clear();
             EvadeSkillsMenuByChampion.Clear();
             EvadeStatusMenuByChampion.Clear();
@@ -146,7 +144,6 @@ namespace Hoyer.Evade
 
         private static void AddDodgeableEntries()
         {
-            Console.WriteLine("[Evade/MenuHandler] " + DodgeableSkillsMenuByChampion.Count);
             var sorted = new SortedDictionary<string, List<AbilityInfo>>();
             foreach (var ability in AbilityDatabase.Abilities.Where(a => a.Danger > 0 && a.ObjectName != ""))
             {
@@ -281,7 +278,6 @@ namespace Hoyer.Evade
         {
             if (Game.IsInGame)
             {
-                Console.WriteLine("[Evade/MenuHandler] Hiding unnecessary options");
                 var champ = LocalPlayer.Instance.CharName;
                 var enemychamps = EntitiesManager.EnemyTeam.Select(e => e.CharName).ToArray();
 
@@ -323,7 +319,6 @@ namespace Hoyer.Evade
             }
             else
             {
-                Console.WriteLine("[Evade/MenuHandler] Showing all spell options");
                 foreach (var pair in EvadeSkillsMenuByChampion)
                 {
                     foreach (var menuItem in pair.Value)
