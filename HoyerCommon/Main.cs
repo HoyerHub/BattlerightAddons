@@ -28,11 +28,7 @@ namespace Hoyer.Common
 
         public void OnInit()
         {
-            InitializeStaticClasses();
-        }
-
-        private void InitializeStaticClasses()
-        {
+            AbilityDatabase.Setup();
             AddonMenus.Setup();
             Aimbot.Setup();
             StealthPrediction.Setup();
@@ -40,13 +36,23 @@ namespace Hoyer.Common
             Skills.Setup();
             AbilityTracker.Setup();
             MenuEvents.Setup();
-            CommonEvents.Setup();
             DebugHelper.Setup();
             DelayAction(Init.Invoke, 0.5f);
         }
 
         public void OnUnload()
         {
+            Console.WriteLine("Unload Common Started");
+            AbilityDatabase.Unload();
+            AddonMenus.Unload();
+            Aimbot.Unload();
+            StealthPrediction.Unload();
+            HideNames.Unload();
+            Skills.Unload();
+            AbilityTracker.Unload();
+            MenuEvents.Unload();
+            DebugHelper.Unload();
+            Console.WriteLine("Unload Common Ended");
         }
     }
 }

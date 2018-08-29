@@ -75,6 +75,13 @@ namespace Hoyer.Common.AimBot
             return SkillsMenuDict[LocalPlayer.Instance.CharName][slot].Enabled;
         }
 
+        public static void Unload()
+        {
+            Game.OnMatchStart -= Game_OnMatchStart;
+            Game.OnMatchEnd -= Game_OnMatchEnd;
+            SkillsMenuDict.Clear();
+        }
+
         public static void Setup()
         {
             Main.DelayAction(delegate
@@ -140,9 +147,9 @@ namespace Hoyer.Common.AimBot
         private static void AddSkillEntries()
         {
             var sorted = new SortedDictionary<string, List<AbilityInfo>>();
-            foreach (var ability in AbilityDatabase.Abilites.Where(a => a.Danger > 0 && a.ObjectName != ""))
+            foreach (var ability in AbilityDatabase.Abilities.Where(a => a.Danger > 0 && a.ObjectName != ""))
             {
-                var champion = ability.Champion.ToCharacterString();
+                var champion = ability.Champion;
                 if (sorted.ContainsKey(champion))
                 {
                     if (sorted[champion].All(a => a.AbilitySlot != ability.AbilitySlot)) sorted[champion].Add(ability);

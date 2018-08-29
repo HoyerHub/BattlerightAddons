@@ -30,7 +30,7 @@ namespace Hoyer.Champions.Jumong
         private static MenuCheckBox _enabledBox;
         private static MenuCheckBox _comboToggle;
 
-        private static Dictionary<string, bool> SkillCheckBoxes = new Dictionary<string, bool>();
+        private static readonly Dictionary<string, bool> SkillCheckBoxes = new Dictionary<string, bool>();
 
         public static void Init()
         {
@@ -68,6 +68,11 @@ namespace Hoyer.Champions.Jumong
 
             FirstRun();
             Console.WriteLine("[HoyerJumong/MenuHandler] Jumong Menu Init");
+        }
+
+        public static void Unload()
+        {
+            SkillCheckBoxes.Clear();
         }
 
         private static void InitSkillMenu()

@@ -24,25 +24,45 @@ namespace Hoyer.Common.AimBot
         private static bool _isCasting;
         private static int _castingId;
 
+        public static void Unload()
+        {
+            Game.OnMatchStateUpdate -= Game_OnMatchStateUpdate;
+            Game.OnMatchEnd -= OnMatchEnd;
+            SpellDetector.OnSpellCast -= SpellDetector_OnSpellCast;
+            SpellDetector.OnSpellStopCast -= SpellDetector_OnSpellStopCast;
+            Game.OnUpdate -= Update;
+            MenuEvents.Initialize -= MenuHandler.Setup;
+            MenuHandler.Unload();
+        }
+
         public static void Setup()
         {
             Game.OnMatchStateUpdate += Game_OnMatchStateUpdate;
-            Game.OnMatchEnd += args => MenuHandler.AimbotMenu.Hidden = false;
-            SpellDetector.OnSpellCast += args =>
-            {
-                if (!MenuHandler.Enabled || args.Caster.Name != LocalPlayer.Instance.Name) return;
-                _isCasting = true;
-                _castingId = args.Caster.AbilitySystem.CastingAbilityId;
-            };
-            SpellDetector.OnSpellStopCast += args =>
-            {
-                if (!MenuHandler.Enabled || args.Caster.Name != LocalPlayer.Instance.Name) return;
-                _isCasting = false;
-                _castingId = 0;
-                if (_shouldUse) LocalPlayer.EditAimPosition = false;
-            };
+            Game.OnMatchEnd += OnMatchEnd;
+            SpellDetector.OnSpellCast += SpellDetector_OnSpellCast;
+            SpellDetector.OnSpellStopCast += SpellDetector_OnSpellStopCast;
             Game.OnUpdate += Update;
             MenuEvents.Initialize += MenuHandler.Setup;
+        }
+
+        private static void OnMatchEnd(EventArgs args)
+        {
+            MenuHandler.AimbotMenu.Hidden = false;
+        }
+
+        private static void SpellDetector_OnSpellStopCast(BattleRight.SDK.EventsArgs.SpellStopArgs args)
+        {
+            if (!MenuHandler.Enabled || args.Caster.Name != LocalPlayer.Instance.Name) return;
+            _isCasting = false;
+            _castingId = 0;
+            if (_shouldUse) LocalPlayer.EditAimPosition = false;
+        }
+
+        private static void SpellDetector_OnSpellCast(BattleRight.SDK.EventsArgs.SpellCastArgs args)
+        {
+            if (!MenuHandler.Enabled || args.Caster.Name != LocalPlayer.Instance.Name) return;
+            _isCasting = true;
+            _castingId = args.Caster.AbilitySystem.CastingAbilityId;
         }
 
         private static void Game_OnMatchStateUpdate(EventArgs args)

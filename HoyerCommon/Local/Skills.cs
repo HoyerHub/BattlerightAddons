@@ -30,7 +30,7 @@ namespace Hoyer.Common.Local
         {
             ActiveInfos.Clear();
             Active.Clear();
-            foreach (var ability in AbilityDatabase.Abilites.Where(a=>a.Champion == LocalPlayer.Instance.CharName))
+            foreach (var ability in AbilityDatabase.Abilities.Where(a=>a.Champion == LocalPlayer.Instance.CharName))
             {
                 ActiveInfos.Add(ability);
                 Active.Add(new SkillBase(ability.AbilitySlot, ability.AbilityType.ToSkillType(), ability.Range == 0 ? ability.MaxRange : ability.Range, ability.Speed, ability.Radius, ability.FixedDelay));
@@ -50,6 +50,13 @@ namespace Hoyer.Common.Local
         public static void Setup()
         {
             Game.OnMatchStart += Game_OnMatchStart;
+        }
+
+        public static void Unload()
+        {
+            Game.OnMatchStart -= Game_OnMatchStart;
+            Active.Clear();
+            ActiveInfos.Clear();
         }
 
         private static void Game_OnMatchStart(EventArgs args)

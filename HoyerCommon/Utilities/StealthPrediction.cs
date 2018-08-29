@@ -28,6 +28,16 @@ namespace Hoyer.Common.Utilities
             Game.OnMatchStateUpdate += Game_OnMatchStateUpdate;
         }
 
+        public static void Unload()
+        {
+            Game.OnUpdate -= OnUpdate;
+            Game.OnDraw -= Game_OnDraw;
+            Game.OnMatchStart -= Game_OnMatchStart;
+            Game.OnMatchStateUpdate -= Game_OnMatchStateUpdate;
+            Positions.Clear();
+            LastSeenPositions.Clear();
+        }
+
         private static void Game_OnMatchStateUpdate(MatchStateUpdate args)
         {
             Positions.Clear();
@@ -49,8 +59,11 @@ namespace Hoyer.Common.Utilities
             {
                 foreach (var item in Positions)
                 {
-                    Drawing.DrawCircle(item.Value, Widths[item.Key], Color.green);
-                    Drawing.DrawString(item.Value, item.Key, Color.green);
+                    if (Widths.ContainsKey(item.Key))
+                    {
+                        Drawing.DrawCircle(item.Value, Widths[item.Key], Color.green);
+                        Drawing.DrawString(item.Value, item.Key, Color.green);
+                    }
                 }
             }
         }

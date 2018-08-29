@@ -14,6 +14,7 @@ using Hoyer.Common.Utilities;
 using UnityEngine;
 using CollisionFlags = BattleRight.Core.Enumeration.CollisionFlags;
 using Vector2 = BattleRight.Core.Math.Vector2;
+// ReSharper disable MemberHidesStaticFromOuterClass
 
 namespace Hoyer.Common.Data.Abilites
 {
@@ -31,16 +32,31 @@ namespace Hoyer.Common.Data.Abilites
             Enemy.Obstacles.Setup();
             Enemy.Cooldowns.Setup();
             Enemy.Casts.Setup();
-            InGameObject.OnCreate += gameObject =>
+            InGameObject.OnCreate += OnCreateHandler;
+        }
+
+        public static void Unload()
+        {
+            Enemy.Projectiles.Unload();
+            Enemy.CurveProjectiles.Unload();
+            Enemy.CircularThrows.Unload();
+            Enemy.CircularJumps.Unload();
+            Enemy.Dashes.Unload();
+            Enemy.Obstacles.Unload();
+            Enemy.Cooldowns.Unload();
+            Enemy.Casts.Unload();
+            InGameObject.OnCreate -= OnCreateHandler;
+        }
+
+        private static void OnCreateHandler(InGameObject gameObject)
+        {
+            var baseTypes = gameObject.GetBaseTypes();
+            if (!baseTypes.Contains("BaseObject")) return;
+            var baseObj = gameObject.Get<BaseGameObject>();
+            if (baseObj != null && baseObj.TeamId != LocalPlayer.Instance.BaseObject.TeamId)
             {
-                var baseTypes = gameObject.GetBaseTypes();
-                if (!baseTypes.Contains("BaseObject")) return;
-                var baseObj = gameObject.Get<BaseGameObject>();
-                if (baseObj != null && baseObj.TeamId != LocalPlayer.Instance.BaseObject.TeamId)
-                {
-                    EnemyObjectSpawn.Invoke(gameObject);
-                }
-            };
+                EnemyObjectSpawn.Invoke(gameObject);
+            }
         }
 
         public static class Enemy
@@ -53,6 +69,13 @@ namespace Hoyer.Common.Data.Abilites
                 {
                     SpellDetector.OnSpellCast += SpellDetector_OnSpellCast;
                     SpellDetector.OnSpellStopCast += SpellDetector_OnSpellStopCast;
+                }
+
+                public static void Unload()
+                {
+                    SpellDetector.OnSpellCast -= SpellDetector_OnSpellCast;
+                    SpellDetector.OnSpellStopCast -= SpellDetector_OnSpellStopCast;
+                    TrackedCasts.Clear();
                 }
 
                 private static void SpellDetector_OnSpellStopCast(BattleRight.SDK.EventsArgs.SpellStopArgs args)
@@ -81,6 +104,13 @@ namespace Hoyer.Common.Data.Abilites
                 {
                     Game.OnMatchStart += OnMatchStart;
                     Game.OnUpdate += Game_OnUpdate;
+                }
+
+                public static void Unload()
+                {
+                    Game.OnMatchStart -= OnMatchStart;
+                    Game.OnUpdate -= Game_OnUpdate;
+                    AbilityStates.Clear();
                 }
 
                 private static void Game_OnUpdate(EventArgs args)
@@ -133,6 +163,13 @@ namespace Hoyer.Common.Data.Abilites
                     InGameObject.OnDestroy += InGameObject_OnDestroy;
                 }
 
+                public static void Unload()
+                {
+                    EnemyObjectSpawn -= InGameObject_OnCreate;
+                    InGameObject.OnDestroy -= InGameObject_OnDestroy;
+                    TrackedThrows.Clear();
+                }
+
                 private static void InGameObject_OnDestroy(InGameObject inGameObject)
                 {
                     var tryDanger = TrackedThrows.FirstOrDefault(t => t.ThrowObject.GameObject == inGameObject);
@@ -177,6 +214,13 @@ namespace Hoyer.Common.Data.Abilites
                     InGameObject.OnDestroy += InGameObject_OnDestroy;
                 }
 
+                public static void Unload()
+                {
+                    EnemyObjectSpawn -= InGameObject_OnCreate;
+                    InGameObject.OnDestroy -= InGameObject_OnDestroy;
+                    TrackedCircularJumps.Clear();
+                }
+
                 private static void InGameObject_OnDestroy(InGameObject inGameObject)
                 {
                     var tryDanger = TrackedCircularJumps.FirstOrDefault(t => t.TravelObject.GameObject == inGameObject);
@@ -218,6 +262,13 @@ namespace Hoyer.Common.Data.Abilites
                     InGameObject.OnDestroy += InGameObject_OnDestroy;
                 }
 
+                public static void Unload()
+                {
+                    EnemyObjectSpawn -= InGameObject_OnCreate;
+                    InGameObject.OnDestroy -= InGameObject_OnDestroy;
+                    TrackedObstacles.Clear();
+                }
+
                 private static void InGameObject_OnDestroy(InGameObject inGameObject)
                 {
                     var tryFind = TrackedObstacles.FirstOrDefault(t =>
@@ -250,6 +301,13 @@ namespace Hoyer.Common.Data.Abilites
                 {
                     EnemyObjectSpawn += InGameObject_OnCreate;
                     InGameObject.OnDestroy += InGameObject_OnDestroy;
+                }
+
+                public static void Unload()
+                {
+                    EnemyObjectSpawn -= InGameObject_OnCreate;
+                    InGameObject.OnDestroy -= InGameObject_OnDestroy;
+                    TrackedProjectiles.Clear();
                 }
 
                 private static void InGameObject_OnDestroy(InGameObject inGameObject)
@@ -300,6 +358,13 @@ namespace Hoyer.Common.Data.Abilites
                     InGameObject.OnDestroy += InGameObject_OnDestroy;
                 }
 
+                public static void Unload()
+                {
+                    EnemyObjectSpawn -= InGameObject_OnCreate;
+                    InGameObject.OnDestroy -= InGameObject_OnDestroy;
+                    TrackedProjectiles.Clear();
+                }
+
                 private static void InGameObject_OnDestroy(InGameObject inGameObject)
                 {
                     var tryFind = TrackedProjectiles.FirstOrDefault(t =>
@@ -347,6 +412,13 @@ namespace Hoyer.Common.Data.Abilites
                 {
                     EnemyObjectSpawn += InGameObject_OnCreate;
                     InGameObject.OnDestroy += InGameObject_OnDestroy;
+                }
+
+                public static void Unload()
+                {
+                    EnemyObjectSpawn -= InGameObject_OnCreate;
+                    InGameObject.OnDestroy -= InGameObject_OnDestroy;
+                    TrackedDashes.Clear();
                 }
 
                 private static void InGameObject_OnDestroy(InGameObject inGameObject)

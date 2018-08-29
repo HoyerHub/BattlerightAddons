@@ -33,7 +33,7 @@ namespace Hoyer.Champions.Jumong
             MenuEvents.Update += MenuHandler.Update;
             Skills.Initialize += SpellInit;
             SpellDetector.OnSpellStopCast += SpellDetector_OnSpellStopCast;
-            CommonEvents.Update += OnUpdate;
+            Game.OnUpdate += OnUpdate;
         }
 
         private void SpellDetector_OnSpellStopCast(BattleRight.SDK.EventsArgs.SpellStopArgs args)
@@ -62,7 +62,7 @@ namespace Hoyer.Champions.Jumong
             Skills.ActiveInfos.AddRange(AbilityDatabase.Get("Jumong", AbilitySlot.EXAbility2));
         }
 
-        private void OnUpdate()
+        private void OnUpdate(EventArgs args)
         {
             if (!Enabled || !Game.IsInGame || Game.CurrentMatchState != MatchState.InRound || LocalPlayer.Instance.CharName != "Jumong" || LocalPlayer.Instance.HasBuff("SpellBlock"))
             {
@@ -79,6 +79,14 @@ namespace Hoyer.Champions.Jumong
 
         public void OnUnload()
         {
+            Console.WriteLine("Unload Jumong Started");
+            MenuHandler.Unload();
+            MenuEvents.Initialize -= MenuHandler.Init;
+            MenuEvents.Update -= MenuHandler.Update;
+            Skills.Initialize -= SpellInit;
+            SpellDetector.OnSpellStopCast -= SpellDetector_OnSpellStopCast;
+            Game.OnUpdate -= OnUpdate;
+            Console.WriteLine("Unload Jumong Ended");
         }
     }
 }

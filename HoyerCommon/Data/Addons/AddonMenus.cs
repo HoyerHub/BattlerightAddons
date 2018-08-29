@@ -27,6 +27,13 @@ namespace Hoyer.Common.Data.Addons
         private static readonly List<AddonMenu> Menus = new List<AddonMenu>();
         public static List<AddonMenu> Active = new List<AddonMenu>();
 
+        public static void Unload()
+        {
+            Menus.Clear();
+            Active.Clear();
+            Game.OnMatchStart -= Game_OnMatchStart;
+        }
+
         public static void Setup()
         {
             Menus.AddRange(new[]

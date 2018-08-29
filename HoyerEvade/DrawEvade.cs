@@ -22,6 +22,11 @@ namespace Hoyer.Evade
             Game.OnDraw += Game_OnDraw;
         }
 
+        public static void Unload()
+        {
+            Game.OnDraw -= Game_OnDraw;
+        }
+
         private static void DrawRectangle(Vector2 start, Vector2 end, float radius, Color color)
         {
             var w = end.X - start.X;

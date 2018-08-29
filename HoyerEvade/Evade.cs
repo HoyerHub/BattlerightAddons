@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using BattleRight.Core;
 using BattleRight.Core.Enumeration;
 using BattleRight.Core.GameObjects;
@@ -23,10 +24,17 @@ namespace Hoyer.Evade
 
         private static DodgeAbilityInfo _castingLastFrame;
 
-        public static void Init()
+        public static void Setup()
         {
-            CommonEvents.PostUpdate += OnUpdate;
+            Game.OnUpdate += OnUpdate;
             SpellDetector.OnSpellCast += SpellDetector_OnSpellCast;
+        }
+
+        public static void Unload()
+        {
+            Game.OnUpdate -= OnUpdate;
+            SpellDetector.OnSpellCast -= SpellDetector_OnSpellCast;
+            _castingLastFrame = null;
         }
 
         private static void SpellDetector_OnSpellCast(SpellCastArgs args)
@@ -35,7 +43,7 @@ namespace Hoyer.Evade
             if (casting != null && casting.UseInEvade && casting.ShouldUse()) _castingLastFrame = casting;
         }
 
-        public static void OnUpdate()
+        public static void OnUpdate(EventArgs args)
         {
             EvadeLogic();
         }

@@ -30,6 +30,14 @@ namespace Hoyer.Common.Debug
             MenuEvents.Initialize += MenuEvents_Initialize;
         }
 
+        public static void Unload()
+        {
+            SpellDetector.OnSpellCast -= SpellDetector_OnSpellCast;
+            InGameObject.OnCreate -= InGameObject_OnCreate;
+            InGameObject.OnDestroy -= InGameObject_OnDestroy;
+            MenuEvents.Initialize -= MenuEvents_Initialize;
+        }
+
         private static void MenuEvents_Initialize()
         {
             Main.DelayAction(delegate

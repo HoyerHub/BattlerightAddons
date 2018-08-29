@@ -43,28 +43,25 @@ namespace Hoyer.Evade
             try
             {
                 HoyerMain = MainMenu.GetMenu("Hoyer.MainMenu");
-            EvadeMain = HoyerMain.Add(new Menu("Evade.MainMenu", "Evade", true));
+                EvadeMain = HoyerMain.Add(new Menu("Evade.MainMenu", "Evade", true));
 
-            EvadeMain.Add(new MenuLabel("Evade"));
-            _enabledSkillsBox = new MenuCheckBox("evade_skills", "Use skills to dodge dangerous skillshots");
-            _enabledSkillsBox.OnValueChange += delegate(ChangedValueArgs<bool> args) { Evade.UseSkills = args.NewValue; };
-            EvadeMain.Add(_enabledSkillsBox);
+                EvadeMain.Add(new MenuLabel("Evade"));
+                _enabledSkillsBox = new MenuCheckBox("evade_skills", "Use skills to dodge dangerous skillshots");
+                _enabledSkillsBox.OnValueChange += delegate(ChangedValueArgs<bool> args) { Evade.UseSkills = args.NewValue; };
+                EvadeMain.Add(_enabledSkillsBox);
 
-            _enabledWalkBox = new MenuCheckBox("evade_walk", "Try to walk out of skillshots (doesnt work well enough yet)", false);
-            _enabledWalkBox.OnValueChange += delegate(ChangedValueArgs<bool> args) { Evade.UseWalk = args.NewValue; };
-            _enabledWalkBox.Hidden = true;
-            EvadeMain.Add(_enabledWalkBox);
+                _enabledWalkBox = new MenuCheckBox("evade_walk", "Try to walk out of skillshots (doesnt work well enough yet)", false);
+                _enabledWalkBox.OnValueChange += delegate(ChangedValueArgs<bool> args) { Evade.UseWalk = args.NewValue; };
+                _enabledWalkBox.Hidden = true;
+                EvadeMain.Add(_enabledWalkBox);
 
-            _enabledDrawings = new MenuCheckBox("evade_draw", "Draw Evade Drawings", false);
-            _enabledDrawings.OnValueChange += delegate (ChangedValueArgs<bool> args) { DrawEvade.Active = args.NewValue; };
-            EvadeMain.Add(_enabledDrawings);
+                _enabledDrawings = new MenuCheckBox("evade_draw", "Draw Evade Drawings", false);
+                _enabledDrawings.OnValueChange += delegate(ChangedValueArgs<bool> args) { DrawEvade.Active = args.NewValue; };
+                EvadeMain.Add(_enabledDrawings);
 
-            _jumpMode = EvadeMain.Add(new MenuComboBox("evade_jumpmode", "Jump Logic", 1, new[] {"Mouse Cursor", "DaPip's BestJumpPos"}));
-            _jumpMode.OnValueChange += delegate(ChangedValueArgs<int> args) { JumpMode = args.NewValue; };
+                _jumpMode = EvadeMain.Add(new MenuComboBox("evade_jumpmode", "Jump Logic", 1, new[] {"Mouse Cursor", "DaPip's BestJumpPos"}));
+                _jumpMode.OnValueChange += delegate(ChangedValueArgs<int> args) { JumpMode = args.NewValue; };
 
-            
-
-            
                 EvadeStatusInit();
                 EvadeSkillsInit();
                 EvadeEnemySkillsInit();
@@ -82,12 +79,21 @@ namespace Hoyer.Evade
             Console.WriteLine("[Evade/MenuHandler] Evade Menu Init");
         }
 
+        public static void Unload()
+        {
+            DodgeableSkillsMenuByChampion.Clear();
+            Console.WriteLine("Unload" + DodgeableSkillsMenuByChampion.Count);
+            EvadeOverrideMenuByChampion.Clear();
+            EvadeSkillsMenuByChampion.Clear();
+            EvadeStatusMenuByChampion.Clear();
+        }
+
         private static void AddEvadeEntries()
         {
             var sorted = new SortedDictionary<string, List<DodgeAbilityInfo>>();
             foreach (var dodgeAbility in AbilityDatabase.DodgeAbilities.Where(a => a.UseInEvade))
             {
-                var champion = dodgeAbility.Champion.ToCharacterString();
+                var champion = dodgeAbility.Champion;
                 if (sorted.ContainsKey(champion))
                 {
                     sorted[champion].Add(dodgeAbility);
@@ -140,10 +146,11 @@ namespace Hoyer.Evade
 
         private static void AddDodgeableEntries()
         {
+            Console.WriteLine("[Evade/MenuHandler] " + DodgeableSkillsMenuByChampion.Count);
             var sorted = new SortedDictionary<string, List<AbilityInfo>>();
-            foreach (var ability in AbilityDatabase.Abilites.Where(a => a.Danger > 0 && a.ObjectName != ""))
+            foreach (var ability in AbilityDatabase.Abilities.Where(a => a.Danger > 0 && a.ObjectName != ""))
             {
-                var champion = ability.Champion.ToCharacterString();
+                var champion = ability.Champion;
                 if (sorted.ContainsKey(champion))
                 {
                     sorted[champion].Add(ability);
@@ -157,7 +164,7 @@ namespace Hoyer.Evade
             foreach (var champion in sorted)
             {
                 var champ = champion.Key;
-                DodgeableSkillsMenuByChampion.Add(champ, new List<MenuItem> {DodgeableSkillsMenu.AddLabel(champ) });
+                DodgeableSkillsMenuByChampion.Add(champ, new List<MenuItem> {DodgeableSkillsMenu.AddLabel(champ)});
                 foreach (var abilityInfo in champion.Value)
                 {
                     AddDodgeableEntry(champ, abilityInfo);
@@ -209,8 +216,8 @@ namespace Hoyer.Evade
 
         public static int OverrideValue(this DodgeAbilityInfo info)
         {
-            return ((MenuComboBox) EvadeOverrideMenuByChampion[info.Champion.ToCharacterString()]
-                    .First(s => s.Name == "override_" + info.Champion.ToCharacterString() + info.AbilitySlot.ToFriendlyString()))
+            return ((MenuComboBox) EvadeOverrideMenuByChampion[info.Champion]
+                    .First(s => s.Name == "override_" + info.Champion + info.AbilitySlot.ToFriendlyString()))
                 .CurrentValue;
         }
 
@@ -218,8 +225,8 @@ namespace Hoyer.Evade
         {
             if (newValue && _activeSpell == null)
             {
-                _activeSpell = (MenuCheckBox) EvadeStatusMenuByChampion[info.Champion.ToCharacterString()]
-                    .First(s => s.Name == "isActive_" + info.Champion.ToCharacterString() + info.AbilitySlot.ToFriendlyString());
+                _activeSpell = (MenuCheckBox) EvadeStatusMenuByChampion[info.Champion]
+                    .First(s => s.Name == "isActive_" + info.Champion + info.AbilitySlot.ToFriendlyString());
                 _activeSpell.CurrentValue = true;
             }
             else if (!newValue)
@@ -231,39 +238,40 @@ namespace Hoyer.Evade
 
         public static bool ShouldUse(this DodgeAbilityInfo info)
         {
-            var champList = EvadeSkillsMenuByChampion[info.Champion.ToCharacterString()];
+            var champList = EvadeSkillsMenuByChampion[info.Champion];
             var checkbox = (MenuCheckBox) champList.FirstOrDefault(s =>
-                s.Name == "use_" + info.Champion.ToCharacterString() + info.AbilitySlot.ToFriendlyString());
+                s.Name == "use_" + info.Champion + info.AbilitySlot.ToFriendlyString());
             if (checkbox != default(MenuCheckBox)) return checkbox.CurrentValue;
 
-            Console.WriteLine("[Evade/MenuHandler] Strange! Couldn't find menu item for " + info.Champion.ToCharacterString() + info.AbilitySlot.ToFriendlyString());
+            Console.WriteLine("[Evade/MenuHandler] Strange! Couldn't find menu item for " + info.Champion +
+                              info.AbilitySlot.ToFriendlyString());
             return false;
         }
 
         public static int GetDanger(this DodgeAbilityInfo info)
         {
-            return ((MenuIntSlider) EvadeSkillsMenuByChampion[info.Champion.ToCharacterString()]
-                    .First(s => s.Name == "danger_" + info.Champion.ToCharacterString() + info.AbilitySlot.ToFriendlyString()))
+            return ((MenuIntSlider) EvadeSkillsMenuByChampion[info.Champion]
+                    .First(s => s.Name == "danger_" + info.Champion + info.AbilitySlot.ToFriendlyString()))
                 .CurrentValue;
         }
 
         public static bool ShouldUse(this AbilityInfo info)
         {
-            return ((MenuCheckBox) DodgeableSkillsMenuByChampion[info.Champion.ToCharacterString()]
-                    .First(s => s.Name == "dodge_" + info.Champion.ToCharacterString() + info.ObjectName + info.AbilityId))
+            return ((MenuCheckBox) DodgeableSkillsMenuByChampion[info.Champion]
+                    .First(s => s.Name == "dodge_" + info.Champion + info.ObjectName + info.AbilityId))
                 .CurrentValue;
         }
 
         public static int GetDanger(this AbilityInfo info)
         {
-            return ((MenuIntSlider) DodgeableSkillsMenuByChampion[info.Champion.ToCharacterString()]
-                    .First(s => s.Name == "danger_" + info.Champion.ToCharacterString() + info.ObjectName + info.AbilityId))
+            return ((MenuIntSlider) DodgeableSkillsMenuByChampion[info.Champion]
+                    .First(s => s.Name == "danger_" + info.Champion + info.ObjectName + info.AbilityId))
                 .CurrentValue;
         }
 
         private static void FirstRun()
         {
-            Evade.UseWalk = false;//_enabledWalkBox.CurrentValue;
+            Evade.UseWalk = false; //_enabledWalkBox.CurrentValue;
             Evade.UseSkills = _enabledSkillsBox.CurrentValue;
             DrawEvade.Active = _enabledDrawings.CurrentValue;
             JumpMode = _jumpMode.CurrentValue;
@@ -274,8 +282,8 @@ namespace Hoyer.Evade
             if (Game.IsInGame)
             {
                 Console.WriteLine("[Evade/MenuHandler] Hiding unnecessary options");
-                var champ = LocalPlayer.Instance.CharName.ToCharacterString();
-                var enemychamps = EntitiesManager.EnemyTeam.Select(e => e.CharName.ToCharacterString()).ToArray();
+                var champ = LocalPlayer.Instance.CharName;
+                var enemychamps = EntitiesManager.EnemyTeam.Select(e => e.CharName).ToArray();
 
                 foreach (var pair in EvadeSkillsMenuByChampion)
                 {

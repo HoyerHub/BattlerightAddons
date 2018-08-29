@@ -17,6 +17,14 @@ namespace Hoyer.Common.Utilities
             OnInit();
         }
 
+        public static void Unload()
+        {
+            Game.OnUpdate -= MB_Update;
+            Game.OnMatchStart -= Game_OnMatchStart;
+            HUDLabels.Clear();
+            UILabels.Clear();
+        }
+
         private static void OnInit()
         {
             Game.OnUpdate += MB_Update;

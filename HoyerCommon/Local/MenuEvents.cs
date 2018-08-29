@@ -27,6 +27,13 @@ namespace Hoyer.Common.Local
             Main.Init += Init;
         }
 
+        public static void Unload()
+        {
+            Main.Init -= Init;
+            Game.OnMatchStart -= MatchUpdate;
+            Game.OnMatchEnd -= MatchUpdate;
+        }
+
         public static bool GetBool(string name)
         {
             return HoyerMenu.Get<MenuCheckBox>(name).CurrentValue;

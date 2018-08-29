@@ -61,16 +61,6 @@ namespace Hoyer.Common.Extensions
             return "Error";
         }
 
-        public static string ToCharacterString(this string character)
-        {
-            switch (character)
-            {
-                case "Gunner": return "Jade";
-                case "Glutton": return "Rook";
-                default: return character;
-            }
-        }
-
         public static string ToFriendlyString(this AbilityType type)
         {
             switch (type)
@@ -108,6 +98,8 @@ namespace Hoyer.Common.Extensions
                     return "HP Shield";
                 case DodgeAbilityType.AoEHealthShield:
                     return "AOE HP Shield";
+                case DodgeAbilityType.KnockAway:
+                    return "Anti Dash";
             }
             Console.WriteLine("Error in parsing of DodgeAbilityType");
             return "Error";

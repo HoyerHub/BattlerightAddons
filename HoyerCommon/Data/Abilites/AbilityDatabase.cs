@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BattleRight.Core.Enumeration;
 using BattleRight.Core.GameObjects;
@@ -10,14 +11,22 @@ namespace Hoyer.Common.Data.Abilites
     //Work in progress
     public static class AbilityDatabase
     {
-        public static List<AbilityInfo> Abilites = new List<AbilityInfo>();
+        public static List<AbilityInfo> Abilities = new List<AbilityInfo>();
         public static List<DodgeAbilityInfo> DodgeAbilities = new List<DodgeAbilityInfo>();
         public static List<ObstacleAbilityInfo> ObstacleAbilities = new List<ObstacleAbilityInfo>();
 
-        static AbilityDatabase()
+        public static void Unload()
+        {
+            Abilities.Clear();
+            DodgeAbilities.Clear();
+            ObstacleAbilities.Clear();
+        }
+
+        public static void Setup()
         {
             #region Abilities
 
+            Console.WriteLine("[Common/Database] " + Abilities.Count);
             Add(new AbilityInfo
             {
                 Champion = "Dummy McFuckFace",
@@ -223,7 +232,7 @@ namespace Hoyer.Common.Data.Abilites
             });
             Add(new AbilityInfo
             {
-                Champion = "Gunner",
+                Champion = "Jade",
                 ObjectName = "RevolverShot",
                 AbilitySlot = AbilitySlot.Ability1,
                 AbilityId = 56844512,
@@ -235,7 +244,7 @@ namespace Hoyer.Common.Data.Abilites
             });
             Add(new AbilityInfo
             {
-                Champion = "Gunner",
+                Champion = "Jade",
                 ObjectName = "RevolverShotSecond",
                 AbilitySlot = AbilitySlot.Ability1,
                 AbilityId = 1414514524,
@@ -247,7 +256,7 @@ namespace Hoyer.Common.Data.Abilites
             });
             Add(new AbilityInfo
             {
-                Champion = "Gunner",
+                Champion = "Jade",
                 ObjectName = "Snipe",
                 AbilitySlot = AbilitySlot.Ability2,
                 AbilityId = 830935979,
@@ -261,7 +270,7 @@ namespace Hoyer.Common.Data.Abilites
             });
             Add(new AbilityInfo
             {
-                Champion = "Gunner",
+                Champion = "Jade",
                 ObjectName = "DisablingShot",
                 AbilitySlot = AbilitySlot.Ability5,
                 AbilityId = 1632681037,
@@ -273,7 +282,7 @@ namespace Hoyer.Common.Data.Abilites
             });
             Add(new AbilityInfo
             {
-                Champion = "Gunner",
+                Champion = "Jade",
                 ObjectName = "SnapShot",
                 AbilitySlot = AbilitySlot.EXAbility1,
                 AbilityId = 159773418,
@@ -286,7 +295,7 @@ namespace Hoyer.Common.Data.Abilites
             });
             Add(new AbilityInfo
             {
-                Champion = "Gunner",
+                Champion = "Jade",
                 ObjectName = "ExplosiveShellsProjectile",
                 AbilitySlot = AbilitySlot.Ability7,
                 AbilityId = 1014869658,
@@ -583,7 +592,7 @@ namespace Hoyer.Common.Data.Abilites
             });
             Add(new AbilityInfo
             {
-                Champion = "Glutton",
+                Champion = "Rook",
                 ObjectName = "BoulderTossThrow",
                 AbilitySlot = AbilitySlot.Ability5,
                 AbilityType = AbilityType.CircleThrowObject,
@@ -594,7 +603,7 @@ namespace Hoyer.Common.Data.Abilites
             });
             Add(new AbilityInfo
             {
-                Champion = "Glutton",
+                Champion = "Rook",
                 ObjectName = "Rush",
                 AbilitySlot = AbilitySlot.Ability3,
                 AbilityType = AbilityType.Dash,
@@ -1308,7 +1317,7 @@ namespace Hoyer.Common.Data.Abilites
             });
             Add(new DodgeAbilityInfo
             {
-                Champion = "Glutton",
+                Champion = "Rook",
                 AbilitySlot = AbilitySlot.Ability4,
                 AbilityId = 1413535840,
                 AbilityIndex = 9,
@@ -1319,7 +1328,7 @@ namespace Hoyer.Common.Data.Abilites
             });
             Add(new DodgeAbilityInfo
             {
-                Champion = "Glutton",
+                Champion = "Rook",
                 AbilitySlot = AbilitySlot.Ability2,
                 AbilityId = 1397275147,
                 AbilityIndex = 2,
@@ -1331,7 +1340,7 @@ namespace Hoyer.Common.Data.Abilites
             });
             Add(new DodgeAbilityInfo
             {
-                Champion = "Gunner",
+                Champion = "Jade",
                 AbilitySlot = AbilitySlot.Ability3,
                 AbilityId = 512745910,
                 AbilityIndex = 6,
@@ -1612,17 +1621,17 @@ namespace Hoyer.Common.Data.Abilites
         }
         public static AbilityInfo[] Get(string champ, AbilitySlot slot)
         {
-            return Abilites.Where(a => a.Champion == champ && a.AbilitySlot == slot).ToArray();
+            return Abilities.Where(a => a.Champion == champ && a.AbilitySlot == slot).ToArray();
         }
 
         public static AbilityInfo Get(string objectName)
         {
-            return Abilites.FirstOrDefault(a => a.ObjectName == objectName);
+            return Abilities.FirstOrDefault(a => a.ObjectName == objectName);
         }
 
         public static AbilityInfo Get(int spellId)
         {
-            return Abilites.FirstOrDefault(a => a.AbilityId == spellId);
+            return Abilities.FirstOrDefault(a => a.AbilityId == spellId);
         }
 
         public static DodgeAbilityInfo GetDodge(string champ, AbilitySlot slot)
@@ -1653,7 +1662,7 @@ namespace Hoyer.Common.Data.Abilites
         }
         private static void Add(AbilityInfo info)
         {
-            Abilites.Add(info);
+            Abilities.Add(info);
         }
     }
 }
