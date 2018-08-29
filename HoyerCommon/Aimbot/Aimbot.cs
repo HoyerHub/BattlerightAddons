@@ -26,7 +26,7 @@ namespace Hoyer.Common.AimBot
 
         public static void Setup()
         {
-            Game.OnMatchStart += Game_OnMatchStart;
+            Game.OnMatchStateUpdate += Game_OnMatchStateUpdate;
             Game.OnMatchEnd += args => MenuHandler.AimbotMenu.Hidden = false;
             SpellDetector.OnSpellCast += args =>
             {
@@ -45,7 +45,7 @@ namespace Hoyer.Common.AimBot
             MenuEvents.Initialize += MenuHandler.Setup;
         }
 
-        private static void Game_OnMatchStart(System.EventArgs args)
+        private static void Game_OnMatchStateUpdate(EventArgs args)
         {
             _shouldUse = false;
             Main.DelayAction(delegate
@@ -56,14 +56,14 @@ namespace Hoyer.Common.AimBot
                     _shouldUse = !addons.Any();
                     if (!_shouldUse)
                     {
-                        var addon = addons[0];
-                        Console.WriteLine("[HoyerCommon/Aimbot] Found " + addon.Creator + "'s " + addon.Name + ". Disabling Aimbot for this match");
+                        //var addon = addons[0];
+                        //Console.WriteLine("[HoyerCommon/Aimbot] Found " + addon.Creator + "'s " + addon.Name + ". Disabling Aimbot for this match");
                     }
                     else
                     {
                         Skills.AddFromDatabase();
-                        Console.WriteLine("[HoyerCommon/Aimbot] Found " + Skills.Active.Count + " abilities for " +
-                                          LocalPlayer.Instance.CharName.ToCharacterString() + " in the database");
+                        //Console.WriteLine("[HoyerCommon/Aimbot] Found " + Skills.Active.Count + " abilities for " +
+                        //                  LocalPlayer.Instance.CharName.ToCharacterString() + " in the database");
                     }
                     MenuHandler.AimbotMenu.Hidden = !_shouldUse;
                 }

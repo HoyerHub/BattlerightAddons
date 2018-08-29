@@ -1232,6 +1232,19 @@ namespace Hoyer.Common.Data.Abilites
 
             Add(new DodgeAbilityInfo
             {
+                Champion = "Taya",
+                AbilitySlot = AbilitySlot.Ability4,
+                SharedCooldown = AbilitySlot.EXAbility2,
+                AbilityId = 1600053270,
+                AbilityIndex = 10,
+                AbilityType = DodgeAbilityType.KnockAway,
+                Range = 1,
+                MinDanger = 2,
+                Priority = 1,
+                CastTime = 0.1f
+            });
+            Add(new DodgeAbilityInfo
+            {
                 Champion = "Shifu",
                 AbilitySlot = AbilitySlot.Ability3,
                 SharedCooldown = AbilitySlot.EXAbility1,

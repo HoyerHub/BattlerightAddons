@@ -231,9 +231,13 @@ namespace Hoyer.Evade
 
         public static bool ShouldUse(this DodgeAbilityInfo info)
         {
-            return ((MenuCheckBox) EvadeSkillsMenuByChampion[info.Champion.ToCharacterString()]
-                    .First(s => s.Name == "use_" + info.Champion.ToCharacterString() + info.AbilitySlot.ToFriendlyString()))
-                .CurrentValue;
+            var champList = EvadeSkillsMenuByChampion[info.Champion.ToCharacterString()];
+            var checkbox = (MenuCheckBox) champList.FirstOrDefault(s =>
+                s.Name == "use_" + info.Champion.ToCharacterString() + info.AbilitySlot.ToFriendlyString());
+            if (checkbox != default(MenuCheckBox)) return checkbox.CurrentValue;
+
+            Console.WriteLine("[Evade/MenuHandler] Strange! Couldn't find menu item for " + info.Champion.ToCharacterString() + info.AbilitySlot.ToFriendlyString());
+            return false;
         }
 
         public static int GetDanger(this DodgeAbilityInfo info)

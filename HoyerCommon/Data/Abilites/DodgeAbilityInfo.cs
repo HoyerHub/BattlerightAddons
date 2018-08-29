@@ -15,8 +15,10 @@ namespace Hoyer.Common.Data.Abilites
         Shield,
         HealthShield,
         AoEHealthShield,
-        Ghost
+        Ghost,
+        KnockAway
     }
+
     public class DodgeAbilityInfo
     {
         public string Champion;

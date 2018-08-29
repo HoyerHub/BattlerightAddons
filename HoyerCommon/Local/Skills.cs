@@ -28,6 +28,8 @@ namespace Hoyer.Common.Local
 
         public static void AddFromDatabase()
         {
+            ActiveInfos.Clear();
+            Active.Clear();
             foreach (var ability in AbilityDatabase.Abilites.Where(a=>a.Champion == LocalPlayer.Instance.CharName))
             {
                 ActiveInfos.Add(ability);
