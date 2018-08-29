@@ -25,8 +25,6 @@ namespace Hoyer.Common.Data.Abilites
         public static void Setup()
         {
             #region Abilities
-
-            Console.WriteLine("[Common/Database] " + Abilities.Count);
             Add(new AbilityInfo
             {
                 Champion = "Dummy McFuckFace",
@@ -583,6 +581,18 @@ namespace Hoyer.Common.Data.Abilites
                 Champion = "Varesh",
                 ObjectName = "Shatter",
                 AbilityId = 1302893033,
+                AbilitySlot = AbilitySlot.Ability5,
+                AbilityType = AbilityType.CircleThrowObject,
+                Range = 9,
+                Radius = 1.8f,
+                FixedDelay = 0.7f,
+                Danger = 1,
+            });
+            Add(new AbilityInfo
+            {
+                Champion = "Varesh",
+                ObjectName = "Shatter",
+                AbilityId = 792310466,
                 AbilitySlot = AbilitySlot.Ability5,
                 AbilityType = AbilityType.CircleThrowObject,
                 Range = 9,
