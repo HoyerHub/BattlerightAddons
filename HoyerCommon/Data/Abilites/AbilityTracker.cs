@@ -67,8 +67,6 @@ namespace Hoyer.Common.Data.Abilites
 
                 public static void Setup()
                 {
-                    SpellDetector.OnSpellCast += SpellDetector_OnSpellCast;
-                    SpellDetector.OnSpellStopCast += SpellDetector_OnSpellStopCast;
                 }
 
                 public static void Unload()
@@ -102,8 +100,6 @@ namespace Hoyer.Common.Data.Abilites
 
                 public static void Setup()
                 {
-                    Game.OnMatchStart += OnMatchStart;
-                    Game.OnUpdate += Game_OnUpdate;
                 }
 
                 public static void Unload()
