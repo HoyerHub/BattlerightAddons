@@ -26,7 +26,7 @@ namespace Hoyer.Common.AimBot
 
         public static void Unload()
         {
-            Game.OnMatchStateUpdate -= Game_OnMatchStateUpdate;
+            Game.OnMatchStateUpdate -= Game_OnMatchStart;
             Game.OnMatchEnd -= OnMatchEnd;
             SpellDetector.OnSpellCast -= SpellDetector_OnSpellCast;
             SpellDetector.OnSpellStopCast -= SpellDetector_OnSpellStopCast;
@@ -37,7 +37,7 @@ namespace Hoyer.Common.AimBot
 
         public static void Setup()
         {
-            Game.OnMatchStateUpdate += Game_OnMatchStateUpdate;
+            Game.OnMatchStart += Game_OnMatchStart;
             Game.OnMatchEnd += OnMatchEnd;
             SpellDetector.OnSpellCast += SpellDetector_OnSpellCast;
             SpellDetector.OnSpellStopCast += SpellDetector_OnSpellStopCast;
@@ -65,7 +65,7 @@ namespace Hoyer.Common.AimBot
             _castingId = args.Caster.AbilitySystem.CastingAbilityId;
         }
 
-        private static void Game_OnMatchStateUpdate(EventArgs args)
+        private static void Game_OnMatchStart(EventArgs args)
         {
             _shouldUse = false;
             Main.DelayAction(delegate

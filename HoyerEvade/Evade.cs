@@ -51,11 +51,11 @@ namespace Hoyer.Evade
 
         private static void EvadeLogic()
         {
-            var trackedProjectiles = AbilityTracker.Enemy.Projectiles.TrackedProjectiles;
-            var trackedCircularThrows = AbilityTracker.Enemy.CircularThrows.TrackedThrows;
-            var trackedDashes = AbilityTracker.Enemy.Dashes.TrackedDashes;
-            var trackedCircularJumps = AbilityTracker.Enemy.CircularJumps.TrackedCircularJumps;
-            var trackedCurveProjectiles = AbilityTracker.Enemy.CurveProjectiles.TrackedProjectiles;
+            var trackedProjectiles = AbilityTracker.Enemy.Projectiles.TrackedProjectiles.ToArray();
+            var trackedCircularThrows = AbilityTracker.Enemy.CircularThrows.TrackedThrows.ToArray();
+            var trackedDashes = AbilityTracker.Enemy.Dashes.TrackedDashes.ToArray();
+            var trackedCircularJumps = AbilityTracker.Enemy.CircularJumps.TrackedCircularJumps.ToArray();
+            var trackedCurveProjectiles = AbilityTracker.Enemy.CurveProjectiles.TrackedProjectiles.ToArray();
 
             if (UseSkills)
                 if (SkillAimLogic())
