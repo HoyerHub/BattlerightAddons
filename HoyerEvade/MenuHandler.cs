@@ -213,9 +213,9 @@ namespace Hoyer.Evade
 
         public static int OverrideValue(this DodgeAbilityInfo info)
         {
-            return ((MenuComboBox) EvadeOverrideMenuByChampion[info.Champion]
-                    .First(s => s.Name == "override_" + info.Champion + info.AbilitySlot.ToFriendlyString()))
-                .CurrentValue;
+            var combobox = (MenuComboBox) EvadeOverrideMenuByChampion[info.Champion]
+                .FirstOrDefault(s => s.Name == "override_" + info.Champion + info.AbilitySlot.ToFriendlyString());
+            return combobox == null ? 0 : combobox.CurrentValue;
         }
 
         public static void SetStatus(this DodgeAbilityInfo info, bool newValue)
@@ -223,8 +223,8 @@ namespace Hoyer.Evade
             if (newValue && _activeSpell == null)
             {
                 _activeSpell = (MenuCheckBox) EvadeStatusMenuByChampion[info.Champion]
-                    .First(s => s.Name == "isActive_" + info.Champion + info.AbilitySlot.ToFriendlyString());
-                _activeSpell.CurrentValue = true;
+                    .FirstOrDefault(s => s.Name == "isActive_" + info.Champion + info.AbilitySlot.ToFriendlyString());
+                if (_activeSpell != null) _activeSpell.CurrentValue = true;
             }
             else if (!newValue)
             {

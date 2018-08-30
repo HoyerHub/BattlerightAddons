@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BattleRight.Core;
 using BattleRight.Core.Enumeration;
@@ -154,8 +155,9 @@ namespace Hoyer.Evade
 
         private static bool SkillAimLogic()
         {
-            var dangerousProjectiles = AbilityTracker.Enemy.Projectiles.TrackedProjectiles.Where(p => p.IsDangerous).ToArray();
-            var dangerousThrows = AbilityTracker.Enemy.CircularThrows.TrackedThrows.Where(t => t.IsDangerous).ToArray();
+            var dangerousProjectiles = new List<TrackedProjectile>();
+            dangerousProjectiles.AddRange(AbilityTracker.Enemy.Projectiles.TrackedProjectiles);
+            dangerousProjectiles = dangerousProjectiles.Where(p => p.IsDangerous).ToList();
             if (_castingLastFrame != null && LocalPlayer.Instance.AbilitySystem.IsCasting &&
                 LocalPlayer.Instance.AbilitySystem.CastingAbilityId == _castingLastFrame.AbilityId)
             {
