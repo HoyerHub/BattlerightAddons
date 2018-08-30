@@ -51,21 +51,15 @@ namespace Hoyer.Evade
 
         private static void EvadeLogic()
         {
-            var trackedProjectiles = AbilityTracker.Enemy.Projectiles.TrackedProjectiles.ToArray();
-            var trackedCircularThrows = AbilityTracker.Enemy.CircularThrows.TrackedThrows.ToArray();
-            var trackedDashes = AbilityTracker.Enemy.Dashes.TrackedDashes.ToArray();
-            var trackedCircularJumps = AbilityTracker.Enemy.CircularJumps.TrackedCircularJumps.ToArray();
-            var trackedCurveProjectiles = AbilityTracker.Enemy.CurveProjectiles.TrackedProjectiles.ToArray();
-
             if (UseSkills)
                 if (SkillAimLogic())
                     return;
 
-            if (trackedProjectiles.Any())
+            if (AbilityTracker.Enemy.Projectiles.TrackedObjects.Any())
             {
-                foreach (var trackedProjectile in trackedProjectiles) trackedProjectile.Update();
+                foreach (var trackedProjectile in AbilityTracker.Enemy.Projectiles.TrackedObjects) trackedProjectile.Update();
 
-                var dangerousProjectiles = trackedProjectiles.Where(p => p.IsDangerous).ToArray();
+                var dangerousProjectiles = AbilityTracker.Enemy.Projectiles.TrackedObjects.Where(p => p.IsDangerous).ToArray();
                 if (dangerousProjectiles.Any())
                 {
                     var mostDangerous = dangerousProjectiles.OrderByDescending(p => p.Data.Danger).First();
@@ -77,11 +71,11 @@ namespace Hoyer.Evade
                 }
             }
 
-            if (trackedDashes.Any())
+            if (AbilityTracker.Enemy.Dashes.TrackedObjects.Any())
             {
-                foreach (var trackedDash in trackedDashes) trackedDash.Update();
+                foreach (var trackedDash in AbilityTracker.Enemy.Dashes.TrackedObjects) trackedDash.Update();
 
-                var dangerousDashes = trackedDashes.Where(d => d.IsDangerous).ToArray();
+                var dangerousDashes = AbilityTracker.Enemy.Dashes.TrackedObjects.Where(d => d.IsDangerous).ToArray();
                 if (dangerousDashes.Any())
                 {
                     var mostDangerous = dangerousDashes.OrderByDescending(p => p.Data.Danger).First();
@@ -93,11 +87,11 @@ namespace Hoyer.Evade
                 }
             }
 
-            if (trackedCircularThrows.Any())
+            if (AbilityTracker.Enemy.CircularThrows.TrackedObjects.Any())
             {
-                foreach (var trackedThrow in trackedCircularThrows) trackedThrow.Update();
+                foreach (var trackedThrow in AbilityTracker.Enemy.CircularThrows.TrackedObjects) trackedThrow.Update();
 
-                var dangerousThrows = trackedCircularThrows.Where(t => t.IsDangerous).ToArray();
+                var dangerousThrows = AbilityTracker.Enemy.CircularThrows.TrackedObjects.Where(t => t.IsDangerous).ToArray();
                 if (dangerousThrows.Any())
                 {
                     var mostDangerous = dangerousThrows.OrderByDescending(p => p.Data.Danger).First();
@@ -115,11 +109,11 @@ namespace Hoyer.Evade
                 }
             }
 
-            if (trackedCircularJumps.Any())
+            if (AbilityTracker.Enemy.CircularJumps.TrackedObjects.Any())
             {
-                foreach (var trackedJump in trackedCircularJumps) trackedJump.Update();
+                foreach (var trackedJump in AbilityTracker.Enemy.CircularJumps.TrackedObjects) trackedJump.Update();
 
-                var dangerousJumps = trackedCircularJumps.Where(t => t.IsDangerous).ToArray();
+                var dangerousJumps = AbilityTracker.Enemy.CircularJumps.TrackedObjects.Where(t => t.IsDangerous).ToArray();
                 if (dangerousJumps.Any())
                 {
                     var mostDangerous = dangerousJumps.OrderByDescending(p => p.Data.Danger).First();
@@ -137,11 +131,11 @@ namespace Hoyer.Evade
                 }
             }
 
-            if (trackedCurveProjectiles.Any())
+            if (AbilityTracker.Enemy.CurveProjectiles.TrackedObjects.Any())
             {
-                foreach (var trackedCurveProjectile in trackedCurveProjectiles) trackedCurveProjectile.Update();
+                foreach (var trackedCurveProjectile in AbilityTracker.Enemy.CurveProjectiles.TrackedObjects) trackedCurveProjectile.Update();
 
-                var dangerousProjectiles = trackedCurveProjectiles.Where(p => p.IsDangerous).ToArray();
+                var dangerousProjectiles = AbilityTracker.Enemy.CurveProjectiles.TrackedObjects.Where(p => p.IsDangerous).ToArray();
                 if (dangerousProjectiles.Any())
                 {
                     var mostDangerous = dangerousProjectiles.OrderByDescending(p => p.Data.Danger).First();
@@ -156,7 +150,7 @@ namespace Hoyer.Evade
         private static bool SkillAimLogic()
         {
             var dangerousProjectiles = new List<TrackedProjectile>();
-            dangerousProjectiles.AddRange(AbilityTracker.Enemy.Projectiles.TrackedProjectiles);
+            dangerousProjectiles.AddRange(AbilityTracker.Enemy.Projectiles.TrackedObjects);
             dangerousProjectiles = dangerousProjectiles.Where(p => p.IsDangerous).ToList();
             if (_castingLastFrame != null && LocalPlayer.Instance.AbilitySystem.IsCasting &&
                 LocalPlayer.Instance.AbilitySystem.CastingAbilityId == _castingLastFrame.AbilityId)

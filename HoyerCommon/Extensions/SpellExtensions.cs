@@ -26,7 +26,7 @@ namespace Hoyer.Common.Extensions
                 var colsolver = CollisionSolver.CheckThickLineCollision(localPlayer.Pos(),
                     target.Pos() + direction, radius);
 
-                return colsolver.IsColliding || AbilityTracker.Enemy.Obstacles.TrackedObstacles.Any(o => o.BlocksProjectileTo(target, radius));
+                return colsolver.IsColliding || AbilityTracker.Enemy.Obstacles.TrackedObjects.Any(o => o.BlocksProjectileTo(target, radius));
             }
             return false;
         }

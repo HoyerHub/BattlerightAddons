@@ -224,9 +224,12 @@ namespace Hoyer.Evade
             {
                 _activeSpell = (MenuCheckBox) EvadeStatusMenuByChampion[info.Champion]
                     .FirstOrDefault(s => s.Name == "isActive_" + info.Champion + info.AbilitySlot.ToFriendlyString());
-                if (_activeSpell != null) _activeSpell.CurrentValue = true;
+                if (_activeSpell != null)
+                {
+                    _activeSpell.CurrentValue = true;
+                }
             }
-            else if (!newValue)
+            else if (!newValue && _activeSpell != null)
             {
                 _activeSpell.CurrentValue = false;
                 _activeSpell = null;

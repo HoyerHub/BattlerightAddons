@@ -42,7 +42,7 @@ namespace Hoyer.Common.Data.Abilites
 
     public class AbilityInfo
     {
-        public string Champion;
+        public string Champion = "";
         public AbilitySlot AbilitySlot;
         public int AbilityId;
         public string ObjectName = "";

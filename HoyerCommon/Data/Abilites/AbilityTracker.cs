@@ -148,31 +148,47 @@ namespace Hoyer.Common.Data.Abilites
 
             public static class CircularThrows
             {
-                public static event Action<TrackedThrowObject> OnDangerous = delegate { };
-                public static event Action<TrackedThrowObject> OnDangerousDestroyed = delegate { };
-
-                public static List<TrackedThrowObject> TrackedThrows = new List<TrackedThrowObject>();
+                public static List<TrackedThrowObject> TrackedObjects = new List<TrackedThrowObject>();
+                private static readonly List<TrackedThrowObject> AddAfterFrame = new List<TrackedThrowObject>();
+                private static readonly List<TrackedThrowObject> RemoveAfterFrame = new List<TrackedThrowObject>();
 
                 public static void Setup()
                 {
                     EnemyObjectSpawn += InGameObject_OnCreate;
                     InGameObject.OnDestroy += InGameObject_OnDestroy;
+                    Game.OnLateUpdate += Game_OnLateUpdate;
+                }
+
+                private static void Game_OnLateUpdate(EventArgs args)
+                {
+                    if (AddAfterFrame.Any())
+                    {
+                        TrackedObjects.AddRange(AddAfterFrame);
+                        AddAfterFrame.Clear();
+                    }
+                    if (RemoveAfterFrame.Any())
+                    {
+                        foreach (var o in RemoveAfterFrame)
+                        {
+                            TrackedObjects.Remove(o);
+                        }
+                        RemoveAfterFrame.Clear();
+                    }
                 }
 
                 public static void Unload()
                 {
                     EnemyObjectSpawn -= InGameObject_OnCreate;
                     InGameObject.OnDestroy -= InGameObject_OnDestroy;
-                    TrackedThrows.Clear();
+                    TrackedObjects.Clear();
                 }
 
                 private static void InGameObject_OnDestroy(InGameObject inGameObject)
                 {
-                    var tryDanger = TrackedThrows.FirstOrDefault(t => t.ThrowObject.GameObject == inGameObject);
+                    var tryDanger = TrackedObjects.FirstOrDefault(t => t.ThrowObject.GameObject == inGameObject);
                     if (tryDanger != default(TrackedThrowObject))
                     {
-                        TrackedThrows.Remove(tryDanger);
-                        OnDangerousDestroyed.Invoke(tryDanger);
+                        RemoveAfterFrame.Add(tryDanger);
                     }
                 }
 
@@ -191,39 +207,54 @@ namespace Hoyer.Common.Data.Abilites
                             return;
                         }
                         var tto = new TrackedThrowObject(throwObj, data);
-                        TrackedThrows.Add(tto);
-                        OnDangerous.Invoke(tto);
+                        AddAfterFrame.Add(tto);
                     }
                 }
             }
 
             public static class CircularJumps
             {
-                public static event Action<TrackedCircularJump> OnDangerous = delegate { };
-                public static event Action<TrackedCircularJump> OnDangerousDestroyed = delegate { };
-
-                public static List<TrackedCircularJump> TrackedCircularJumps = new List<TrackedCircularJump>();
+                public static List<TrackedCircularJump> TrackedObjects = new List<TrackedCircularJump>();
+                private static readonly List<TrackedCircularJump> AddAfterFrame = new List<TrackedCircularJump>();
+                private static readonly List<TrackedCircularJump> RemoveAfterFrame = new List<TrackedCircularJump>();
 
                 public static void Setup()
                 {
                     EnemyObjectSpawn += InGameObject_OnCreate;
                     InGameObject.OnDestroy += InGameObject_OnDestroy;
+                    Game.OnLateUpdate += Game_OnLateUpdate;
+                }
+
+                private static void Game_OnLateUpdate(EventArgs args)
+                {
+                    if (AddAfterFrame.Any())
+                    {
+                        TrackedObjects.AddRange(AddAfterFrame);
+                        AddAfterFrame.Clear();
+                    }
+                    if (RemoveAfterFrame.Any())
+                    {
+                        foreach (var o in RemoveAfterFrame)
+                        {
+                            TrackedObjects.Remove(o);
+                        }
+                        RemoveAfterFrame.Clear();
+                    }
                 }
 
                 public static void Unload()
                 {
                     EnemyObjectSpawn -= InGameObject_OnCreate;
                     InGameObject.OnDestroy -= InGameObject_OnDestroy;
-                    TrackedCircularJumps.Clear();
+                    TrackedObjects.Clear();
                 }
 
                 private static void InGameObject_OnDestroy(InGameObject inGameObject)
                 {
-                    var tryDanger = TrackedCircularJumps.FirstOrDefault(t => t.TravelObject.GameObject == inGameObject);
+                    var tryDanger = TrackedObjects.FirstOrDefault(t => t.TravelObject.GameObject == inGameObject);
                     if (tryDanger != default(TrackedCircularJump))
                     {
-                        TrackedCircularJumps.Remove(tryDanger);
-                        OnDangerousDestroyed.Invoke(tryDanger);
+                        RemoveAfterFrame.Add(tryDanger);
                     }
                 }
 
@@ -242,36 +273,55 @@ namespace Hoyer.Common.Data.Abilites
                             return;
                         }
                         var tcj = new TrackedCircularJump(travelObj, data);
-                        TrackedCircularJumps.Add(tcj);
-                        OnDangerous.Invoke(tcj);
+                        AddAfterFrame.Add(tcj);
                     }
                 }
             }
 
             public static class Obstacles
             {
-                public static List<TrackedObstacleObject> TrackedObstacles = new List<TrackedObstacleObject>();
+                public static List<TrackedObstacleObject> TrackedObjects = new List<TrackedObstacleObject>();
+                private static readonly List<TrackedObstacleObject> AddAfterFrame = new List<TrackedObstacleObject>();
+                private static readonly List<TrackedObstacleObject> RemoveAfterFrame = new List<TrackedObstacleObject>();
 
                 public static void Setup()
                 {
                     EnemyObjectSpawn += InGameObject_OnCreate;
                     InGameObject.OnDestroy += InGameObject_OnDestroy;
+                    Game.OnLateUpdate += Game_OnLateUpdate;
+                }
+
+                private static void Game_OnLateUpdate(EventArgs args)
+                {
+                    if (AddAfterFrame.Any())
+                    {
+                        TrackedObjects.AddRange(AddAfterFrame);
+                        AddAfterFrame.Clear();
+                    }
+                    if (RemoveAfterFrame.Any())
+                    {
+                        foreach (var o in RemoveAfterFrame)
+                        {
+                            TrackedObjects.Remove(o);
+                        }
+                        RemoveAfterFrame.Clear();
+                    }
                 }
 
                 public static void Unload()
                 {
                     EnemyObjectSpawn -= InGameObject_OnCreate;
                     InGameObject.OnDestroy -= InGameObject_OnDestroy;
-                    TrackedObstacles.Clear();
+                    TrackedObjects.Clear();
                 }
 
                 private static void InGameObject_OnDestroy(InGameObject inGameObject)
                 {
-                    var tryFind = TrackedObstacles.FirstOrDefault(t =>
+                    var tryFind = TrackedObjects.FirstOrDefault(t =>
                         t.MapObject.GameObject == inGameObject);
                     if (tryFind != default(TrackedObstacleObject))
                     {
-                        TrackedObstacles.Remove(tryFind);
+                        RemoveAfterFrame.Add(tryFind);
                     }
                 }
 
@@ -282,37 +332,54 @@ namespace Hoyer.Common.Data.Abilites
                         {
                             return;
                         }
-
-                        TrackedObstacles.Add(new TrackedObstacleObject(inGameObject.Get<MapGameObject>(), data));
+                        AddAfterFrame.Add(new TrackedObstacleObject(inGameObject.Get<MapGameObject>(), data));
                 }
             }
 
             public static class Projectiles
             {
-                public static event Action<TrackedProjectile> OnDangerous = delegate { };
-
-                public static List<TrackedProjectile> TrackedProjectiles = new List<TrackedProjectile>();
+                public static List<TrackedProjectile> TrackedObjects = new List<TrackedProjectile>();
+                private static readonly List<TrackedProjectile> AddAfterFrame = new List<TrackedProjectile>();
+                private static readonly List<TrackedProjectile> RemoveAfterFrame = new List<TrackedProjectile>();
 
                 public static void Setup()
                 {
                     EnemyObjectSpawn += InGameObject_OnCreate;
                     InGameObject.OnDestroy += InGameObject_OnDestroy;
+                    Game.OnLateUpdate += Game_OnLateUpdate;
+                }
+
+                private static void Game_OnLateUpdate(EventArgs args)
+                {
+                    if (AddAfterFrame.Any())
+                    {
+                        TrackedObjects.AddRange(AddAfterFrame);
+                        AddAfterFrame.Clear();
+                    }
+                    if (RemoveAfterFrame.Any())
+                    {
+                        foreach (var o in RemoveAfterFrame)
+                        {
+                            TrackedObjects.Remove(o);
+                        }
+                        RemoveAfterFrame.Clear();
+                    }
                 }
 
                 public static void Unload()
                 {
                     EnemyObjectSpawn -= InGameObject_OnCreate;
                     InGameObject.OnDestroy -= InGameObject_OnDestroy;
-                    TrackedProjectiles.Clear();
+                    TrackedObjects.Clear();
                 }
 
                 private static void InGameObject_OnDestroy(InGameObject inGameObject)
                 {
-                    var tryFind = TrackedProjectiles.FirstOrDefault(t =>
+                    var tryFind = TrackedObjects.FirstOrDefault(t =>
                         t.Projectile == inGameObject);
                     if (tryFind != default(TrackedProjectile))
                     {
-                        TrackedProjectiles.Remove(tryFind);
+                        RemoveAfterFrame.Add(tryFind);
                     }
                 }
 
@@ -336,38 +403,55 @@ namespace Hoyer.Common.Data.Abilites
                         }
 
                         var tp = new TrackedProjectile(projectile, data);
-                        TrackedProjectiles.Add(tp);
-                        OnDangerous.Invoke(tp);
+                        AddAfterFrame.Add(tp);
                     }
                 }
             }
 
             public static class CurveProjectiles
             {
-                public static event Action<TrackedCurveProjectile> OnDangerous = delegate { };
-
-                public static List<TrackedCurveProjectile> TrackedProjectiles = new List<TrackedCurveProjectile>();
+                public static List<TrackedCurveProjectile> TrackedObjects = new List<TrackedCurveProjectile>();
+                private static readonly List<TrackedCurveProjectile> AddAfterFrame = new List<TrackedCurveProjectile>();
+                private static readonly List<TrackedCurveProjectile> RemoveAfterFrame = new List<TrackedCurveProjectile>();
 
                 public static void Setup()
                 {
                     EnemyObjectSpawn += InGameObject_OnCreate;
                     InGameObject.OnDestroy += InGameObject_OnDestroy;
+                    Game.OnLateUpdate += Game_OnLateUpdate;
+                }
+
+                private static void Game_OnLateUpdate(EventArgs args)
+                {
+                    if (AddAfterFrame.Any())
+                    {
+                        TrackedObjects.AddRange(AddAfterFrame);
+                        AddAfterFrame.Clear();
+                    }
+                    if (RemoveAfterFrame.Any())
+                    {
+                        foreach (var o in RemoveAfterFrame)
+                        {
+                            TrackedObjects.Remove(o);
+                        }
+                        RemoveAfterFrame.Clear();
+                    }
                 }
 
                 public static void Unload()
                 {
                     EnemyObjectSpawn -= InGameObject_OnCreate;
                     InGameObject.OnDestroy -= InGameObject_OnDestroy;
-                    TrackedProjectiles.Clear();
+                    TrackedObjects.Clear();
                 }
 
                 private static void InGameObject_OnDestroy(InGameObject inGameObject)
                 {
-                    var tryFind = TrackedProjectiles.FirstOrDefault(t =>
+                    var tryFind = TrackedObjects.FirstOrDefault(t =>
                         t.Projectile.GameObject == inGameObject);
                     if (tryFind != default(TrackedCurveProjectile))
                     {
-                        TrackedProjectiles.Remove(tryFind);
+                        RemoveAfterFrame.Add(tryFind);
                     }
                 }
 
@@ -392,38 +476,55 @@ namespace Hoyer.Common.Data.Abilites
                         }
 
                         var tp = new TrackedCurveProjectile(projectile, data);
-                        TrackedProjectiles.Add(tp);
-                        OnDangerous.Invoke(tp);
+                        AddAfterFrame.Add(tp);
                     }
                 }
             }
 
             public static class Dashes
             {
-                public static event Action<TrackedDash> OnDangerous = delegate { };
-
-                public static List<TrackedDash> TrackedDashes = new List<TrackedDash>();
+                public static List<TrackedDash> TrackedObjects = new List<TrackedDash>();
+                private static readonly List<TrackedDash> AddAfterFrame = new List<TrackedDash>();
+                private static readonly List<TrackedDash> RemoveAfterFrame = new List<TrackedDash>();
 
                 public static void Setup()
                 {
                     EnemyObjectSpawn += InGameObject_OnCreate;
                     InGameObject.OnDestroy += InGameObject_OnDestroy;
+                    Game.OnLateUpdate += Game_OnLateUpdate;
+                }
+
+                private static void Game_OnLateUpdate(EventArgs args)
+                {
+                    if (AddAfterFrame.Any())
+                    {
+                        TrackedObjects.AddRange(AddAfterFrame);
+                        AddAfterFrame.Clear();
+                    }
+                    if (RemoveAfterFrame.Any())
+                    {
+                        foreach (var o in RemoveAfterFrame)
+                        {
+                            TrackedObjects.Remove(o);
+                        }
+                        RemoveAfterFrame.Clear();
+                    }
                 }
 
                 public static void Unload()
                 {
                     EnemyObjectSpawn -= InGameObject_OnCreate;
                     InGameObject.OnDestroy -= InGameObject_OnDestroy;
-                    TrackedDashes.Clear();
+                    TrackedObjects.Clear();
                 }
 
                 private static void InGameObject_OnDestroy(InGameObject inGameObject)
                 {
-                    var tryFind = TrackedDashes.FirstOrDefault(t =>
+                    var tryFind = TrackedObjects.FirstOrDefault(t =>
                         t.DashObject.GameObject == inGameObject);
                     if (tryFind != default(TrackedDash))
                     {
-                        TrackedDashes.Remove(tryFind);
+                        RemoveAfterFrame.Add(tryFind);
                     }
                 }
 
@@ -446,21 +547,24 @@ namespace Hoyer.Common.Data.Abilites
                             return;
                         }
                         var dash = new TrackedDash(dashObj, data);
-                        TrackedDashes.Add(dash);
-                        OnDangerous.Invoke(dash);
+                        AddAfterFrame.Add(dash);
                     }
                 }
             }
         }
     }
 
-    public class TrackedCurveProjectile
+    public class TrackedObject
     {
         public bool IsDangerous;
-        public CurveProjectileObject Projectile;
         public AbilityInfo Data;
-        public List<Vector2> Path;
         public float EstimatedImpact;
+    }
+
+    public class TrackedCurveProjectile : TrackedObject
+    {
+        public CurveProjectileObject Projectile;
+        public List<Vector2> Path;
         public Vector2 StartPosition;
         public Vector2 EndPosition;
         public Vector2 ClosestPoint;
@@ -537,12 +641,9 @@ namespace Hoyer.Common.Data.Abilites
         }
     }
 
-    public class TrackedProjectile
+    public class TrackedProjectile : TrackedObject
     {
-        public bool IsDangerous;
         public Projectile Projectile;
-        public AbilityInfo Data;
-        public float EstimatedImpact;
         public Vector2 ClosestPoint;
 
         public TrackedProjectile(Projectile projectile, AbilityInfo data)
@@ -592,12 +693,9 @@ namespace Hoyer.Common.Data.Abilites
         }
     }
 
-    public class TrackedDash
+    public class TrackedDash : TrackedObject
     {
-        public bool IsDangerous;
         public DashObject DashObject;
-        public AbilityInfo Data;
-        public float EstimatedImpact;
         public Vector2 ClosestPoint;
 
         public TrackedDash(DashObject dashObject, AbilityInfo data)
@@ -665,12 +763,9 @@ namespace Hoyer.Common.Data.Abilites
         }
     }
 
-    public class TrackedThrowObject
+    public class TrackedThrowObject : TrackedObject
     {
-        public bool IsDangerous;
         public ThrowObject ThrowObject;
-        public AbilityInfo Data;
-        public float EstimatedImpact;
         public Vector2 ClosestOutsidePoint;
 
         public TrackedThrowObject(ThrowObject throwObject, AbilityInfo data)
@@ -700,12 +795,9 @@ namespace Hoyer.Common.Data.Abilites
         }
     }
 
-    public class TrackedCircularJump
+    public class TrackedCircularJump : TrackedObject
     {
-        public bool IsDangerous;
         public TravelBuffObject TravelObject;
-        public AbilityInfo Data;
-        public float EstimatedImpact;
         public Vector2 ClosestOutsidePoint;
 
         public TrackedCircularJump(TravelBuffObject travelObject, AbilityInfo data)
