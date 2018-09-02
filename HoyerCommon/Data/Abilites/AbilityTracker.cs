@@ -50,6 +50,16 @@ namespace Hoyer.Common.Data.Abilites
 
         private static void OnCreateHandler(InGameObject gameObject)
         {
+            if (gameObject == null)
+            {
+                Console.WriteLine("[AbilityTracker#OnCreateHandler] GameObject is null, please report this to Hoyer");
+                return;
+            }
+            if (LocalPlayer.Instance == null)
+            {
+                Console.WriteLine("[AbilityTracker#OnCreateHandler] LocalPlayer is null, please report this to Hoyer");
+                return;
+            }
             var baseTypes = gameObject.GetBaseTypes();
             if (!baseTypes.Contains("BaseObject")) return;
             var baseObj = gameObject.Get<BaseGameObject>();
