@@ -9,4 +9,4 @@ Addons for https://battleright.net/forum/
 - Evade
 
 ### Needs more work (WIP)
-- <Empty>
+- Varesh
