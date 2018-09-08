@@ -1,21 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using BattleRight.Core;
 using BattleRight.Core.GameObjects;
 using BattleRight.Core.GameObjects.Models;
-using BattleRight.Core.Math;
 using BattleRight.SDK;
 using BattleRight.SDK.Events;
 using BattleRight.SDK.UI;
 using BattleRight.SDK.UI.Models;
 using BattleRight.SDK.UI.Values;
-using Hoyer.Common.Data.Abilites;
 using Hoyer.Common.Extensions;
 using Hoyer.Common.Local;
 using Projectile = BattleRight.Core.GameObjects.Projectile;
 
-namespace Hoyer.Common.Debug
+namespace Hoyer.Common.Debugging
 {
     public static class DebugHelper
     {

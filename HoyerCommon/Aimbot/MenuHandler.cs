@@ -4,7 +4,6 @@ using System.Linq;
 using BattleRight.Core;
 using BattleRight.Core.Enumeration;
 using BattleRight.Core.GameObjects;
-using BattleRight.SDK.UI;
 using BattleRight.SDK.UI.Models;
 using BattleRight.SDK.UI.Values;
 using Hoyer.Common.Data.Abilites;
@@ -12,7 +11,7 @@ using Hoyer.Common.Extensions;
 using Hoyer.Common.Local;
 using UnityEngine;
 
-namespace Hoyer.Common.AimBot
+namespace Hoyer.Common.Aimbot
 {
     public static class MenuHandler
     {
@@ -23,51 +22,7 @@ namespace Hoyer.Common.AimBot
         public static bool Interrupt;
 
         private static readonly Dictionary<string, Dictionary<AbilitySlot, MenuSpell>> SkillsMenuDict = new Dictionary<string, Dictionary<AbilitySlot, MenuSpell>>();
-
-        private static readonly string[] Champions =
-        {
-            "Alysia",
-            "Ashka",
-            "Bakko",
-            "Blossom",
-            "Croak",
-            "Destiny",
-            "Ezmo",
-            "Freya",
-            "Glutton",
-            "Gunner",
-            "Iva",
-            "Jamila",
-            "Jumong",
-            "Lucie",
-            "Oldur",
-            "Pearl",
-            "Pestilus",
-            "Poloma",
-            "Raigon",
-            "Ruh Kaan",
-            "Shifu",
-            "Sirius",
-            "Taya",
-            "Thorn",
-            "Varesh",
-            "Zander",
-            "Ulric"
-        };
-
-        private static readonly AbilitySlot[] AbilitySlots =
-        {
-            AbilitySlot.Ability1,
-            AbilitySlot.Ability2,
-            AbilitySlot.Ability3,
-            AbilitySlot.Ability4,
-            AbilitySlot.Ability5,
-            AbilitySlot.Ability6,
-            AbilitySlot.Ability7,
-            AbilitySlot.EXAbility1,
-            AbilitySlot.EXAbility2
-        };
-
+        
         public static bool Get(AbilitySlot slot)
         {
             if (!SkillsMenuDict.ContainsKey(LocalPlayer.Instance.CharName)) return false;

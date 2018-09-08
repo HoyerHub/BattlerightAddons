@@ -9,13 +9,15 @@ using BattleRight.Core.Math;
 using BattleRight.SDK;
 using BattleRight.SDK.Enumeration;
 using BattleRight.SDK.UI.Values;
+using Hoyer.Common;
 using Hoyer.Common.Extensions;
 using Hoyer.Common.Local;
-using Prediction = Hoyer.Common.Prediction;
+using Hoyer.Common.TargetSelection;
+using Prediction = Hoyer.Common.Prediction.Prediction;
 
 namespace Hoyer.Champions.Jumong.Modes
 {
-    public static class AimAndCast 
+    public static class AimAndCast
     {
         public static void Update()
         {
@@ -33,7 +35,7 @@ namespace Hoyer.Champions.Jumong.Modes
 
         private static void SpellCastLogic()
         {
-            if(LocalPlayer.Instance.PhysicsCollision.IsImmaterial && EnemiesInRange(6.5f).Count > 0) return;
+            if (LocalPlayer.Instance.PhysicsCollision.IsImmaterial && EnemiesInRange(6.5f).Count > 0) return;
 
             if (MenuHandler.SkillBool("close_a3") && EnemiesInRange(2.5f).Count > 0)
             {
@@ -100,8 +102,10 @@ namespace Hoyer.Champions.Jumong.Modes
                 if (MenuHandler.UseSkill(AbilitySlot.Ability1) && AbilitySlot.Ability1.InRange(closestRange) && validForProjectiles)
                 {
                     Cast(AbilitySlot.Ability1);
+                    return;
                 }
             }
+            Jumong.DebugOutput = "No valid targets";
         }
 
         private static void Cast(AbilitySlot slot)
@@ -116,89 +120,57 @@ namespace Hoyer.Champions.Jumong.Modes
 
         private static void GetTargetAndAim(SkillBase skill)
         {
-            if (OrbLogic(skill, true)) return;
-                var prediction = GetTargetPrediction(skill);
-
-            if (!prediction.CanHit && !OrbLogic(skill))
+            if (OrbLogic(skill, true))
             {
-                LocalPlayer.PressAbility(AbilitySlot.Interrupt, true);
-                    return;
-                }
+                return;
+            }
+            var prediction = TargetSelection.GetTargetPrediction(skill, Skills.GetData(skill.Slot));
 
-                LocalPlayer.EditAimPosition = true;
-                LocalPlayer.Aim(prediction.CastPosition);
+            if (!prediction.CanHit)
+            {
+                if (OrbLogic(skill))
+                {
+                    Jumong.DebugOutput = "Attacking orb (no valid targets)";
+                }
+                else
+                {
+                    LocalPlayer.PressAbility(AbilitySlot.Interrupt, true);
+                }
+                return;
+            }
+
+            Jumong.DebugOutput = "Aiming at " + prediction.Target.CharName;
+            LocalPlayer.EditAimPosition = true;
+            LocalPlayer.Aim(prediction.CastPosition);
         }
 
         private static bool OrbLogic(SkillBase skill, bool shouldCheckHover = false)
         {
-            if (EntitiesManager.CenterOrb == null) return false;
-            var orbLiving = EntitiesManager.CenterOrb.Get<LivingObject>();
-            if (orbLiving.IsDead) return false;
+            var orb = EntitiesManager.CenterOrb;
+            if (orb == null || !orb.IsValid || !orb.IsActiveObject) return false;
+            var livingObj = orb.Get<LivingObject>();
+            if (livingObj.IsDead) return false;
 
             if (skill.Slot == AbilitySlot.Ability4 || skill.Slot == AbilitySlot.Ability5 || skill.Slot == AbilitySlot.EXAbility1) return false;
-            
-            var orbMapObj = EntitiesManager.CenterOrb.Get<MapGameObject>();
+
+            var orbMapObj = orb.Get<MapGameObject>();
             var orbPos = orbMapObj.Position;
-            if (orbLiving.Health <= 16 && skill.Slot != AbilitySlot.Ability7)
+
+            if (livingObj.Health <= 16 && skill.Slot != AbilitySlot.Ability7)
             {
+                Jumong.DebugOutput = "Attacking orb (Orb Steal)";
                 LocalPlayer.EditAimPosition = true;
                 LocalPlayer.Aim(orbPos);
                 return true;
             }
 
-            if (shouldCheckHover && !orbMapObj.IsHoveringNear() ||
-                !(orbPos.Distance(LocalPlayer.Instance) < skill.Range)) return false;
+            if (orbPos.Distance(LocalPlayer.Instance) > skill.Range ||
+                shouldCheckHover && !orbMapObj.IsHoveringNear()) return false;
 
+            if (shouldCheckHover) Jumong.DebugOutput = "Attacking orb (mouse hovering)";
             LocalPlayer.EditAimPosition = true;
             LocalPlayer.Aim(orbPos);
             return true;
-        }
-
-        private static Prediction.Output GetTargetPrediction(SkillBase castingSpell)
-        {
-            var isProjectile = castingSpell.Slot != AbilitySlot.Ability4 && castingSpell.Slot != AbilitySlot.Ability5;
-            var useOnIncaps = castingSpell.Slot == AbilitySlot.Ability2 || castingSpell.Slot == AbilitySlot.EXAbility2;
-
-            var possibleTargets = EntitiesManager.EnemyTeam
-                .Where(e => e != null && !e.Living.IsDead && e.Pos() != Vector2.Zero && e.Distance(LocalPlayer.Instance) < castingSpell.Range * Prediction.CancelRangeModifier)
-                .ToList();
-
-            var output = Prediction.Output.None;
-
-            while (possibleTargets.Count > 0 && !output.CanHit)
-            {
-                Character tryGetTarget = null;
-                tryGetTarget = TargetSelector.GetTarget(possibleTargets, GetTargetingMode(possibleTargets), float.MaxValue);
-                if (castingSpell.Slot == AbilitySlot.Ability4)
-                {
-                    if (tryGetTarget.IsValidTarget())
-                    {
-                        output = Prediction.Basic(tryGetTarget, castingSpell);
-                        output.CanHit = true;
-                    }
-                    else
-                    {
-                        possibleTargets.Remove(tryGetTarget);
-                    }
-                }
-                else if (tryGetTarget.IsValidTarget(castingSpell, isProjectile, useOnIncaps, MenuHandler.AvoidStealthed))
-                {
-                    var pred = tryGetTarget.GetPrediction(castingSpell);
-                    if (pred.CanHit)
-                    {
-                        output = pred;
-                    }
-                    else
-                    {
-                        possibleTargets.Remove(tryGetTarget);
-                    }
-                }
-                else
-                {
-                    possibleTargets.Remove(tryGetTarget);
-                }
-            }
-            return output;
         }
 
         private static TargetingMode GetTargetingMode(IEnumerable<Character> possibleTargets)

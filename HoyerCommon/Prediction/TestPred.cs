@@ -1,17 +1,15 @@
-﻿using BattleRight.SDK.Enumeration;
+﻿using System;
+using BattleRight.Core;
+using BattleRight.Core.Enumeration;
+using BattleRight.Core.GameObjects;
+using BattleRight.Core.GameObjects.Models;
+using BattleRight.Core.Math;
+using BattleRight.Helper;
+using BattleRight.SDK;
+using BattleRight.SDK.Enumeration;
 
-namespace Hoyer.Common
+namespace Hoyer.Common.Prediction
 {
-    using System;
-    using BattleRight.Core;
-    using BattleRight.Core.Enumeration;
-    using BattleRight.Core.GameObjects;
-    using BattleRight.Core.GameObjects.Models;
-    using BattleRight.Core.Math;
-    using BattleRight.Core.Models;
-    using BattleRight.Helper;
-    using BattleRight.SDK;
-
     namespace TestPrediction2NS
     {
         public enum TestSkilltype
@@ -28,7 +26,7 @@ namespace Hoyer.Common
             private const float HighHc = 55f;
             private const float VeryHighHc = 75f;
 
-            public static Prediction.Output GetNormalLinePrediction(Vector2 fromPos, InGameObject targetUnit, float range, float speed, float radius = 0f,
+            public static Prediction.Output GetNormalLinePrediction(Vector2 fromPos, Character targetUnit, float range, float speed, float radius = 0f,
                 bool checkCollision = false)
             {
                 return GetPrediction(fromPos, targetUnit, range, speed, radius, 0f, 1.75f, checkCollision,
@@ -48,7 +46,7 @@ namespace Hoyer.Common
             /// <param name="checkCollision">If set to <c>true</c> [check collision].</param>
             /// <param name="ignoreFlags">The ignore flags for collision calculations.</param>
             /// <returns>TestOutput</returns>
-            public static Prediction.Output GetPrediction(Vector2 fromPos, InGameObject targetUnit, float range, float speed,
+            public static Prediction.Output GetPrediction(Vector2 fromPos, Character targetUnit, float range, float speed,
                 float radius = 0f,
                 float fixedDelay = 0f,
                 float maxEnemyReactionTime = 1.75f,
@@ -100,10 +98,11 @@ namespace Hoyer.Common
                     }
 
 
-                    Prediction.Output solution = new Prediction.Output()
+                    var solution = new Prediction.Output()
                     {
                         CanHit = true,
                         CastPosition = predPos,
+                        Target = targetUnit
                     };
 
                     var targetCollision = CollisionSolver.CheckThickLineCollision(targetPos, solution.CastPosition, targetRadius);

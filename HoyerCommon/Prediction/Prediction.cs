@@ -4,9 +4,9 @@ using BattleRight.Core.Models;
 using BattleRight.SDK;
 using BattleRight.SDK.Enumeration;
 using Hoyer.Common.Extensions;
-using Hoyer.Common.TestPrediction2NS;
+using Hoyer.Common.Prediction.TestPrediction2NS;
 
-namespace Hoyer.Common
+namespace Hoyer.Common.Prediction
 {
     public static class Prediction
     {
@@ -53,6 +53,7 @@ namespace Hoyer.Common
                     : new Vector2(target.Pos().X + target.NetworkMovement.Velocity.X * (distance / spell.Speed),
                         target.Pos().Y + target.NetworkMovement.Velocity.Y * (distance / spell.Speed));
             }
+            output.Target = target;
             return output;
         }
 
@@ -67,7 +68,8 @@ namespace Hoyer.Common
                     CastPosition = output.PredictedPosition,
                     CollisionResult = output.CollisionResult,
                     Hitchance = output.HitChance,
-                    HitchancePercentage = output.HitChancePercent
+                    HitchancePercentage = output.HitChancePercent,
+                    Target = target
                 };
             }
             else
@@ -79,7 +81,8 @@ namespace Hoyer.Common
                     CastPosition = output.PredictedPosition,
                     CollisionResult = output.CollisionResult,
                     Hitchance = output.HitChance,
-                    HitchancePercentage = output.HitChancePercent
+                    HitchancePercentage = output.HitChancePercent,
+                    Target = target
                 };
             }
         }
@@ -101,6 +104,7 @@ namespace Hoyer.Common
             public HitChance Hitchance = HitChance.Unknown;
             public float HitchancePercentage;
             public CollisionResult CollisionResult;
+            public Character Target = null;
 
             public static Output None
             {

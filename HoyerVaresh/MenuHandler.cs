@@ -13,7 +13,7 @@ namespace Hoyer.Champions.Varesh
     public static class MenuHandler
     {
         public static Menu HoyerMainMenu;
-        public static Menu JumongMenu;
+        public static Menu VareshMenu;
         public static Menu SkillMenu;
 
         public static bool AvoidStealthed;
@@ -33,44 +33,44 @@ namespace Hoyer.Champions.Varesh
         public static void Init()
         {
             HoyerMainMenu = MainMenu.GetMenu("Hoyer.MainMenu");
-            JumongMenu = HoyerMainMenu.Add(new Menu("HoyerJumong", "Jumong", true));
+            VareshMenu = HoyerMainMenu.Add(new Menu("HoyerVaresh", "Varesh", true));
 
-            JumongMenu.Add(new MenuLabel("Jumong"));
-            _enabledBox = new MenuCheckBox("jumong_enabled", "Enabled");
+            VareshMenu.Add(new MenuLabel("Varesh"));
+            _enabledBox = new MenuCheckBox("Varesh_enabled", "Enabled");
             _enabledBox.OnValueChange += delegate (ChangedValueArgs<bool> args) { Varesh.Enabled = args.NewValue; };
-            JumongMenu.Add(_enabledBox);
+            VareshMenu.Add(_enabledBox);
 
-            JumongMenu.AddSeparator();
+            VareshMenu.AddSeparator();
 
-            _comboKey = new MenuKeybind("jumong_combokey", "Combo key", KeyCode.V);
+            _comboKey = new MenuKeybind("Varesh_combokey", "Combo key", KeyCode.V);
             _comboKey.OnValueChange += delegate (ChangedValueArgs<bool> args) { Varesh.SetMode(args.NewValue); };
-            JumongMenu.Add(_comboKey);
+            VareshMenu.Add(_comboKey);
 
-            _comboToggle = new MenuCheckBox("jumong_combotoggle", "Should Combo key be a toggle", false);
+            _comboToggle = new MenuCheckBox("Varesh_combotoggle", "Should Combo key be a toggle", false);
             _comboToggle.OnValueChange += delegate(ChangedValueArgs<bool> args) { _comboKey.IsToggle = args.NewValue; };
-            JumongMenu.Add(_comboToggle);
+            VareshMenu.Add(_comboToggle);
 
-            _aimUserInput = new MenuCheckBox("jumong_aimuserinput", "Apply aim logic when combo isn't active");
+            _aimUserInput = new MenuCheckBox("Varesh_aimuserinput", "Apply aim logic when combo isn't active");
             _aimUserInput.OnValueChange += delegate(ChangedValueArgs<bool> args) { AimUserInput = args.NewValue; };
-            JumongMenu.Add(_aimUserInput);
+            VareshMenu.Add(_aimUserInput);
 
-            _useCursor = new MenuCheckBox("jumong_usecursor", "Use cursor pos for target selection");
+            _useCursor = new MenuCheckBox("Varesh_usecursor", "Use cursor pos for target selection");
             _useCursor.OnValueChange += delegate (ChangedValueArgs<bool> args) { UseCursor = args.NewValue; };
-            JumongMenu.Add(_useCursor);
+            VareshMenu.Add(_useCursor);
 
-            _avoidStealthed = new MenuCheckBox("jumong_ignorestealthed", "Ignore stealthed enemies", false);
+            _avoidStealthed = new MenuCheckBox("Varesh_ignorestealthed", "Ignore stealthed enemies", false);
             _avoidStealthed.OnValueChange += delegate (ChangedValueArgs<bool> args) { AvoidStealthed = args.NewValue; };
-            JumongMenu.Add(_avoidStealthed);
+            VareshMenu.Add(_avoidStealthed);
 
             InitSkillMenu();
 
             FirstRun();
-            Console.WriteLine("[HoyerJumong/MenuHandler] Jumong Menu Init");
+            Console.WriteLine("[HoyerVaresh/MenuHandler] Varesh Menu Init");
         }
 
         private static void InitSkillMenu()
         {
-            SkillMenu = JumongMenu.Add(new Menu("HoyerJumong.Skills", "Skills", true));
+            SkillMenu = VareshMenu.Add(new Menu("HoyerVaresh.Skills", "Skills", true));
             AddSkillCheckbox("combo_a1", "Use M1 in combo");
             AddSkillCheckbox("combo_a2", "Use M2 in combo");
             AddSkillCheckbox("close_a3", "Use Space to avoid melees");
@@ -122,30 +122,30 @@ namespace Hoyer.Champions.Varesh
 
         public static void Update()
         {
-            if (JumongMenu == null)
+            if (VareshMenu == null)
             {
-                Console.WriteLine("[HoyerJumong/MenuHandler] Can't find menu, please report this to Hoyer :(");
+                Console.WriteLine("[HoyerVaresh/MenuHandler] Can't find menu, please report this to Hoyer :(");
                 return;
             }
             if (!Game.IsInGame)
             {
-                if (JumongMenu.Hidden)
+                if (VareshMenu.Hidden)
                 {
-                    Console.WriteLine("[HoyerJumong/MenuHandler] Showing Menu");
-                    JumongMenu.Hidden = false;
+                    Console.WriteLine("[HoyerVaresh/MenuHandler] Showing Menu");
+                    VareshMenu.Hidden = false;
                 }
                 return;
             }
-            if (LocalPlayer.Instance.ChampionEnum != Champion.Jumong && !JumongMenu.Hidden)
+            if (LocalPlayer.Instance.ChampionEnum != Champion.Varesh && !VareshMenu.Hidden)
             {
-                Console.WriteLine("[HoyerJumong/MenuHandler] Hiding Menu");
-                JumongMenu.Hidden = true;
+                Console.WriteLine("[HoyerVaresh/MenuHandler] Hiding Menu");
+                VareshMenu.Hidden = true;
                 return;
             }
-            if (LocalPlayer.Instance.ChampionEnum == Champion.Jumong && JumongMenu.Hidden)
+            if (LocalPlayer.Instance.ChampionEnum == Champion.Varesh && VareshMenu.Hidden)
             {
-                Console.WriteLine("[HoyerJumong/MenuHandler] Showing Menu");
-                JumongMenu.Hidden = false;
+                Console.WriteLine("[HoyerVaresh/MenuHandler] Showing Menu");
+                VareshMenu.Hidden = false;
             }
         }
     }

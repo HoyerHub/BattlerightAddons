@@ -39,10 +39,13 @@ namespace Hoyer.Common.Data.Addons
             Menus.AddRange(new[]
             {
                 new AddonMenu("Hoyer", "Jumong", new []{"Hoyer.MainMenu", "HoyerJumong"}, new []{"Jumong"}),
-                new AddonMenu("DaPip", "PipJade", new []{"pipjademenu"}, new []{"Gunner"}),
+                new AddonMenu("Hoyer", "Varesh", new []{"Hoyer.MainMenu", "HoyerVaresh"}, new []{"Varesh"}),
+                new AddonMenu("DaPip", "PipJade", new []{"pipjademenu"}, new []{"Jade"}),
+                new AddonMenu("DaPip", "PipAshka", new []{"pipashkamenu"}, new []{"Ashka"}),
                 new AddonMenu("DaPip", "PipKaan", new []{"pipkaanmenu"}, new []{"Ruh Kaan"}),
                 new AddonMenu("NotKappa", "Kappa Poloma", new []{"kappa.Poloma"}, new []{"Poloma"}),
-                new AddonMenu("Perplexity", "Perplexed Series", new []{"perplexed_series"}, new []{"Glutton", "Alysia"})
+                new AddonMenu("Perplexity", "Perplexed Series", new []{"perplexed_series"}, new []{"Rook", "Alysia"})
+
             });
             Game.OnMatchStart += Game_OnMatchStart;
         }

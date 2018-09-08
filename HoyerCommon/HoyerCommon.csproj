@@ -69,7 +69,7 @@
     <Compile Include="Aimbot\MenuHandler.cs" />
     <Compile Include="Data\Abilites\AbilityDatabase.cs" />
     <Compile Include="Data\Abilites\AbilityInfo.cs" />
-    <Compile Include="Data\Abilites\AbilityTracker.cs" />
+    <Compile Include="Trackers\ObjectTracker.cs" />
     <Compile Include="Data\Abilites\DodgeAbilityInfo.cs" />
     <Compile Include="Data\Abilites\ObstacleAbilityInfo.cs" />
     <Compile Include="Data\Addons\AddonMenus.cs" />
@@ -85,6 +85,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Extensions\SpellExtensions.cs" />
     <Compile Include="Local\Skills.cs" />
+    <Compile Include="TargetSelection\TargetSelection.cs" />
+    <Compile Include="Trackers\BuffTracker.cs" />
     <Compile Include="Utilities\Geometry\GeometryLib.cs" />
     <Compile Include="Utilities\HideNames.cs" />
     <Compile Include="Utilities\StealthPrediction.cs" />

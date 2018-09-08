@@ -4,7 +4,6 @@ using BattleRight.SDK.UI;
 using BattleRight.SDK.UI.Models;
 using BattleRight.SDK.UI.Values;
 using Hoyer.Common.Data.Abilites;
-using Hoyer.Common.Debug;
 using Hoyer.Common.Extensions;
 using Hoyer.Common.Utilities;
 using TMPro;
@@ -91,16 +90,16 @@ namespace Hoyer.Common.Local
             useStealthPred.OnValueChange += delegate(ChangedValueArgs<bool> args) { StealthPrediction.ShouldUse = args.NewValue; };
 
             var castRangeSlider = PredMenu.Add(new MenuSlider("pred_castrange", "Start casting range modifier", 0.92f, 1.1f, 0.9f));
-            castRangeSlider.OnValueChange += delegate(ChangedValueArgs<float> args) { Prediction.CastingRangeModifier = args.NewValue; };
+            castRangeSlider.OnValueChange += delegate(ChangedValueArgs<float> args) { Prediction.Prediction.CastingRangeModifier = args.NewValue; };
 
             var cancelRangeSlider = PredMenu.Add(new MenuSlider("pred_cancelrange", "Out of range modifier", 1, 1.1f, 0.9f));
-            cancelRangeSlider.OnValueChange += delegate(ChangedValueArgs<float> args) { Prediction.CancelRangeModifier = args.NewValue; };
+            cancelRangeSlider.OnValueChange += delegate(ChangedValueArgs<float> args) { Prediction.Prediction.CancelRangeModifier = args.NewValue; };
 
             var predModes = new[] {"Basic Aimlogic (fastest)", "SDK Prediction", "DaPip's TestPred"};
             var predMode = PredMenu.Add(new MenuComboBox("pred_mode", "Prediction Mode", 1, predModes));
             predMode.OnValueChange += delegate(ChangedValueArgs<int> args)
             {
-                Prediction.Mode = args.NewValue;
+                Prediction.Prediction.Mode = args.NewValue;
                 Console.WriteLine("[HoyerCommon/MenuEvents] Prediction changed to " + predModes[args.NewValue]);
             };
         }
@@ -116,9 +115,9 @@ namespace Hoyer.Common.Local
             HideNames.Active = HoyerMenu.Get<MenuCheckBox>("hide_names").CurrentValue;
             StealthPrediction.DrawStealthed = HoyerMenu.Get<MenuCheckBox>("show_stealth").CurrentValue;
             StealthPrediction.ShouldUse = PredMenu.Get<MenuCheckBox>("use_stealth_pred").CurrentValue;
-            Prediction.Mode = PredMenu.Get<MenuComboBox>("pred_mode").CurrentValue;
-            Prediction.CastingRangeModifier = PredMenu.Get<MenuSlider>("pred_castrange").CurrentValue;
-            Prediction.CancelRangeModifier = PredMenu.Get<MenuSlider>("pred_cancelrange").CurrentValue;
+            Prediction.Prediction.Mode = PredMenu.Get<MenuComboBox>("pred_mode").CurrentValue;
+            Prediction.Prediction.CastingRangeModifier = PredMenu.Get<MenuSlider>("pred_castrange").CurrentValue;
+            Prediction.Prediction.CancelRangeModifier = PredMenu.Get<MenuSlider>("pred_cancelrange").CurrentValue;
         }
     }
 }

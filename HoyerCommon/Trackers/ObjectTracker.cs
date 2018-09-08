@@ -2,28 +2,29 @@
 using System.Collections.Generic;
 using System.Linq;
 using BattleRight.Core;
-using BattleRight.Core.Enumeration;
 using BattleRight.Core.GameObjects;
 using BattleRight.Core.GameObjects.Models;
 using BattleRight.SDK;
-using BattleRight.SDK.ClipperLib;
 using BattleRight.SDK.Events;
+using Hoyer.Common.Data.Abilites;
 using Hoyer.Common.Extensions;
-using Hoyer.Common.Local;
-using Hoyer.Common.Utilities;
+using Hoyer.Common.Utilities.Geometry;
 using UnityEngine;
 using CollisionFlags = BattleRight.Core.Enumeration.CollisionFlags;
 using Vector2 = BattleRight.Core.Math.Vector2;
 // ReSharper disable MemberHidesStaticFromOuterClass
 
-namespace Hoyer.Common.Data.Abilites
+namespace Hoyer.Common.Trackers
 {
-    public static class AbilityTracker
+    public static class ObjectTracker
     {
+        internal static float NextCheckTime = 0;
         internal static event Action<InGameObject> EnemyObjectSpawn = delegate {};
+        internal static event Action CheckForDeadObjects = delegate { };
 
         public static void Setup()
         {
+            NextCheckTime = Time.time + 1;
             Enemy.Projectiles.Setup();
             Enemy.CurveProjectiles.Setup();
             Enemy.CircularThrows.Setup();
@@ -33,6 +34,26 @@ namespace Hoyer.Common.Data.Abilites
             Enemy.Cooldowns.Setup();
             Enemy.Casts.Setup();
             InGameObject.OnCreate += OnCreateHandler;
+            Game.OnMatchStateUpdate += OnMatchStateUpdateHandler;
+            Game.OnCoroutineUpdate += Game_OnCoroutineUpdate;
+        }
+
+        private static void Game_OnCoroutineUpdate(EventArgs args)
+        {
+            if (!(Time.time > NextCheckTime)) return;
+            CheckForDeadObjects.Invoke();
+            NextCheckTime = Time.time + 1;
+        }
+
+        private static void OnMatchStateUpdateHandler(MatchStateUpdate args)
+        {
+            Enemy.Projectiles.Clear();
+            Enemy.CurveProjectiles.Clear();
+            Enemy.CircularThrows.Clear();
+            Enemy.CircularJumps.Clear();
+            Enemy.Dashes.Clear();
+            Enemy.Obstacles.Clear();
+            Enemy.Casts.Clear();
         }
 
         public static void Unload()
@@ -77,6 +98,11 @@ namespace Hoyer.Common.Data.Abilites
 
                 public static void Setup()
                 {
+                }
+
+                public static void Clear()
+                {
+                    TrackedCasts.Clear();
                 }
 
                 public static void Unload()
@@ -165,8 +191,17 @@ namespace Hoyer.Common.Data.Abilites
                 public static void Setup()
                 {
                     EnemyObjectSpawn += InGameObject_OnCreate;
+                    CheckForDeadObjects += ObjectsHealthCheck;
                     InGameObject.OnDestroy += InGameObject_OnDestroy;
                     Game.OnLateUpdate += Game_OnLateUpdate;
+                }
+
+                private static void ObjectsHealthCheck()
+                {
+                    foreach (var o in TrackedObjects)
+                    {
+                        if (!o.ThrowObject.GameObject.IsValid || !o.ThrowObject.GameObject.IsActiveObject) RemoveAfterFrame.Add(o);
+                    }
                 }
 
                 private static void Game_OnLateUpdate(EventArgs args)
@@ -186,11 +221,18 @@ namespace Hoyer.Common.Data.Abilites
                     }
                 }
 
+                public static void Clear()
+                {
+                    TrackedObjects.Clear();
+                    RemoveAfterFrame.Clear();
+                    AddAfterFrame.Clear();
+                }
+
                 public static void Unload()
                 {
                     EnemyObjectSpawn -= InGameObject_OnCreate;
                     InGameObject.OnDestroy -= InGameObject_OnDestroy;
-                    TrackedObjects.Clear();
+                    Clear();
                 }
 
                 private static void InGameObject_OnDestroy(InGameObject inGameObject)
@@ -231,8 +273,17 @@ namespace Hoyer.Common.Data.Abilites
                 public static void Setup()
                 {
                     EnemyObjectSpawn += InGameObject_OnCreate;
+                    CheckForDeadObjects += ObjectsHealthCheck;
                     InGameObject.OnDestroy += InGameObject_OnDestroy;
                     Game.OnLateUpdate += Game_OnLateUpdate;
+                }
+
+                private static void ObjectsHealthCheck()
+                {
+                    foreach (var o in TrackedObjects)
+                    {
+                        if (!o.TravelObject.GameObject.IsValid || !o.TravelObject.GameObject.IsActiveObject) RemoveAfterFrame.Add(o);
+                    }
                 }
 
                 private static void Game_OnLateUpdate(EventArgs args)
@@ -252,11 +303,18 @@ namespace Hoyer.Common.Data.Abilites
                     }
                 }
 
+                public static void Clear()
+                {
+                    TrackedObjects.Clear();
+                    RemoveAfterFrame.Clear();
+                    AddAfterFrame.Clear();
+                }
+
                 public static void Unload()
                 {
                     EnemyObjectSpawn -= InGameObject_OnCreate;
                     InGameObject.OnDestroy -= InGameObject_OnDestroy;
-                    TrackedObjects.Clear();
+                    Clear();
                 }
 
                 private static void InGameObject_OnDestroy(InGameObject inGameObject)
@@ -297,8 +355,17 @@ namespace Hoyer.Common.Data.Abilites
                 public static void Setup()
                 {
                     EnemyObjectSpawn += InGameObject_OnCreate;
+                    CheckForDeadObjects += ObjectsHealthCheck;
                     InGameObject.OnDestroy += InGameObject_OnDestroy;
                     Game.OnLateUpdate += Game_OnLateUpdate;
+                }
+
+                private static void ObjectsHealthCheck()
+                {
+                    foreach (var o in TrackedObjects)
+                    {
+                        if (!o.MapObject.GameObject.IsValid || !o.MapObject.GameObject.IsActiveObject) RemoveAfterFrame.Add(o);
+                    }
                 }
 
                 private static void Game_OnLateUpdate(EventArgs args)
@@ -318,11 +385,18 @@ namespace Hoyer.Common.Data.Abilites
                     }
                 }
 
+                public static void Clear()
+                {
+                    TrackedObjects.Clear();
+                    RemoveAfterFrame.Clear();
+                    AddAfterFrame.Clear();
+                }
+
                 public static void Unload()
                 {
                     EnemyObjectSpawn -= InGameObject_OnCreate;
                     InGameObject.OnDestroy -= InGameObject_OnDestroy;
-                    TrackedObjects.Clear();
+                    Clear();
                 }
 
                 private static void InGameObject_OnDestroy(InGameObject inGameObject)
@@ -355,8 +429,17 @@ namespace Hoyer.Common.Data.Abilites
                 public static void Setup()
                 {
                     EnemyObjectSpawn += InGameObject_OnCreate;
+                    CheckForDeadObjects += ObjectsHealthCheck;
                     InGameObject.OnDestroy += InGameObject_OnDestroy;
                     Game.OnLateUpdate += Game_OnLateUpdate;
+                }
+
+                private static void ObjectsHealthCheck()
+                {
+                    foreach (var o in TrackedObjects)
+                    {
+                        if (!o.Projectile.IsValid || !o.Projectile.IsActiveObject) RemoveAfterFrame.Add(o);
+                    }
                 }
 
                 private static void Game_OnLateUpdate(EventArgs args)
@@ -376,11 +459,18 @@ namespace Hoyer.Common.Data.Abilites
                     }
                 }
 
+                public static void Clear()
+                {
+                    TrackedObjects.Clear();
+                    RemoveAfterFrame.Clear();
+                    AddAfterFrame.Clear();
+                }
+
                 public static void Unload()
                 {
                     EnemyObjectSpawn -= InGameObject_OnCreate;
                     InGameObject.OnDestroy -= InGameObject_OnDestroy;
-                    TrackedObjects.Clear();
+                    Clear();
                 }
 
                 private static void InGameObject_OnDestroy(InGameObject inGameObject)
@@ -427,8 +517,17 @@ namespace Hoyer.Common.Data.Abilites
                 public static void Setup()
                 {
                     EnemyObjectSpawn += InGameObject_OnCreate;
+                    CheckForDeadObjects += ObjectsHealthCheck;
                     InGameObject.OnDestroy += InGameObject_OnDestroy;
                     Game.OnLateUpdate += Game_OnLateUpdate;
+                }
+
+                private static void ObjectsHealthCheck()
+                {
+                    foreach (var o in TrackedObjects)
+                    {
+                        if (!o.Projectile.GameObject.IsValid || !o.Projectile.GameObject.IsActiveObject) RemoveAfterFrame.Add(o);
+                    }
                 }
 
                 private static void Game_OnLateUpdate(EventArgs args)
@@ -448,11 +547,18 @@ namespace Hoyer.Common.Data.Abilites
                     }
                 }
 
+                public static void Clear()
+                {
+                    TrackedObjects.Clear();
+                    RemoveAfterFrame.Clear();
+                    AddAfterFrame.Clear();
+                }
+
                 public static void Unload()
                 {
                     EnemyObjectSpawn -= InGameObject_OnCreate;
                     InGameObject.OnDestroy -= InGameObject_OnDestroy;
-                    TrackedObjects.Clear();
+                    Clear();
                 }
 
                 private static void InGameObject_OnDestroy(InGameObject inGameObject)
@@ -500,8 +606,17 @@ namespace Hoyer.Common.Data.Abilites
                 public static void Setup()
                 {
                     EnemyObjectSpawn += InGameObject_OnCreate;
+                    CheckForDeadObjects += ObjectsHealthCheck;
                     InGameObject.OnDestroy += InGameObject_OnDestroy;
                     Game.OnLateUpdate += Game_OnLateUpdate;
+                }
+
+                private static void ObjectsHealthCheck()
+                {
+                    foreach (var o in TrackedObjects)
+                    {
+                        if (!o.DashObject.GameObject.IsValid || !o.DashObject.GameObject.IsActiveObject) RemoveAfterFrame.Add(o);
+                    }
                 }
 
                 private static void Game_OnLateUpdate(EventArgs args)
@@ -521,11 +636,18 @@ namespace Hoyer.Common.Data.Abilites
                     }
                 }
 
+                public static void Clear()
+                {
+                    TrackedObjects.Clear();
+                    RemoveAfterFrame.Clear();
+                    AddAfterFrame.Clear();
+                }
+
                 public static void Unload()
                 {
                     EnemyObjectSpawn -= InGameObject_OnCreate;
                     InGameObject.OnDestroy -= InGameObject_OnDestroy;
-                    TrackedObjects.Clear();
+                    Clear();
                 }
 
                 private static void InGameObject_OnDestroy(InGameObject inGameObject)

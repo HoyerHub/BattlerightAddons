@@ -27,6 +27,8 @@ namespace Hoyer.Champions.Jumong
         public static bool AimUserInput;
         private static bool _combo;
 
+        internal static string DebugOutput = "";
+
         public void OnInit()
         {
             MenuEvents.Initialize += MenuHandler.Init;
@@ -34,6 +36,13 @@ namespace Hoyer.Champions.Jumong
             Skills.Initialize += SpellInit;
             SpellDetector.OnSpellStopCast += SpellDetector_OnSpellStopCast;
             Game.OnUpdate += OnUpdate;
+            Game.OnDraw += Game_OnDraw;
+        }
+
+        private void Game_OnDraw(EventArgs args)
+        {
+            if (MenuHandler.DrawDebugText)
+                Drawing.DrawString(new Vector2(Screen.width / 2f, 200), DebugOutput, Color.green, ViewSpace.ScreenSpacePixels);
         }
 
         private void SpellDetector_OnSpellStopCast(BattleRight.SDK.EventsArgs.SpellStopArgs args)
@@ -66,6 +75,7 @@ namespace Hoyer.Champions.Jumong
         {
             if (!Enabled || !Game.IsInGame || Game.CurrentMatchState != MatchState.InRound || LocalPlayer.Instance.CharName != "Jumong" || LocalPlayer.Instance.HasBuff("SpellBlock"))
             {
+                DebugOutput = "";
                 return;
             }
             if(_combo) AimAndCast.Update();

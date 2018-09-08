@@ -47,6 +47,11 @@ namespace Hoyer.Common.Local
             return Active.Get(data.AbilitySlot);
         }
 
+        public static AbilityInfo GetData(AbilitySlot slot)
+        {
+            return ActiveInfos.FirstOrDefault(a => a.AbilitySlot == slot);
+        }
+
         public static void Setup()
         {
             Game.OnMatchStart += Game_OnMatchStart;

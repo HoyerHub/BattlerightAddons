@@ -12,7 +12,7 @@ using BattleRight.SDK.UI;
 using BattleRight.SDK.UI.Values;
 using Hoyer.Common.Extensions;
 using Hoyer.Common.Local;
-using Prediction = Hoyer.Common.Prediction;
+using Prediction = Hoyer.Common.Prediction.Prediction;
 
 namespace Hoyer.Champions.Jumong.Modes
 {
@@ -22,6 +22,7 @@ namespace Hoyer.Champions.Jumong.Modes
         {
             if (!MenuHandler.AimUserInput || !LocalPlayer.Instance.AbilitySystem.IsCasting)
             {
+                Jumong.DebugOutput = "Combo not active";
                 LocalPlayer.EditAimPosition = false;
                 
                 if (MenuHandler.SkillBool("close_a3") && EntitiesManager.EnemyTeam.Where(e => e.Distance(LocalPlayer.Instance) < 2).ToList().Count > 0)
@@ -67,13 +68,14 @@ namespace Hoyer.Champions.Jumong.Modes
 
         private static bool OrbLogic(SkillBase skill, bool shouldCheckHover = false)
         {
-            if (EntitiesManager.CenterOrb == null) return false;
-            var orbLiving = EntitiesManager.CenterOrb.Get<LivingObject>();
+            var orb = EntitiesManager.CenterOrb;
+            if (orb == null) return false;
+            var orbLiving = orb.Get<LivingObject>();
             if (orbLiving.IsDead) return false;
 
             if (skill.Slot == AbilitySlot.Ability4 || skill.Slot == AbilitySlot.Ability5 || skill.Slot == AbilitySlot.EXAbility1) return false;
 
-            var orbMapObj = EntitiesManager.CenterOrb.Get<MapGameObject>();
+            var orbMapObj = orb.Get<MapGameObject>();
             var orbPos = orbMapObj.Position;
             if (orbLiving.Health <= 16 && skill.Slot != AbilitySlot.Ability7)
             {

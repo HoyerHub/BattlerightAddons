@@ -8,6 +8,7 @@ using BattleRight.SDK.UI;
 using BattleRight.SDK.UI.Models;
 using BattleRight.SDK.UI.Values;
 using Hoyer.Champions.Jumong.Modes;
+using Hoyer.Common;
 using UnityEngine;
 
 namespace Hoyer.Champions.Jumong
@@ -21,6 +22,7 @@ namespace Hoyer.Champions.Jumong
         public static bool AvoidStealthed;
         public static bool UseCursor;
         public static bool AimUserInput;
+        public static bool DrawDebugText;
 
         private static MenuCheckBox _avoidStealthed;
         private static MenuCheckBox _useCursor;
@@ -67,6 +69,12 @@ namespace Hoyer.Champions.Jumong
             InitSkillMenu();
 
             FirstRun();
+            Main.DelayAction(delegate
+            {
+                var drawText = HoyerMainMenu.Get<Menu>("Hoyer.Debug").Add(new MenuCheckBox("Jumong_drawdebug", "Draw Jumong debug text"));
+                drawText.OnValueChange += delegate (ChangedValueArgs<bool> args) { DrawDebugText = args.NewValue; };
+                DrawDebugText = drawText.CurrentValue;
+            }, 0.2f);
         }
 
         public static void Unload()

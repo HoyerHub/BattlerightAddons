@@ -20,18 +20,16 @@ namespace Hoyer.Champions.Varesh.Systems
             if (validEnemies.Any())
             {
                 var closestRange = validEnemies.OrderBy(e => e.Distance(LocalPlayer.Instance)).First().Distance(LocalPlayer.Instance);
-                if (MenuHandler.UseSkill(AbilitySlot.Ability4) && AbilitySlot.Ability4.IsReady() && AbilitySlot.Ability4.InRange(closestRange))
-                {
-                    Cast(AbilitySlot.Ability4);
-                    return;
-                }
 
-                if (MenuHandler.UseSkill(AbilitySlot.Ability5) && AbilitySlot.Ability5.IsReady() && AbilitySlot.Ability5.InRange(closestRange))
+                if (MenuHandler.UseSkill(AbilitySlot.Ability2) && AbilitySlot.Ability2.IsReady() && AbilitySlot.EXAbility2.InRange(closestRange) &&
+                    validForBigProjectiles)
                 {
-                    Cast(AbilitySlot.Ability5);
-                    return;
+                    if (EnemiesInRange(4).Count == 0)
+                    {
+                        Cast(AbilitySlot.Ability2);
+                        return;
+                    }
                 }
-
                 if (MenuHandler.UseSkill(AbilitySlot.EXAbility2) && AbilitySlot.Ability2.IsReady() &&
                     LocalPlayer.Instance.Energized.Energy >= 25 && AbilitySlot.EXAbility2.InRange(closestRange) && validForBigProjectiles)
                 {
@@ -41,31 +39,6 @@ namespace Hoyer.Champions.Varesh.Systems
                         return;
                     }
                 }
-
-                if (MenuHandler.UseSkill(AbilitySlot.Ability2) && AbilitySlot.Ability2.IsReady() && AbilitySlot.EXAbility2.InRange(closestRange) &&
-                    validForBigProjectiles)
-                {
-                    if (EnemiesInRange(5).Count == 0)
-                    {
-                        Cast(AbilitySlot.Ability2);
-                        return;
-                    }
-                }
-
-                if (MenuHandler.UseSkill(AbilitySlot.EXAbility1) && AbilitySlot.Ability1.IsReady() &&
-                    LocalPlayer.Instance.Energized.Energy >= 25 && AbilitySlot.EXAbility1.InRange(closestRange) && validForProjectiles)
-                {
-                    if (!MenuHandler.SkillBool("save_a6") || LocalPlayer.Instance.Energized.Energy >= 50)
-                    {
-                        if (LocalPlayer.Instance.Living.MaxRecoveryHealth - LocalPlayer.Instance.Living.Health >= 22 &&
-                            enemyTeam.All(e => e.Buffs.All(b => b.ObjectName != "SeekersMarkBuff")))
-                        {
-                            Cast(AbilitySlot.EXAbility1);
-                            return;
-                        }
-                    }
-                }
-
                 if (MenuHandler.UseSkill(AbilitySlot.Ability1) && AbilitySlot.Ability1.InRange(closestRange) && validForProjectiles)
                 {
                     Cast(AbilitySlot.Ability1);

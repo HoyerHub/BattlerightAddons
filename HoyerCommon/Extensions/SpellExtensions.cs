@@ -10,6 +10,7 @@ using BattleRight.SDK;
 using BattleRight.SDK.Enumeration;
 using Hoyer.Common.Data.Abilites;
 using Hoyer.Common.Local;
+using Hoyer.Common.Trackers;
 using Hoyer.Common.Utilities;
 
 namespace Hoyer.Common.Extensions
@@ -26,7 +27,7 @@ namespace Hoyer.Common.Extensions
                 var colsolver = CollisionSolver.CheckThickLineCollision(localPlayer.Pos(),
                     target.Pos() + direction, radius);
 
-                return colsolver.IsColliding || AbilityTracker.Enemy.Obstacles.TrackedObjects.Any(o => o.BlocksProjectileTo(target, radius));
+                return colsolver.IsColliding || ObjectTracker.Enemy.Obstacles.TrackedObjects.Any(o => o.BlocksProjectileTo(target, radius));
             }
             return false;
         }
@@ -90,7 +91,7 @@ namespace Hoyer.Common.Extensions
 
         public static bool InRange(this AbilitySlot slot, float distance)
         {
-            return Skills.Active.Get(slot).Range * Prediction.CastingRangeModifier > distance;
+            return Skills.Active.Get(slot).Range * Prediction.Prediction.CastingRangeModifier > distance;
         }
 
         public static SkillType ToSkillType(this AbilityType type)

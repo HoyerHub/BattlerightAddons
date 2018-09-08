@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BattleRight.Core;
 using BattleRight.Core.GameObjects;
 using BattleRight.Core.GameObjects.Models;
 using BattleRight.SDK;
@@ -10,12 +9,10 @@ using Hoyer.Common.Extensions;
 using UnityEngine;
 using Vector2 = BattleRight.Core.Math.Vector2;
 
-namespace Hoyer.Common.Utilities
+namespace Hoyer.Common.Utilities.Geometry
 {
     public static class GeometryLib
     {
-        private static Clipper _clipper = new Clipper();
-
         public static Vector2 NearestPointOnFiniteLine(Vector2 start, Vector2 end, Vector2 pnt)
         {
             var line = (end - start);
@@ -97,14 +94,14 @@ namespace Hoyer.Common.Utilities
 
         public static bool IsCollidingWithPlayer(this Projectile projectile, Character player)
         {
-            return Geometry.CircleVsThickLine(new Vector2(player.Pos().X, player.Pos().Y), player.MapCollision.MapCollisionRadius + 0.1f,
+            return BattleRight.Core.Geometry.CircleVsThickLine(new Vector2(player.Pos().X, player.Pos().Y), player.MapCollision.MapCollisionRadius + 0.1f,
                 projectile.StartPosition, projectile.CalculatedEndPosition, projectile.Radius, true);
         }
        
         public static bool IsCollidingWithPlayer(this Projectile projectile, Character player, float time)
         {
             var predict = player.PredictPosition(time);
-            return Geometry.CircleVsThickLine(new Vector2(predict.X, predict.Y), player.MapCollision.MapCollisionRadius + 0.1f,
+            return BattleRight.Core.Geometry.CircleVsThickLine(new Vector2(predict.X, predict.Y), player.MapCollision.MapCollisionRadius + 0.1f,
                 projectile.StartPosition, projectile.CalculatedEndPosition, projectile.Radius, true);
         }
 

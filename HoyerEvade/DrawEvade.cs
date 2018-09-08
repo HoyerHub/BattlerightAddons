@@ -6,6 +6,7 @@ using BattleRight.Core.GameObjects.Models;
 using BattleRight.SDK;
 using Hoyer.Common.Data.Abilites;
 using Hoyer.Common.Extensions;
+using Hoyer.Common.Trackers;
 using Hoyer.Common.Utilities;
 using UnityEngine;
 using Vector2 = BattleRight.Core.Math.Vector2;
@@ -54,32 +55,32 @@ namespace Hoyer.Evade
         private static void Game_OnDraw(EventArgs args)
         {
             if (!Game.IsInGame || !Active) return;
-            foreach (var projectile in AbilityTracker.Enemy.Projectiles.TrackedObjects)
+            foreach (var projectile in ObjectTracker.Enemy.Projectiles.TrackedObjects)
             {
                 DrawRectangle(projectile.Projectile.StartPosition, projectile.Projectile.CalculatedEndPosition, projectile.Data.Radius,
                     projectile.IsDangerous ? Color.red : Color.white);
                 Drawing.DrawCircle(projectile.Projectile.LastPosition, projectile.Data.Radius / 2, projectile.IsDangerous ? Color.red : Color.white);
             }
 
-            foreach (var dash in AbilityTracker.Enemy.Dashes.TrackedObjects)
+            foreach (var dash in ObjectTracker.Enemy.Dashes.TrackedObjects)
             {
                 DrawRectangle(dash.DashObject.StartPosition, dash.DashObject.TargetPosition, dash.Data.Radius,
                     dash.IsDangerous ? Color.red : Color.white);
             }
 
-            foreach (var throwObj in AbilityTracker.Enemy.CircularThrows.TrackedObjects)
+            foreach (var throwObj in ObjectTracker.Enemy.CircularThrows.TrackedObjects)
             {
                 Drawing.DrawCircle(throwObj.ThrowObject.TargetPosition, throwObj.Data.Radius, throwObj.IsDangerous ? Color.red : Color.white);
                 Drawing.DrawString(throwObj.ThrowObject.TargetPosition, (throwObj.EstimatedImpact - Time.time).ToString(), Color.white);
             }
 
-            foreach (var jumpObj in AbilityTracker.Enemy.CircularJumps.TrackedObjects)
+            foreach (var jumpObj in ObjectTracker.Enemy.CircularJumps.TrackedObjects)
             {
                 Drawing.DrawCircle(jumpObj.TravelObject.TargetPosition, jumpObj.Data.Radius, jumpObj.IsDangerous ? Color.red : Color.white);
                 Drawing.DrawString(jumpObj.TravelObject.TargetPosition, (jumpObj.EstimatedImpact - Time.time).ToString(), Color.white);
             }
 
-            foreach (var projectile in AbilityTracker.Enemy.CurveProjectiles.TrackedObjects)
+            foreach (var projectile in ObjectTracker.Enemy.CurveProjectiles.TrackedObjects)
             {
                 Drawing.DrawCircle(projectile.Projectile.LastPosition, projectile.Data.Radius / 2, projectile.IsDangerous ? Color.red : Color.white);
                 if (!projectile.Projectile.Reversed)

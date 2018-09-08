@@ -5,6 +5,7 @@ using BattleRight.Core.Enumeration;
 using BattleRight.Core.GameObjects;
 using BattleRight.Core.GameObjects.Models;
 using BattleRight.SDK;
+using Hoyer.Common.Trackers;
 using Hoyer.Common.Utilities;
 using UnityEngine;
 using Vector2 = BattleRight.Core.Math.Vector2;
@@ -30,22 +31,14 @@ namespace Hoyer.Common.Extensions
 
         public static bool IsValidTargetProjectile(this Character enemy, bool useOnHardCC = false)
         {
-            if (enemy == null || enemy.Buffs == null || enemy.Living.IsDead || enemy.PhysicsCollision.IsImmaterial && !enemy.CharacterModel.IsModelInvisible)
+            if (enemy == null || enemy.Living.IsDead || enemy.PhysicsCollision.IsImmaterial && !enemy.CharacterModel.IsModelInvisible)
             {
                 return false;
             }
-            foreach (var buff in enemy.Buffs.Where(b => b != null && b.ObjectName != null))
-            {
-                if (buff.BuffType == BuffType.Counter || buff.BuffType == BuffType.Consume || buff.ObjectName == "GustBuff" ||
-                                     buff.ObjectName == "BulwarkBuff" || buff.ObjectName == "TractorBeam" || buff.ObjectName == "TimeBenderBuff" || buff.ObjectName == "DivineShieldBuff")
-                {
-                    return false;
-                }
-                if (!useOnHardCC && (buff.ObjectName == "Incapacitate" || buff.ObjectName == "PetrifyStone"))
-                {
-                    return false;
-                }
-            }
+            if (!BuffTracker.CharacterBuffStates.ContainsKey(enemy.Name)) return false;
+            var buffState = BuffTracker.CharacterBuffStates[enemy.Name];
+            if (buffState.SafeFromProjectiles) return false;
+            if (!useOnHardCC && buffState.CrowdControlled) return false;
             return !LocalPlayer.Instance.CheckCollisionToTarget(enemy, 0.35f);
         }
 
@@ -93,9 +86,9 @@ namespace Hoyer.Common.Extensions
             return true;
         }
 
-        public static Prediction.Output GetPrediction(this Character target, SkillBase castingSpell)
+        public static Prediction.Prediction.Output GetPrediction(this Character target, SkillBase castingSpell)
         {
-            return Prediction.Get(target, castingSpell);
+            return Prediction.Prediction.Get(target, castingSpell);
         }
 
         public static bool IsHoveringNear(this MapGameObject obj)

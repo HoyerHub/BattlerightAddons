@@ -1,11 +1,11 @@
 ﻿using System;
 using BattleRight.Sandbox;
 using BattleRight.SDK.ClipperLib;
-using Hoyer.Common.AimBot;
 using Hoyer.Common.Data.Abilites;
 using Hoyer.Common.Data.Addons;
-using Hoyer.Common.Debug;
+using Hoyer.Common.Debugging;
 using Hoyer.Common.Local;
+using Hoyer.Common.Trackers;
 using Hoyer.Common.Utilities;
 
 namespace Hoyer.Common
@@ -30,13 +30,14 @@ namespace Hoyer.Common
         {
             AbilityDatabase.Setup();
             AddonMenus.Setup();
-            Aimbot.Setup();
+            Aimbot.Aimbot.Setup();
             StealthPrediction.Setup();
             HideNames.Setup();
             Skills.Setup();
-            AbilityTracker.Setup();
+            ObjectTracker.Setup();
             MenuEvents.Setup();
             DebugHelper.Setup();
+            BuffTracker.Setup();
             DelayAction(Init.Invoke, 0.5f);
         }
 
@@ -45,13 +46,14 @@ namespace Hoyer.Common
             Console.WriteLine("Unload Common Started");
             AbilityDatabase.Unload();
             AddonMenus.Unload();
-            Aimbot.Unload();
+            Aimbot.Aimbot.Unload();
             StealthPrediction.Unload();
             HideNames.Unload();
             Skills.Unload();
-            AbilityTracker.Unload();
+            ObjectTracker.Unload();
             MenuEvents.Unload();
             DebugHelper.Unload();
+            BuffTracker.Unload();
             Console.WriteLine("Unload Common Ended");
         }
     }
