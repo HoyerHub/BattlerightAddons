@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using BattleRight.Core;
 using BattleRight.Core.Enumeration;
 using BattleRight.Core.GameObjects;
+using UnityEngine;
 
 namespace Hoyer.Common.Trackers
 {
     public static class BuffTracker
     {
         public static Dictionary<string, CharacterBuffState> CharacterBuffStates = new Dictionary<string, CharacterBuffState>();
+        internal static float NextCheckTime;
 
         public static void Setup()
         {
@@ -16,6 +18,17 @@ namespace Hoyer.Common.Trackers
             Game.OnMatchStateUpdate += OnMatchStateUpdate;
             Character.OnBuffGain += Character_OnBuffGain;
             Character.OnBuffRemove += Character_OnBuffRemove;
+            Game.OnCoroutineUpdate += Game_OnCoroutineUpdate;
+        }
+
+        private static void Game_OnCoroutineUpdate(EventArgs args)
+        {
+            if (!(Time.time > NextCheckTime)) return;
+            foreach (var buffState in CharacterBuffStates.Values)
+            {
+                buffState.BuffHealthCheck();
+            }
+            NextCheckTime = Time.time + 1;
         }
 
         private static void OnMatchStateUpdate(MatchStateUpdate args)
@@ -134,6 +147,20 @@ namespace Hoyer.Common.Trackers
         private static bool BuffIsCrowdControl(Buff buff)
         {
             return buff.ObjectName == "Incapacitate" || buff.ObjectName == "PetrifyStone";
+        }
+
+        public void BuffHealthCheck()
+        {
+            var toRemove = new List<Buff>();
+            foreach (var activeBuff in _activeBuffs)
+            {
+                if (!activeBuff.IsActive || !activeBuff.IsValid || !activeBuff.IsActiveObject)
+                    toRemove.Add(activeBuff);
+            }
+            foreach (var buff in toRemove)
+            {
+                RemoveBuff(buff);
+            }
         }
     }
 }
