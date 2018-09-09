@@ -45,6 +45,7 @@ namespace Hoyer.Common.Trackers
             Game.OnMatchStateUpdate -= OnMatchStateUpdate;
             Character.OnBuffGain -= Character_OnBuffGain;
             Character.OnBuffRemove -= Character_OnBuffRemove;
+            Game.OnCoroutineUpdate -= Game_OnCoroutineUpdate;
         }
 
         private static void Character_OnBuffGain(BuffEventArgs args)
