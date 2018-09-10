@@ -47,7 +47,7 @@ namespace Hoyer.Common.Data.Abilites
         public int AbilityId;
         public string ObjectName = "";
         public AbilityType AbilityType;
-        public int Danger;
+        public int Danger = 1;
         public Battlerite[] ImportantBattlerites;
         public CollisionType CollisionType = CollisionType.Units | CollisionType.Walls;
         public float Range = 0;
@@ -59,7 +59,9 @@ namespace Hoyer.Common.Data.Abilites
         public float CollideCount = 1;
         public float Speed = 0;
         public float FixedDelay = 0;                
-        public bool RequiresCharging;
+        public bool RequiresCharging = false;
+        public bool ShouldEvade = true;
         public bool CanCounter = true;
+        public float StartDelay = 0;
     }
 }

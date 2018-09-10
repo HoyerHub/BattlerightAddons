@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using BattleRight.Core;
 using BattleRight.Core.Enumeration;
 using BattleRight.Core.GameObjects;
 using BattleRight.SDK.UI;
 using BattleRight.SDK.UI.Models;
 using BattleRight.SDK.UI.Values;
-using Hoyer.Champions.Jumong.Modes;
 using Hoyer.Common;
 using UnityEngine;
 
@@ -41,13 +39,13 @@ namespace Hoyer.Champions.Jumong
 
             JumongMenu.Add(new MenuLabel("Jumong"));
             _enabledBox = new MenuCheckBox("jumong_enabled", "Enabled");
-            _enabledBox.OnValueChange += delegate (ChangedValueArgs<bool> args) { Jumong.Enabled = args.NewValue; };
+            _enabledBox.OnValueChange += delegate(ChangedValueArgs<bool> args) { Jumong.Enabled = args.NewValue; };
             JumongMenu.Add(_enabledBox);
 
             JumongMenu.AddSeparator();
 
             _comboKey = new MenuKeybind("jumong_combokey", "Combo key", KeyCode.V);
-            _comboKey.OnValueChange += delegate (ChangedValueArgs<bool> args) { Jumong.SetMode(args.NewValue); };
+            _comboKey.OnValueChange += delegate(ChangedValueArgs<bool> args) { Jumong.SetMode(args.NewValue); };
             JumongMenu.Add(_comboKey);
 
             _comboToggle = new MenuCheckBox("jumong_combotoggle", "Should Combo key be a toggle", false);
@@ -59,11 +57,11 @@ namespace Hoyer.Champions.Jumong
             JumongMenu.Add(_aimUserInput);
 
             _useCursor = new MenuCheckBox("jumong_usecursor", "Use cursor pos for target selection");
-            _useCursor.OnValueChange += delegate (ChangedValueArgs<bool> args) { UseCursor = args.NewValue; };
+            _useCursor.OnValueChange += delegate(ChangedValueArgs<bool> args) { UseCursor = args.NewValue; };
             JumongMenu.Add(_useCursor);
 
             _avoidStealthed = new MenuCheckBox("jumong_ignorestealthed", "Ignore stealthed enemies", false);
-            _avoidStealthed.OnValueChange += delegate (ChangedValueArgs<bool> args) { AvoidStealthed = args.NewValue; };
+            _avoidStealthed.OnValueChange += delegate(ChangedValueArgs<bool> args) { AvoidStealthed = args.NewValue; };
             JumongMenu.Add(_avoidStealthed);
 
             InitSkillMenu();
@@ -72,9 +70,9 @@ namespace Hoyer.Champions.Jumong
             Main.DelayAction(delegate
             {
                 var drawText = HoyerMainMenu.Get<Menu>("Hoyer.Debug").Add(new MenuCheckBox("Jumong_drawdebug", "Draw Jumong debug text"));
-                drawText.OnValueChange += delegate (ChangedValueArgs<bool> args) { DrawDebugText = args.NewValue; };
+                drawText.OnValueChange += delegate(ChangedValueArgs<bool> args) { DrawDebugText = args.NewValue; };
                 DrawDebugText = drawText.CurrentValue;
-            }, 0.2f);
+            }, 0.8f);
         }
 
         public static void Unload()
@@ -117,6 +115,7 @@ namespace Hoyer.Champions.Jumong
                 case AbilitySlot.EXAbility2:
                     return SkillCheckBoxes["combo_ex2"];
             }
+
             return false;
         }
 
@@ -141,23 +140,20 @@ namespace Hoyer.Champions.Jumong
                 Console.WriteLine("[HoyerJumong/MenuHandler] Can't find menu, please report this to Hoyer :(");
                 return;
             }
+
             if (!Game.IsInGame)
             {
-                if (JumongMenu.Hidden)
-                {
-                    JumongMenu.Hidden = false;
-                }
+                if (JumongMenu.Hidden) JumongMenu.Hidden = false;
                 return;
             }
+
             if (LocalPlayer.Instance.ChampionEnum != Champion.Jumong && !JumongMenu.Hidden)
             {
                 JumongMenu.Hidden = true;
                 return;
             }
-            if (LocalPlayer.Instance.ChampionEnum == Champion.Jumong && JumongMenu.Hidden)
-            {
-                JumongMenu.Hidden = false;
-            }
+
+            if (LocalPlayer.Instance.ChampionEnum == Champion.Jumong && JumongMenu.Hidden) JumongMenu.Hidden = false;
         }
     }
 }

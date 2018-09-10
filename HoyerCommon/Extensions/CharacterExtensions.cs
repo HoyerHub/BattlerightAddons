@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BattleRight.Core;
 using BattleRight.Core.Enumeration;
@@ -17,6 +18,11 @@ namespace Hoyer.Common.Extensions
         public static Vector2 Pos(this Character character)
         {
             return StealthPrediction.ShouldUse ? StealthPrediction.GetPosition(character) : character.MapObject.Position;
+        }
+
+        public static bool HasBuff(this Character character, IEnumerable<string> buffList)
+        {
+            return character.Buffs.Any(b => buffList.Contains(b.ObjectName));
         }
 
         public static bool IsValidTarget(this Character enemy)

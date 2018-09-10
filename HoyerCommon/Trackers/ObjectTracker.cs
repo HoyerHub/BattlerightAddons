@@ -6,20 +6,22 @@ using BattleRight.Core.GameObjects;
 using BattleRight.Core.GameObjects.Models;
 using BattleRight.SDK;
 using BattleRight.SDK.Events;
+using BattleRight.SDK.EventsArgs;
 using Hoyer.Common.Data.Abilites;
 using Hoyer.Common.Extensions;
 using Hoyer.Common.Utilities.Geometry;
 using UnityEngine;
 using CollisionFlags = BattleRight.Core.Enumeration.CollisionFlags;
 using Vector2 = BattleRight.Core.Math.Vector2;
+
 // ReSharper disable MemberHidesStaticFromOuterClass
 
 namespace Hoyer.Common.Trackers
 {
     public static class ObjectTracker
     {
-        internal static float NextCheckTime = 0;
-        internal static event Action<InGameObject> EnemyObjectSpawn = delegate {};
+        internal static float NextCheckTime;
+        internal static event Action<InGameObject> EnemyObjectSpawn = delegate { };
         internal static event Action CheckForDeadObjects = delegate { };
 
         public static void Setup()
@@ -76,18 +78,17 @@ namespace Hoyer.Common.Trackers
                 Console.WriteLine("[AbilityTracker#OnCreateHandler] GameObject is null, please report this to Hoyer");
                 return;
             }
+
             if (LocalPlayer.Instance == null)
             {
                 Console.WriteLine("[AbilityTracker#OnCreateHandler] LocalPlayer is null, please report this to Hoyer");
                 return;
             }
+
             var baseTypes = gameObject.GetBaseTypes();
             if (!baseTypes.Contains("BaseObject")) return;
             var baseObj = gameObject.Get<BaseGameObject>();
-            if (baseObj != null && baseObj.TeamId != LocalPlayer.Instance.BaseObject.TeamId)
-            {
-                EnemyObjectSpawn.Invoke(gameObject);
-            }
+            if (baseObj != null && baseObj.TeamId != LocalPlayer.Instance.BaseObject.TeamId) EnemyObjectSpawn.Invoke(gameObject);
         }
 
         public static class Enemy
@@ -112,16 +113,13 @@ namespace Hoyer.Common.Trackers
                     TrackedCasts.Clear();
                 }
 
-                private static void SpellDetector_OnSpellStopCast(BattleRight.SDK.EventsArgs.SpellStopArgs args)
+                private static void SpellDetector_OnSpellStopCast(SpellStopArgs args)
                 {
                     var tryGetCast = TrackedCasts.FirstOrDefault(t => t.Owner.Name == args.Caster.Name && t.Index == args.AbilityIndex);
-                    if (tryGetCast != default(TrackedCast))
-                    {
-                        TrackedCasts.Remove(tryGetCast);
-                    }
+                    if (tryGetCast != default(TrackedCast)) TrackedCasts.Remove(tryGetCast);
                 }
 
-                private static void SpellDetector_OnSpellCast(BattleRight.SDK.EventsArgs.SpellCastArgs args)
+                private static void SpellDetector_OnSpellCast(SpellCastArgs args)
                 {
                     if (args.Caster.Team == BattleRight.Core.Enumeration.Team.Enemy) return;
                     var data = AbilityDatabase.Get(args.Caster.AbilitySystem.CastingAbilityId);
@@ -147,7 +145,6 @@ namespace Hoyer.Common.Trackers
 
                 private static void Game_OnUpdate(EventArgs args)
                 {
-                    return;
                     /*if (Input.GetKeyDown(KeyCode.L))
                     {
                         for (int i = 0; i < 10; i++)
@@ -199,9 +196,8 @@ namespace Hoyer.Common.Trackers
                 private static void ObjectsHealthCheck()
                 {
                     foreach (var o in TrackedObjects)
-                    {
-                        if (!o.ThrowObject.GameObject.IsValid || !o.ThrowObject.GameObject.IsActiveObject) RemoveAfterFrame.Add(o);
-                    }
+                        if (!o.ThrowObject.GameObject.IsValid || !o.ThrowObject.GameObject.IsActiveObject)
+                            RemoveAfterFrame.Add(o);
                 }
 
                 private static void Game_OnLateUpdate(EventArgs args)
@@ -211,12 +207,10 @@ namespace Hoyer.Common.Trackers
                         TrackedObjects.AddRange(AddAfterFrame);
                         AddAfterFrame.Clear();
                     }
+
                     if (RemoveAfterFrame.Any())
                     {
-                        foreach (var o in RemoveAfterFrame)
-                        {
-                            TrackedObjects.Remove(o);
-                        }
+                        foreach (var o in RemoveAfterFrame) TrackedObjects.Remove(o);
                         RemoveAfterFrame.Clear();
                     }
                 }
@@ -238,10 +232,7 @@ namespace Hoyer.Common.Trackers
                 private static void InGameObject_OnDestroy(InGameObject inGameObject)
                 {
                     var tryDanger = TrackedObjects.FirstOrDefault(t => t.ThrowObject.GameObject == inGameObject);
-                    if (tryDanger != default(TrackedThrowObject))
-                    {
-                        RemoveAfterFrame.Add(tryDanger);
-                    }
+                    if (tryDanger != default(TrackedThrowObject)) RemoveAfterFrame.Add(tryDanger);
                 }
 
                 private static void InGameObject_OnCreate(InGameObject inGameObject)
@@ -250,14 +241,8 @@ namespace Hoyer.Common.Trackers
                     {
                         var throwObj = inGameObject.Get<ThrowObject>();
                         var data = throwObj.Data();
-                        if (data == null)
-                        {
-                            return;
-                        }
-                        if (LocalPlayer.Instance.Pos().Distance(throwObj.TargetPosition) > 5)
-                        {
-                            return;
-                        }
+                        if (data == null) return;
+                        if (LocalPlayer.Instance.Pos().Distance(throwObj.TargetPosition) > 5) return;
                         var tto = new TrackedThrowObject(throwObj, data);
                         AddAfterFrame.Add(tto);
                     }
@@ -281,9 +266,8 @@ namespace Hoyer.Common.Trackers
                 private static void ObjectsHealthCheck()
                 {
                     foreach (var o in TrackedObjects)
-                    {
-                        if (!o.TravelObject.GameObject.IsValid || !o.TravelObject.GameObject.IsActiveObject) RemoveAfterFrame.Add(o);
-                    }
+                        if (!o.TravelObject.GameObject.IsValid || !o.TravelObject.GameObject.IsActiveObject)
+                            RemoveAfterFrame.Add(o);
                 }
 
                 private static void Game_OnLateUpdate(EventArgs args)
@@ -293,12 +277,10 @@ namespace Hoyer.Common.Trackers
                         TrackedObjects.AddRange(AddAfterFrame);
                         AddAfterFrame.Clear();
                     }
+
                     if (RemoveAfterFrame.Any())
                     {
-                        foreach (var o in RemoveAfterFrame)
-                        {
-                            TrackedObjects.Remove(o);
-                        }
+                        foreach (var o in RemoveAfterFrame) TrackedObjects.Remove(o);
                         RemoveAfterFrame.Clear();
                     }
                 }
@@ -320,10 +302,7 @@ namespace Hoyer.Common.Trackers
                 private static void InGameObject_OnDestroy(InGameObject inGameObject)
                 {
                     var tryDanger = TrackedObjects.FirstOrDefault(t => t.TravelObject.GameObject == inGameObject);
-                    if (tryDanger != default(TrackedCircularJump))
-                    {
-                        RemoveAfterFrame.Add(tryDanger);
-                    }
+                    if (tryDanger != default(TrackedCircularJump)) RemoveAfterFrame.Add(tryDanger);
                 }
 
                 private static void InGameObject_OnCreate(InGameObject inGameObject)
@@ -332,14 +311,8 @@ namespace Hoyer.Common.Trackers
                     {
                         var travelObj = inGameObject.Get<TravelBuffObject>();
                         var data = travelObj.Data();
-                        if (data == null || data.AbilityType != AbilityType.CircleJump)
-                        {
-                            return;
-                        }
-                        if (LocalPlayer.Instance.Pos().Distance(travelObj.TargetPosition) > 5)
-                        {
-                            return;
-                        }
+                        if (data == null || data.AbilityType != AbilityType.CircleJump) return;
+                        if (LocalPlayer.Instance.Pos().Distance(travelObj.TargetPosition) > 5) return;
                         var tcj = new TrackedCircularJump(travelObj, data);
                         AddAfterFrame.Add(tcj);
                     }
@@ -363,9 +336,8 @@ namespace Hoyer.Common.Trackers
                 private static void ObjectsHealthCheck()
                 {
                     foreach (var o in TrackedObjects)
-                    {
-                        if (!o.MapObject.GameObject.IsValid || !o.MapObject.GameObject.IsActiveObject) RemoveAfterFrame.Add(o);
-                    }
+                        if (!o.MapObject.GameObject.IsValid || !o.MapObject.GameObject.IsActiveObject)
+                            RemoveAfterFrame.Add(o);
                 }
 
                 private static void Game_OnLateUpdate(EventArgs args)
@@ -375,12 +347,10 @@ namespace Hoyer.Common.Trackers
                         TrackedObjects.AddRange(AddAfterFrame);
                         AddAfterFrame.Clear();
                     }
+
                     if (RemoveAfterFrame.Any())
                     {
-                        foreach (var o in RemoveAfterFrame)
-                        {
-                            TrackedObjects.Remove(o);
-                        }
+                        foreach (var o in RemoveAfterFrame) TrackedObjects.Remove(o);
                         RemoveAfterFrame.Clear();
                     }
                 }
@@ -403,20 +373,14 @@ namespace Hoyer.Common.Trackers
                 {
                     var tryFind = TrackedObjects.FirstOrDefault(t =>
                         t.MapObject.GameObject == inGameObject);
-                    if (tryFind != default(TrackedObstacleObject))
-                    {
-                        RemoveAfterFrame.Add(tryFind);
-                    }
+                    if (tryFind != default(TrackedObstacleObject)) RemoveAfterFrame.Add(tryFind);
                 }
 
                 private static void InGameObject_OnCreate(InGameObject inGameObject)
                 {
-                        var data = AbilityDatabase.GetObstacle(inGameObject.ObjectName);
-                        if (data == null)
-                        {
-                            return;
-                        }
-                        AddAfterFrame.Add(new TrackedObstacleObject(inGameObject.Get<MapGameObject>(), data));
+                    var data = AbilityDatabase.GetObstacle(inGameObject.ObjectName);
+                    if (data == null) return;
+                    AddAfterFrame.Add(new TrackedObstacleObject(inGameObject.Get<MapGameObject>(), data));
                 }
             }
 
@@ -437,9 +401,8 @@ namespace Hoyer.Common.Trackers
                 private static void ObjectsHealthCheck()
                 {
                     foreach (var o in TrackedObjects)
-                    {
-                        if (!o.Projectile.IsValid || !o.Projectile.IsActiveObject) RemoveAfterFrame.Add(o);
-                    }
+                        if (!o.Projectile.IsValid || !o.Projectile.IsActiveObject)
+                            RemoveAfterFrame.Add(o);
                 }
 
                 private static void Game_OnLateUpdate(EventArgs args)
@@ -449,12 +412,10 @@ namespace Hoyer.Common.Trackers
                         TrackedObjects.AddRange(AddAfterFrame);
                         AddAfterFrame.Clear();
                     }
+
                     if (RemoveAfterFrame.Any())
                     {
-                        foreach (var o in RemoveAfterFrame)
-                        {
-                            TrackedObjects.Remove(o);
-                        }
+                        foreach (var o in RemoveAfterFrame) TrackedObjects.Remove(o);
                         RemoveAfterFrame.Clear();
                     }
                 }
@@ -477,10 +438,7 @@ namespace Hoyer.Common.Trackers
                 {
                     var tryFind = TrackedObjects.FirstOrDefault(t =>
                         t.Projectile == inGameObject);
-                    if (tryFind != default(TrackedProjectile))
-                    {
-                        RemoveAfterFrame.Add(tryFind);
-                    }
+                    if (tryFind != default(TrackedProjectile)) RemoveAfterFrame.Add(tryFind);
                 }
 
                 private static void InGameObject_OnCreate(InGameObject inGameObject)
@@ -489,18 +447,12 @@ namespace Hoyer.Common.Trackers
                     if (projectile != null)
                     {
                         var data = AbilityDatabase.Get(inGameObject.ObjectName);
-                        if (data == null)
-                        {
-                            return;
-                        }
+                        if (data == null) return;
                         var pos = LocalPlayer.Instance.Pos();
 
                         var closest = GeometryLib.NearestPointOnFiniteLine(projectile.StartPosition,
                             projectile.CalculatedEndPosition, pos);
-                        if (pos.Distance(closest) > 5)
-                        {
-                            return;
-                        }
+                        if (pos.Distance(closest) > 5) return;
 
                         var tp = new TrackedProjectile(projectile, data);
                         AddAfterFrame.Add(tp);
@@ -525,9 +477,8 @@ namespace Hoyer.Common.Trackers
                 private static void ObjectsHealthCheck()
                 {
                     foreach (var o in TrackedObjects)
-                    {
-                        if (!o.Projectile.GameObject.IsValid || !o.Projectile.GameObject.IsActiveObject) RemoveAfterFrame.Add(o);
-                    }
+                        if (!o.Projectile.GameObject.IsValid || !o.Projectile.GameObject.IsActiveObject)
+                            RemoveAfterFrame.Add(o);
                 }
 
                 private static void Game_OnLateUpdate(EventArgs args)
@@ -537,12 +488,10 @@ namespace Hoyer.Common.Trackers
                         TrackedObjects.AddRange(AddAfterFrame);
                         AddAfterFrame.Clear();
                     }
+
                     if (RemoveAfterFrame.Any())
                     {
-                        foreach (var o in RemoveAfterFrame)
-                        {
-                            TrackedObjects.Remove(o);
-                        }
+                        foreach (var o in RemoveAfterFrame) TrackedObjects.Remove(o);
                         RemoveAfterFrame.Clear();
                     }
                 }
@@ -565,31 +514,22 @@ namespace Hoyer.Common.Trackers
                 {
                     var tryFind = TrackedObjects.FirstOrDefault(t =>
                         t.Projectile.GameObject == inGameObject);
-                    if (tryFind != default(TrackedCurveProjectile))
-                    {
-                        RemoveAfterFrame.Add(tryFind);
-                    }
+                    if (tryFind != default(TrackedCurveProjectile)) RemoveAfterFrame.Add(tryFind);
                 }
 
                 private static void InGameObject_OnCreate(InGameObject inGameObject)
                 {
                     var baseTypes = inGameObject.GetBaseTypes().ToArray();
                     if (baseTypes.Contains("CurveProjectile") || baseTypes.Contains("CurveProjectile2"))
-                    { 
+                    {
                         var data = AbilityDatabase.Get(inGameObject.ObjectName);
-                        if (data == null)
-                        {
-                            return;
-                        }
+                        if (data == null) return;
                         var pos = LocalPlayer.Instance.Pos();
                         var projectile = inGameObject.Get<CurveProjectileObject>();
 
                         var closest = GeometryLib.NearestPointOnFiniteLine(projectile.Position,
                             projectile.TargetPosition, pos);
-                        if (pos.Distance(closest) > 6)
-                        {
-                            return;
-                        }
+                        if (pos.Distance(closest) > 6) return;
 
                         var tp = new TrackedCurveProjectile(projectile, data);
                         AddAfterFrame.Add(tp);
@@ -614,9 +554,8 @@ namespace Hoyer.Common.Trackers
                 private static void ObjectsHealthCheck()
                 {
                     foreach (var o in TrackedObjects)
-                    {
-                        if (!o.DashObject.GameObject.IsValid || !o.DashObject.GameObject.IsActiveObject) RemoveAfterFrame.Add(o);
-                    }
+                        if (!o.DashObject.GameObject.IsValid || !o.DashObject.GameObject.IsActiveObject)
+                            RemoveAfterFrame.Add(o);
                 }
 
                 private static void Game_OnLateUpdate(EventArgs args)
@@ -626,12 +565,10 @@ namespace Hoyer.Common.Trackers
                         TrackedObjects.AddRange(AddAfterFrame);
                         AddAfterFrame.Clear();
                     }
+
                     if (RemoveAfterFrame.Any())
                     {
-                        foreach (var o in RemoveAfterFrame)
-                        {
-                            TrackedObjects.Remove(o);
-                        }
+                        foreach (var o in RemoveAfterFrame) TrackedObjects.Remove(o);
                         RemoveAfterFrame.Clear();
                     }
                 }
@@ -654,10 +591,7 @@ namespace Hoyer.Common.Trackers
                 {
                     var tryFind = TrackedObjects.FirstOrDefault(t =>
                         t.DashObject.GameObject == inGameObject);
-                    if (tryFind != default(TrackedDash))
-                    {
-                        RemoveAfterFrame.Add(tryFind);
-                    }
+                    if (tryFind != default(TrackedDash)) RemoveAfterFrame.Add(tryFind);
                 }
 
                 private static void InGameObject_OnCreate(InGameObject inGameObject)
@@ -667,17 +601,11 @@ namespace Hoyer.Common.Trackers
                     {
                         var dashObj = inGameObject.Get<DashObject>();
                         var data = dashObj.Data();
-                        if (data == null)
-                        {
-                            return;
-                        }
+                        if (data == null) return;
                         var pos = LocalPlayer.Instance.Pos();
                         var closest = GeometryLib.NearestPointOnFiniteLine(dashObj.StartPosition,
                             dashObj.TargetPosition, pos);
-                        if (pos.Distance(closest) > 5)
-                        {
-                            return;
-                        }
+                        if (pos.Distance(closest) > 5) return;
                         var dash = new TrackedDash(dashObj, data);
                         AddAfterFrame.Add(dash);
                     }
@@ -688,18 +616,18 @@ namespace Hoyer.Common.Trackers
 
     public class TrackedObject
     {
-        public bool IsDangerous;
         public AbilityInfo Data;
         public float EstimatedImpact;
+        public bool IsDangerous;
     }
 
     public class TrackedCurveProjectile : TrackedObject
     {
-        public CurveProjectileObject Projectile;
-        public List<Vector2> Path;
-        public Vector2 StartPosition;
-        public Vector2 EndPosition;
         public Vector2 ClosestPoint;
+        public Vector2 EndPosition;
+        public List<Vector2> Path;
+        public CurveProjectileObject Projectile;
+        public Vector2 StartPosition;
 
 
         public TrackedCurveProjectile(CurveProjectileObject curveProjectile, AbilityInfo data)
@@ -716,10 +644,11 @@ namespace Hoyer.Common.Trackers
                 var perpendicular = (EndPosition - StartPosition).Normalized.Perpendicular();
                 var offset = -perpendicular * Math.Sign(Projectile.CurveWidth) * data.Radius;
                 var middleOfArc = middleOfLine + -perpendicular * Projectile.CurveWidth;
-                Path.AddRange(GeometryLib.MakeSmoothCurve(new[] { StartPosition, middleOfArc + offset, EndPosition }, 3));
-                Path.AddRange(GeometryLib.MakeSmoothCurve(new[] { EndPosition + offset, middleOfArc + offset * 2, StartPosition + offset }, 3));
+                Path.AddRange(GeometryLib.MakeSmoothCurve(new[] {StartPosition, middleOfArc + offset, EndPosition}, 3));
+                Path.AddRange(GeometryLib.MakeSmoothCurve(new[] {EndPosition + offset, middleOfArc + offset * 2, StartPosition + offset}, 3));
                 Path.Add(StartPosition);
             }
+
             Update();
         }
 
@@ -731,39 +660,37 @@ namespace Hoyer.Common.Trackers
             EstimatedImpact = Time.time + (pos.Distance(Projectile.GameObject.Get<BaseGameObject>().Owner as Character) -
                                            LocalPlayer.Instance.MapCollision.MapCollisionRadius) /
                               Data.Speed;
-            IsDangerous = GetIsDangerous(pos); 
+            IsDangerous = GetIsDangerous(pos);
         }
 
         private bool GetIsDangerous(Vector2 pos)
         {
             if (Projectile.Reversed) return false;
-            return Math.Abs(Projectile.CurveWidth) > 0.1 ? 
-                GeometryLib.CheckForOverLaps(Path.ToClipperPath(), LocalPlayer.Instance.MapCollision.ToClipperPath()) : 
-                IsInsideHitbox(pos);
+            return Math.Abs(Projectile.CurveWidth) > 0.1
+                ? GeometryLib.CheckForOverLaps(Path.ToClipperPath(), LocalPlayer.Instance.MapCollision.ToClipperPath())
+                : IsInsideHitbox(pos);
         }
 
         private bool IsInsideHitbox(Vector2 pos)
         {
-            float num = Vector2.DistanceSquared(ClosestPoint, pos);
-            float num2 = LocalPlayer.Instance.MapCollision.MapCollisionRadius + Data.Radius;
+            var num = Vector2.DistanceSquared(ClosestPoint, pos);
+            var num2 = LocalPlayer.Instance.MapCollision.MapCollisionRadius + Data.Radius;
             if (num <= num2 * num2)
             {
-                Vector2 normalized = (EndPosition - StartPosition).Normalized;
-                Vector2 value = pos + normalized * Data.Radius;
-                if (Vector2.Dot(normalized, value - StartPosition) > 0f)
-                {
-                    return true;
-                }
+                var normalized = (EndPosition - StartPosition).Normalized;
+                var value = pos + normalized * Data.Radius;
+                if (Vector2.Dot(normalized, value - StartPosition) > 0f) return true;
             }
+
             return false;
         }
     }
 
     public class TrackedCast
     {
+        public AbilityInfo Data;
         public int Index;
         public Character Owner;
-        public AbilityInfo Data;
 
         public TrackedCast(int index, Character owner, AbilityInfo data)
         {
@@ -775,8 +702,8 @@ namespace Hoyer.Common.Trackers
 
     public class TrackedProjectile : TrackedObject
     {
-        public Projectile Projectile;
         public Vector2 ClosestPoint;
+        public Projectile Projectile;
 
         public TrackedProjectile(Projectile projectile, AbilityInfo data)
         {
@@ -790,9 +717,9 @@ namespace Hoyer.Common.Trackers
             var pos = LocalPlayer.Instance.Pos();
             ClosestPoint = GeometryLib.NearestPointOnFiniteLine(Projectile.StartPosition,
                 Projectile.CalculatedEndPosition, pos);
-            EstimatedImpact = Time.time +((pos.Distance(Projectile.LastPosition) -
-                                            LocalPlayer.Instance.MapCollision.MapCollisionRadius) /
-                                           Data.Speed);
+            EstimatedImpact = Time.time + (pos.Distance(Projectile.LastPosition) -
+                                           LocalPlayer.Instance.MapCollision.MapCollisionRadius) /
+                              Data.Speed;
             IsDangerous = GetIsDangerous(pos);
         }
 
@@ -803,32 +730,31 @@ namespace Hoyer.Common.Trackers
 
         private bool CheckForCollision(Vector2 pos)
         {
-            var targetCollision = CollisionSolver.CheckThickLineCollision(ClosestPoint, Projectile.StartPosition, LocalPlayer.Instance.MapCollision.MapCollisionRadius);
+            var targetCollision = CollisionSolver.CheckThickLineCollision(ClosestPoint, Projectile.StartPosition,
+                LocalPlayer.Instance.MapCollision.MapCollisionRadius);
             return targetCollision != null && targetCollision.IsColliding &&
-                   targetCollision.CollisionFlags.HasFlag(CollisionFlags.LowBlock | CollisionFlags.HighBlock) ;
+                   targetCollision.CollisionFlags.HasFlag(CollisionFlags.LowBlock | CollisionFlags.HighBlock);
         }
 
         private bool IsInsideHitbox(Vector2 pos)
         {
-            float num = Vector2.DistanceSquared(ClosestPoint, pos);
-            float num2 = LocalPlayer.Instance.MapCollision.MapCollisionRadius + Data.Radius;
+            var num = Vector2.DistanceSquared(ClosestPoint, pos);
+            var num2 = LocalPlayer.Instance.MapCollision.MapCollisionRadius + Data.Radius;
             if (num <= num2 * num2)
             {
-                Vector2 normalized = (Projectile.CalculatedEndPosition - Projectile.StartPosition).Normalized;
-                Vector2 value = pos + normalized * Data.Radius;
-                if (Vector2.Dot(normalized, value - Projectile.StartPosition) > 0f)
-                {
-                    return true;
-                }
+                var normalized = (Projectile.CalculatedEndPosition - Projectile.StartPosition).Normalized;
+                var value = pos + normalized * Data.Radius;
+                if (Vector2.Dot(normalized, value - Projectile.StartPosition) > 0f) return true;
             }
+
             return false;
         }
     }
 
     public class TrackedDash : TrackedObject
     {
-        public DashObject DashObject;
         public Vector2 ClosestPoint;
+        public DashObject DashObject;
 
         public TrackedDash(DashObject dashObject, AbilityInfo data)
         {
@@ -842,9 +768,26 @@ namespace Hoyer.Common.Trackers
             var pos = LocalPlayer.Instance.Pos();
             ClosestPoint = GeometryLib.NearestPointOnFiniteLine(DashObject.StartPosition,
                 DashObject.TargetPosition, pos);
-            EstimatedImpact = Time.time + ((pos.Distance(DashObject.GameObject.Get<BaseGameObject>().Owner as Character) -
-                                            LocalPlayer.Instance.MapCollision.MapCollisionRadius) /
-                                           Data.Speed);
+            if (Data.StartDelay > 0)
+            {
+                var age = DashObject.GameObject.Get<AgeObject>().Age;
+                if (age > Data.StartDelay)
+                    EstimatedImpact = Time.time + (pos.Distance(DashObject.GameObject.Get<BaseGameObject>().Owner as Character) -
+                                                   LocalPlayer.Instance.MapCollision.MapCollisionRadius) /
+                                      Data.Speed;
+                else
+                    EstimatedImpact = Time.time + Data.StartDelay - age +
+                                      (pos.Distance(DashObject.GameObject.Get<BaseGameObject>().Owner as Character) -
+                                       LocalPlayer.Instance.MapCollision.MapCollisionRadius) /
+                                      Data.Speed;
+            }
+            else
+            {
+                EstimatedImpact = Time.time + (pos.Distance(DashObject.GameObject.Get<BaseGameObject>().Owner as Character) -
+                                               LocalPlayer.Instance.MapCollision.MapCollisionRadius) /
+                                  Data.Speed;
+            }
+
             IsDangerous = GetIsDangerous(pos);
         }
 
@@ -855,32 +798,31 @@ namespace Hoyer.Common.Trackers
 
         private bool CheckForCollision(Vector2 pos)
         {
-            var targetCollision = CollisionSolver.CheckThickLineCollision(ClosestPoint, DashObject.StartPosition, LocalPlayer.Instance.MapCollision.MapCollisionRadius);
+            var targetCollision = CollisionSolver.CheckThickLineCollision(ClosestPoint, DashObject.StartPosition,
+                LocalPlayer.Instance.MapCollision.MapCollisionRadius);
             return targetCollision != null && targetCollision.IsColliding &&
                    targetCollision.CollisionFlags.HasFlag(CollisionFlags.LowBlock | CollisionFlags.HighBlock);
         }
 
         private bool IsInsideHitbox(Vector2 pos)
         {
-            float num = Vector2.DistanceSquared(ClosestPoint, pos);
-            float num2 = LocalPlayer.Instance.MapCollision.MapCollisionRadius + Data.Radius;
+            var num = Vector2.DistanceSquared(ClosestPoint, pos);
+            var num2 = LocalPlayer.Instance.MapCollision.MapCollisionRadius + Data.Radius;
             if (num <= num2 * num2)
             {
-                Vector2 normalized = (DashObject.TargetPosition - DashObject.StartPosition).Normalized;
-                Vector2 value = pos + normalized * Data.Radius;
-                if (Vector2.Dot(normalized, value - DashObject.StartPosition) > 0f)
-                {
-                    return true;
-                }
+                var normalized = (DashObject.TargetPosition - DashObject.StartPosition).Normalized;
+                var value = pos + normalized * Data.Radius;
+                if (Vector2.Dot(normalized, value - DashObject.StartPosition) > 0f) return true;
             }
+
             return false;
         }
     }
 
     public class TrackedObstacleObject
     {
-        public MapGameObject MapObject;
         public ObstacleAbilityInfo Data;
+        public MapGameObject MapObject;
 
         public TrackedObstacleObject(MapGameObject mapObject, ObstacleAbilityInfo data)
         {
@@ -897,8 +839,8 @@ namespace Hoyer.Common.Trackers
 
     public class TrackedThrowObject : TrackedObject
     {
-        public ThrowObject ThrowObject;
         public Vector2 ClosestOutsidePoint;
+        public ThrowObject ThrowObject;
 
         public TrackedThrowObject(ThrowObject throwObject, AbilityInfo data)
         {
@@ -923,14 +865,13 @@ namespace Hoyer.Common.Trackers
         private bool IsInsideHitbox(Vector2 pos)
         {
             return pos.Distance(ThrowObject.TargetPosition) < Data.Radius + LocalPlayer.Instance.MapCollision.MapCollisionRadius;
-
         }
     }
 
     public class TrackedCircularJump : TrackedObject
     {
-        public TravelBuffObject TravelObject;
         public Vector2 ClosestOutsidePoint;
+        public TravelBuffObject TravelObject;
 
         public TrackedCircularJump(TravelBuffObject travelObject, AbilityInfo data)
         {
@@ -955,7 +896,6 @@ namespace Hoyer.Common.Trackers
         private bool IsInsideHitbox(Vector2 pos)
         {
             return pos.Distance(TravelObject.TargetPosition) < Data.Radius + LocalPlayer.Instance.MapCollision.MapCollisionRadius;
-
         }
     }
 
@@ -972,6 +912,10 @@ namespace Hoyer.Common.Trackers
             Update();
         }
 
+        public bool WillCollideWithPlayer => Geometry.CircleVsThickLine(LocalPlayer.Instance.Pos(),
+            LocalPlayer.Instance.MapCollision.MapCollisionRadius, Caster.Pos(),
+            EndPos, Data.Radius + LocalPlayer.Instance.MapCollision.MapCollisionRadius + 0.1f, true);
+
         public void Update()
         {
             UpdateEndPos();
@@ -980,16 +924,6 @@ namespace Hoyer.Common.Trackers
         private void UpdateEndPos()
         {
             EndPos = Caster.Pos().Extend(InputManager.MousePosition, Data.Range);
-        }
-
-        public bool WillCollideWithPlayer
-        {
-            get
-            {
-                return Geometry.CircleVsThickLine(LocalPlayer.Instance.Pos(),
-                    LocalPlayer.Instance.MapCollision.MapCollisionRadius, Caster.Pos(),
-                    EndPos, Data.Radius + LocalPlayer.Instance.MapCollision.MapCollisionRadius + 0.1f, true);
-            }
         }
     }
 }

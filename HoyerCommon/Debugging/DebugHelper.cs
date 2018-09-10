@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using BattleRight.Core;
 using BattleRight.Core.GameObjects;
 using BattleRight.Core.GameObjects.Models;
 using BattleRight.SDK;
@@ -9,21 +10,42 @@ using BattleRight.SDK.UI.Models;
 using BattleRight.SDK.UI.Values;
 using Hoyer.Common.Extensions;
 using Hoyer.Common.Local;
+using UnityEngine;
 using Projectile = BattleRight.Core.GameObjects.Projectile;
+using Vector2 = BattleRight.Core.Math.Vector2;
 
 namespace Hoyer.Common.Debugging
 {
     public static class DebugHelper
     {
-        private static bool _onlyLocal;
-        private static bool _enabled;
-        
+        private static bool _logEnabled;
+        private static bool _onlyLogLocal;
+
+        private static bool _drawBuffsEnabled;
+        private static bool _onlyDrawLocal;
+
         public static void Setup()
         {
             SpellDetector.OnSpellCast += SpellDetector_OnSpellCast;
             InGameObject.OnCreate += InGameObject_OnCreate;
             InGameObject.OnDestroy += InGameObject_OnDestroy;
             MenuEvents.Initialize += MenuEvents_Initialize;
+            Game.OnDraw += Game_OnDraw;
+        }
+
+        private static void Game_OnDraw(EventArgs args)
+        {
+            if(!_drawBuffsEnabled) return;
+            foreach (var character in EntitiesManager.AllPlayers)
+            {
+                if (_onlyDrawLocal && character.Name != LocalPlayer.Instance.Name) continue;
+                var i = 0;
+                foreach (var buff in character.Buffs)
+                {
+                    Drawing.DrawString(new Vector2(character.MapObject.Position.X + 2, character.MapObject.Position.Y - i * 0.5f), buff.ObjectName, Color.green);
+                    i++;
+                }
+            }
         }
 
         public static void Unload()
@@ -44,22 +66,33 @@ namespace Hoyer.Common.Debugging
                 var enabled = debugMenu.Add(new MenuCheckBox("debug_enabled", "Enable Debug logging", false));
                 enabled.OnValueChange += delegate(ChangedValueArgs<bool> args)
                 {
-                    _enabled = args.NewValue;
+                    _logEnabled = args.NewValue;
                 };
                 var onlyLocalPlayer = debugMenu.Add(new MenuCheckBox("debug_onlyLocal", "Only log LocalPlayer"));
-                onlyLocalPlayer.OnValueChange += args => _onlyLocal = args.NewValue;
-                _enabled = enabled;
-                _onlyLocal = onlyLocalPlayer;
-            }, 0.1f);
+                onlyLocalPlayer.OnValueChange += args => _onlyLogLocal = args.NewValue;
+
+                debugMenu.AddSeparator();
+
+                var drawBuffs = debugMenu.Add(new MenuCheckBox("debug_drawbuffs", "Draw character buffs", false));
+                drawBuffs.OnValueChange += args => _drawBuffsEnabled = args.NewValue;
+
+                var onlyDrawLocal = debugMenu.Add(new MenuCheckBox("debug_drawonlyLocal", "Only draw LocalPlayer buffs", false));
+                onlyDrawLocal.OnValueChange += args => _onlyDrawLocal = args.NewValue;
+
+                _logEnabled = enabled;
+                _onlyLogLocal = onlyLocalPlayer;
+                _drawBuffsEnabled = drawBuffs;
+                _onlyDrawLocal = onlyDrawLocal;
+            }, 0.4f);
         }
 
         private static void InGameObject_OnDestroy(InGameObject inGameObject)
         {
-            if(!_enabled) return;
+            if(!_logEnabled) return;
             var baseTypes = inGameObject.GetBaseTypes().ToArray();
             if (!baseTypes.Contains("BaseObject")) return;
             var baseObj = inGameObject.Get<BaseGameObject>();
-            if (_onlyLocal && baseObj.Owner != LocalPlayer.Instance) return;
+            if (_onlyLogLocal && baseObj.Owner != LocalPlayer.Instance) return;
             
             if (inGameObject is Projectile)
             {
@@ -93,11 +126,11 @@ namespace Hoyer.Common.Debugging
 
         private static void InGameObject_OnCreate(InGameObject inGameObject)
         {
-            if (!_enabled) return;
+            if (!_logEnabled) return;
             var baseTypes = inGameObject.GetBaseTypes().ToArray();
             if (!baseTypes.Contains("BaseObject")) return;
             var baseObj = inGameObject.Get<BaseGameObject>();
-            if (_onlyLocal && baseObj != null && baseObj.Owner != LocalPlayer.Instance) return;
+            if (_onlyLogLocal && baseObj != null && baseObj.Owner != LocalPlayer.Instance) return;
             Console.WriteLine("New Object:");
             Console.WriteLine("Name: " + inGameObject.ObjectName);
             foreach (var baseType in baseTypes)
@@ -118,8 +151,8 @@ namespace Hoyer.Common.Debugging
 
         private static void SpellDetector_OnSpellCast(BattleRight.SDK.EventsArgs.SpellCastArgs args)
         {
-            if (!_enabled) return;
-            if (_onlyLocal && args.Caster.Name != LocalPlayer.Instance.Name) return;
+            if (!_logEnabled) return;
+            if (_onlyLogLocal && args.Caster.Name != LocalPlayer.Instance.Name) return;
 
             var absys = args.Caster.AbilitySystem;
             Console.WriteLine("New Cast:");

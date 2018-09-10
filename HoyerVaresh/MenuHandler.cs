@@ -6,6 +6,7 @@ using BattleRight.Core.GameObjects;
 using BattleRight.SDK.UI;
 using BattleRight.SDK.UI.Models;
 using BattleRight.SDK.UI.Values;
+using Hoyer.Common;
 using UnityEngine;
 
 namespace Hoyer.Champions.Varesh
@@ -19,6 +20,7 @@ namespace Hoyer.Champions.Varesh
         public static bool AvoidStealthed;
         public static bool UseCursor;
         public static bool AimUserInput;
+        public static bool DrawDebugText;
 
         private static MenuCheckBox _avoidStealthed;
         private static MenuCheckBox _useCursor;
@@ -28,7 +30,7 @@ namespace Hoyer.Champions.Varesh
         private static MenuCheckBox _enabledBox;
         private static MenuCheckBox _comboToggle;
 
-        private static Dictionary<string, bool> SkillCheckBoxes = new Dictionary<string, bool>();
+        private static readonly Dictionary<string, bool> SkillCheckBoxes = new Dictionary<string, bool>();
 
         public static void Init()
         {
@@ -37,13 +39,13 @@ namespace Hoyer.Champions.Varesh
 
             VareshMenu.Add(new MenuLabel("Varesh"));
             _enabledBox = new MenuCheckBox("Varesh_enabled", "Enabled");
-            _enabledBox.OnValueChange += delegate (ChangedValueArgs<bool> args) { Varesh.Enabled = args.NewValue; };
+            _enabledBox.OnValueChange += delegate(ChangedValueArgs<bool> args) { Varesh.Enabled = args.NewValue; };
             VareshMenu.Add(_enabledBox);
 
             VareshMenu.AddSeparator();
 
             _comboKey = new MenuKeybind("Varesh_combokey", "Combo key", KeyCode.V);
-            _comboKey.OnValueChange += delegate (ChangedValueArgs<bool> args) { Varesh.SetMode(args.NewValue); };
+            _comboKey.OnValueChange += delegate(ChangedValueArgs<bool> args) { Varesh.SetMode(args.NewValue); };
             VareshMenu.Add(_comboKey);
 
             _comboToggle = new MenuCheckBox("Varesh_combotoggle", "Should Combo key be a toggle", false);
@@ -55,17 +57,27 @@ namespace Hoyer.Champions.Varesh
             VareshMenu.Add(_aimUserInput);
 
             _useCursor = new MenuCheckBox("Varesh_usecursor", "Use cursor pos for target selection");
-            _useCursor.OnValueChange += delegate (ChangedValueArgs<bool> args) { UseCursor = args.NewValue; };
+            _useCursor.OnValueChange += delegate(ChangedValueArgs<bool> args) { UseCursor = args.NewValue; };
             VareshMenu.Add(_useCursor);
 
             _avoidStealthed = new MenuCheckBox("Varesh_ignorestealthed", "Ignore stealthed enemies", false);
-            _avoidStealthed.OnValueChange += delegate (ChangedValueArgs<bool> args) { AvoidStealthed = args.NewValue; };
+            _avoidStealthed.OnValueChange += delegate(ChangedValueArgs<bool> args) { AvoidStealthed = args.NewValue; };
             VareshMenu.Add(_avoidStealthed);
 
             InitSkillMenu();
-
             FirstRun();
-            Console.WriteLine("[HoyerVaresh/MenuHandler] Varesh Menu Init");
+
+            Main.DelayAction(delegate
+            {
+                var drawText = HoyerMainMenu.Get<Menu>("Hoyer.Debug").Add(new MenuCheckBox("Varesh_drawdebug", "Draw Varesh debug text"));
+                drawText.OnValueChange += delegate(ChangedValueArgs<bool> args) { DrawDebugText = args.NewValue; };
+                DrawDebugText = drawText.CurrentValue;
+            }, 0.8f);
+        }
+
+        public static void Unload()
+        {
+            SkillCheckBoxes.Clear();
         }
 
         private static void InitSkillMenu()
@@ -73,12 +85,11 @@ namespace Hoyer.Champions.Varesh
             SkillMenu = VareshMenu.Add(new Menu("HoyerVaresh.Skills", "Skills", true));
             AddSkillCheckbox("combo_a1", "Use M1 in combo");
             AddSkillCheckbox("combo_a2", "Use M2 in combo");
-            AddSkillCheckbox("close_a3", "Use Space to avoid melees");
-            AddSkillCheckbox("combo_a4", "Use Q in combo");
+            AddSkillCheckbox("close_a3", "Use Space on self if in melee range");
             AddSkillCheckbox("combo_a5", "Use E in combo");
             AddSkillCheckbox("save_a6", "Save energy for R in combo");
+            AddSkillCheckbox("combo_a7", "Use F in combo");
             AddSkillCheckbox("combo_ex1", "Use EX1 in combo");
-            AddSkillCheckbox("combo_ex2", "Use EX2 in combo");
         }
 
         public static bool SkillBool(string name)
@@ -94,15 +105,12 @@ namespace Hoyer.Champions.Varesh
                     return SkillCheckBoxes["combo_a1"];
                 case AbilitySlot.Ability2:
                     return SkillCheckBoxes["combo_a2"];
-                case AbilitySlot.Ability4:
-                    return SkillCheckBoxes["combo_a4"];
                 case AbilitySlot.Ability5:
                     return SkillCheckBoxes["combo_a5"];
                 case AbilitySlot.EXAbility1:
                     return SkillCheckBoxes["combo_ex1"];
-                case AbilitySlot.EXAbility2:
-                    return SkillCheckBoxes["combo_ex2"];
             }
+
             return false;
         }
 
@@ -127,26 +135,20 @@ namespace Hoyer.Champions.Varesh
                 Console.WriteLine("[HoyerVaresh/MenuHandler] Can't find menu, please report this to Hoyer :(");
                 return;
             }
+
             if (!Game.IsInGame)
             {
-                if (VareshMenu.Hidden)
-                {
-                    Console.WriteLine("[HoyerVaresh/MenuHandler] Showing Menu");
-                    VareshMenu.Hidden = false;
-                }
+                if (VareshMenu.Hidden) VareshMenu.Hidden = false;
                 return;
             }
+
             if (LocalPlayer.Instance.ChampionEnum != Champion.Varesh && !VareshMenu.Hidden)
             {
-                Console.WriteLine("[HoyerVaresh/MenuHandler] Hiding Menu");
                 VareshMenu.Hidden = true;
                 return;
             }
-            if (LocalPlayer.Instance.ChampionEnum == Champion.Varesh && VareshMenu.Hidden)
-            {
-                Console.WriteLine("[HoyerVaresh/MenuHandler] Showing Menu");
-                VareshMenu.Hidden = false;
-            }
+
+            if (LocalPlayer.Instance.ChampionEnum == Champion.Varesh && VareshMenu.Hidden) VareshMenu.Hidden = false;
         }
     }
 }

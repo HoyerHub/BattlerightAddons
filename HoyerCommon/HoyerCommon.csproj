@@ -90,6 +90,7 @@
     <Compile Include="Utilities\Geometry\GeometryLib.cs" />
     <Compile Include="Utilities\HideNames.cs" />
     <Compile Include="Utilities\StealthPrediction.cs" />
+    <Compile Include="Utilities\Tuple.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

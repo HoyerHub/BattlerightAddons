@@ -104,15 +104,9 @@ namespace Hoyer.Common.Prediction
             public HitChance Hitchance = HitChance.Unknown;
             public float HitchancePercentage;
             public CollisionResult CollisionResult;
-            public Character Target = null;
+            public Character Target;
 
-            public static Output None
-            {
-                get
-                {
-                    return new Output { CastPosition = Vector2.Zero, Hitchance = HitChance.Unknown, CanHit = false };
-                }
-            }
+            public static Output None => new Output { CastPosition = Vector2.Zero, Hitchance = HitChance.Impossible, CanHit = false };
         }
     }
 }

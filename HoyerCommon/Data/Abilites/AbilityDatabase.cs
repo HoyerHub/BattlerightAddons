@@ -585,7 +585,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.CircleThrowObject,
                 Range = 9,
                 Radius = 1.8f,
-                FixedDelay = 0.7f,
+                FixedDelay = 0.5f,
                 Danger = 1,
             });
             Add(new AbilityInfo
@@ -597,8 +597,35 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.CircleThrowObject,
                 Range = 9,
                 Radius = 1.8f,
-                FixedDelay = 0.7f,
+                FixedDelay = 0.5f,
                 Danger = 1,
+            });
+            Add(new AbilityInfo
+            {
+                Champion = "Varesh",
+                ObjectName = "CombinedPowersFly1",
+                AbilitySlot = AbilitySlot.Ability7,
+                AbilityType = AbilityType.Dash,
+                AbilityId = 1633833490,
+                Range = 6.75f,
+                Radius = 0.6f,
+                CanCounter = false,
+                Speed = 17,
+                Danger = 3,
+            });
+            Add(new AbilityInfo
+            {
+                Champion = "Varesh",
+                ObjectName = "CombinedPowersFly2",
+                AbilitySlot = AbilitySlot.Ability7,
+                AbilityType = AbilityType.Dash,
+                AbilityId = 1633833490,
+                StartDelay = 0.6f,
+                Range = 6.75f,
+                Radius = 0.6f,
+                CanCounter = false,
+                Speed = 17,
+                Danger = 3,
             });
             Add(new AbilityInfo
             {

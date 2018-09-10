@@ -146,12 +146,11 @@ namespace Hoyer.Champions.Jumong.Modes
 
         private static bool OrbLogic(SkillBase skill, bool shouldCheckHover = false)
         {
+            if (skill.Slot == AbilitySlot.Ability4 || skill.Slot == AbilitySlot.Ability5 || skill.Slot == AbilitySlot.EXAbility1) return false;
             var orb = EntitiesManager.CenterOrb;
             if (orb == null || !orb.IsValid || !orb.IsActiveObject) return false;
             var livingObj = orb.Get<LivingObject>();
             if (livingObj.IsDead) return false;
-
-            if (skill.Slot == AbilitySlot.Ability4 || skill.Slot == AbilitySlot.Ability5 || skill.Slot == AbilitySlot.EXAbility1) return false;
 
             var orbMapObj = orb.Get<MapGameObject>();
             var orbPos = orbMapObj.Position;

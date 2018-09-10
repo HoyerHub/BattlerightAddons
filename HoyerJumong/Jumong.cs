@@ -73,7 +73,7 @@ namespace Hoyer.Champions.Jumong
 
         private void OnUpdate(EventArgs args)
         {
-            if (!Enabled || !Game.IsInGame || Game.CurrentMatchState != MatchState.InRound || LocalPlayer.Instance.CharName != "Jumong" || LocalPlayer.Instance.HasBuff("SpellBlock"))
+            if (!Enabled || !Game.IsInGame || Game.CurrentMatchState != MatchState.InRound || LocalPlayer.Instance.CharName != "Jumong")
             {
                 DebugOutput = "";
                 return;
@@ -96,6 +96,7 @@ namespace Hoyer.Champions.Jumong
             Skills.Initialize -= SpellInit;
             SpellDetector.OnSpellStopCast -= SpellDetector_OnSpellStopCast;
             Game.OnUpdate -= OnUpdate;
+            Game.OnDraw -= Game_OnDraw;
             Console.WriteLine("Unload Jumong Ended");
         }
     }

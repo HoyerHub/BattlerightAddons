@@ -80,6 +80,12 @@ namespace Hoyer.Common.Extensions
             return ability != null && ability.CooldownLeft <= 0 && ability.EnergyCost <= LocalPlayer.Instance.Energized.Energy;
         }
 
+        public static bool IsReadyHasCharges(this AbilitySlot slot, int chargesRequired = 1)
+        {
+            var ability = LocalPlayer.GetAbilityHudData(slot);
+            return ability != null && ability.CooldownLeft <= 0 && ability.ChargeCount >= chargesRequired && ability.EnergyCost <= LocalPlayer.Instance.Energized.Energy;
+        }
+
         public static bool IsReady(this DodgeAbilityInfo data)
         {
             var slot = data.AbilitySlot == AbilitySlot.EXAbility1 || data.AbilitySlot == AbilitySlot.EXAbility2
