@@ -5,8 +5,9 @@ Addons for https://battleright.net/forum/
 
 ### Ready for use
 - Common
-- Jumong
 - Evade
+- Jumong
+- Varesh
 
 ### Needs more work (WIP)
-- Varesh
+
