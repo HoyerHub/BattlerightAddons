@@ -16,8 +16,7 @@ namespace Hoyer.Champions.Varesh
         public static Menu HoyerMainMenu;
         public static Menu VareshMenu;
         public static Menu SkillMenu;
-
-        public static bool AvoidStealthed;
+        
         public static bool UseCursor;
         public static bool AimUserInput;
         public static bool DrawDebugText;
@@ -136,7 +135,11 @@ namespace Hoyer.Champions.Varesh
             Varesh.Enabled = _enabledBox.CurrentValue;
             Varesh.SetMode(false);
             _comboKey.IsToggle = _comboToggle.CurrentValue;
-        }
+            UseCursor = _useCursor;
+            AimUserInput = _aimUserInput;
+            InterruptSpells = _interruptSpells;
+            NeverInterruptE = _neverInterruptE;
+    }
 
         public static void Update()
         {
