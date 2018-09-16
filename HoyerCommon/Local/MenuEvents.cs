@@ -109,7 +109,7 @@ namespace Hoyer.Common.Local
             HumanMenu = HoyerMenu.Add(new Menu("HoyerHuman", "Humanizer", true));
             HumanMenu.AddLabel("Common Humanizer Settings");
 
-            var useMaxCursorDist = HumanMenu.Add(new MenuCheckBox("usemaxcursordistance", "Use Max Cursor distance", false));
+            var useMaxCursorDist = HumanMenu.Add(new MenuCheckBox("usemaxcursordistance", "Use Max Cursor distance"));
             useMaxCursorDist.OnValueChange += delegate(ChangedValueArgs<bool> args) { TargetSelection.UseMaxCursorDist = args.NewValue; };
 
             var maxCursorDist = HumanMenu.Add(new MenuSlider("maxcursordistance", "Max Cursor move distance", 3, 6, 1));
