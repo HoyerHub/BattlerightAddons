@@ -36,7 +36,7 @@ namespace Hoyer.Champions.Jumong
             Skills.Initialize += SpellInit;
             SpellDetector.OnSpellStopCast += SpellDetector_OnSpellStopCast;
             Game.OnUpdate += OnUpdate;
-            Game.OnDraw += Game_OnDraw;
+            Game.OnPreUpdate += Game_OnDraw;
         }
 
         private void Game_OnDraw(EventArgs args)
@@ -96,7 +96,7 @@ namespace Hoyer.Champions.Jumong
             Skills.Initialize -= SpellInit;
             SpellDetector.OnSpellStopCast -= SpellDetector_OnSpellStopCast;
             Game.OnUpdate -= OnUpdate;
-            Game.OnDraw -= Game_OnDraw;
+            Game.OnPreUpdate -= Game_OnDraw;
             Console.WriteLine("Unload Jumong Ended");
         }
     }

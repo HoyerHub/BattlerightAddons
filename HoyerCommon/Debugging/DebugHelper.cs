@@ -30,7 +30,7 @@ namespace Hoyer.Common.Debugging
             InGameObject.OnCreate += InGameObject_OnCreate;
             InGameObject.OnDestroy += InGameObject_OnDestroy;
             MenuEvents.Initialize += MenuEvents_Initialize;
-            Game.OnDraw += Game_OnDraw;
+            Game.OnPreUpdate += Game_OnDraw;
         }
 
         private static void Game_OnDraw(EventArgs args)

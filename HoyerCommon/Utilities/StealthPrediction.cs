@@ -23,7 +23,7 @@ namespace Hoyer.Common.Utilities
         public static void Setup()
         {
             Game.OnUpdate += OnUpdate;
-            Game.OnDraw += Game_OnDraw;
+            Game.OnPreUpdate += Game_OnDraw;
             Game.OnMatchStart += Game_OnMatchStart;
             Game.OnMatchStateUpdate += Game_OnMatchStateUpdate;
         }
@@ -31,7 +31,7 @@ namespace Hoyer.Common.Utilities
         public static void Unload()
         {
             Game.OnUpdate -= OnUpdate;
-            Game.OnDraw -= Game_OnDraw;
+            Game.OnPreUpdate -= Game_OnDraw;
             Game.OnMatchStart -= Game_OnMatchStart;
             Game.OnMatchStateUpdate -= Game_OnMatchStateUpdate;
             Positions.Clear();

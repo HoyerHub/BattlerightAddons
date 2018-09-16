@@ -20,7 +20,6 @@ namespace Hoyer.Champions.Varesh
     public class Varesh : IAddon
     {
         public static bool Enabled;
-        public static bool AimUserInput;
         private static bool _combo;
 
         internal static string DebugOutput = "";
@@ -32,7 +31,7 @@ namespace Hoyer.Champions.Varesh
             Skills.Initialize += SpellInit;
             SpellDetector.OnSpellStopCast += SpellDetector_OnSpellStopCast;
             Game.OnUpdate += OnUpdate;
-            Game.OnDraw += Game_OnDraw;
+            Game.OnPreUpdate += Game_OnDraw;
         }
 
         private void SpellInit()
@@ -48,9 +47,9 @@ namespace Hoyer.Champions.Varesh
                 return;
             }
             
-            if (LocalPlayer.Instance.AbilitySystem.IsCasting)
+            if (LocalPlayer.Instance.AbilitySystem.IsCasting && !LocalPlayer.Instance.AbilitySystem.IsPostCasting)
             {
-                Aiming.GetTargetAndAim();
+                if (_combo || MenuHandler.AimUserInput) Aiming.GetTargetAndAim();
             }
             else if (_combo && HasUltBuff())
             {
@@ -107,7 +106,7 @@ namespace Hoyer.Champions.Varesh
             Skills.Initialize -= SpellInit;
             SpellDetector.OnSpellStopCast -= SpellDetector_OnSpellStopCast;
             Game.OnUpdate -= OnUpdate;
-            Game.OnDraw -= Game_OnDraw;
+            Game.OnPreUpdate -= Game_OnDraw;
             Console.WriteLine("Unload Varesh Ended");
         }
     }

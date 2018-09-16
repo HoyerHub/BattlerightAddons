@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using BattleRight.Core;
 using BattleRight.Core.Enumeration;
@@ -7,7 +6,8 @@ using BattleRight.Core.GameObjects;
 using BattleRight.Core.Math;
 using BattleRight.SDK;
 using Hoyer.Common.Extensions;
-using Hoyer.Common.Local;
+
+// ReSharper disable InlineOutVariableDeclaration
 
 namespace Hoyer.Champions.Varesh.Systems
 {

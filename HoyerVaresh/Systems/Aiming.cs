@@ -42,6 +42,7 @@ namespace Hoyer.Champions.Varesh.Systems
                 }
                 else
                 {
+                    if (MenuHandler.InterruptSpells && (!MenuHandler.NeverInterruptE || skill.Slot != AbilitySlot.Ability5))
                     LocalPlayer.PressAbility(AbilitySlot.Interrupt, true);
                 }
                 return;

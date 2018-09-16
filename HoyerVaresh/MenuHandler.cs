@@ -21,14 +21,16 @@ namespace Hoyer.Champions.Varesh
         public static bool UseCursor;
         public static bool AimUserInput;
         public static bool DrawDebugText;
+        public static bool InterruptSpells;
+        public static bool NeverInterruptE;
 
-        private static MenuCheckBox _avoidStealthed;
         private static MenuCheckBox _useCursor;
         private static MenuCheckBox _aimUserInput;
-
         private static MenuKeybind _comboKey;
         private static MenuCheckBox _enabledBox;
         private static MenuCheckBox _comboToggle;
+        private static MenuCheckBox _interruptSpells;
+        private static MenuCheckBox _neverInterruptE;
 
         private static readonly Dictionary<string, bool> SkillCheckBoxes = new Dictionary<string, bool>();
 
@@ -60,9 +62,17 @@ namespace Hoyer.Champions.Varesh
             _useCursor.OnValueChange += delegate(ChangedValueArgs<bool> args) { UseCursor = args.NewValue; };
             VareshMenu.Add(_useCursor);
 
-            _avoidStealthed = new MenuCheckBox("Varesh_ignorestealthed", "Ignore stealthed enemies", false);
-            _avoidStealthed.OnValueChange += delegate(ChangedValueArgs<bool> args) { AvoidStealthed = args.NewValue; };
-            VareshMenu.Add(_avoidStealthed);
+            _interruptSpells = new MenuCheckBox("Varesh_interruptspells", "Interrupt spells if no valid targets are found");
+            _interruptSpells.OnValueChange += delegate(ChangedValueArgs<bool> args)
+            {
+                InterruptSpells = args.NewValue;
+                _neverInterruptE.Hidden = !args.NewValue;
+            };
+            VareshMenu.Add(_interruptSpells);
+
+            _neverInterruptE = new MenuCheckBox("Varesh_neverinterrupte", "Never interrupt E");
+            _neverInterruptE.OnValueChange += delegate (ChangedValueArgs<bool> args) { NeverInterruptE = args.NewValue; };
+            VareshMenu.Add(_neverInterruptE);
 
             InitSkillMenu();
             FirstRun();

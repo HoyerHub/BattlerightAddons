@@ -20,12 +20,12 @@ namespace Hoyer.Evade
 
         public static void Setup()
         {
-            Game.OnDraw += Game_OnDraw;
+            Game.OnPreUpdate += Game_OnDraw;
         }
 
         public static void Unload()
         {
-            Game.OnDraw -= Game_OnDraw;
+            Game.OnPreUpdate -= Game_OnDraw;
         }
 
         private static void DrawRectangle(Vector2 start, Vector2 end, float radius, Color color)
