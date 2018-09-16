@@ -176,7 +176,7 @@ namespace Hoyer.Evade
                 else if (casting.NeedsSelfCast)
                 {
                     LocalPlayer.EditAimPosition = true;
-                    LocalPlayer.Aim(LocalPlayer.Instance.MapObject.Position);
+                    LocalPlayer.Aim(LocalPlayer.Instance.Pos());
                 }
 
                 return true;

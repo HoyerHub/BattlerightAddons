@@ -10,6 +10,7 @@ using Hoyer.Common.Data.Abilites;
 using Hoyer.Common.Data.Addons;
 using Hoyer.Common.Extensions;
 using Hoyer.Common.Local;
+using Hoyer.Common.Prediction;
 
 namespace Hoyer.Common.Aimbot
 {
@@ -91,7 +92,7 @@ namespace Hoyer.Common.Aimbot
             if (MenuHandler.Get(skill.Slot))
             {
                 if (OrbLogic(skill, true)) return;
-                var pred = TargetSelection.TargetSelection.GetTargetPrediction(skill, AbilityDatabase.Get(_castingId));
+                var pred = TargetSelection.GetTargetPrediction(skill, AbilityDatabase.Get(_castingId));
                 if (!pred.CanHit && !OrbLogic(skill))
                 {
                     if (MenuHandler.Interrupt) LocalPlayer.PressAbility(AbilitySlot.Interrupt, true);
@@ -113,6 +114,7 @@ namespace Hoyer.Common.Aimbot
 
             var orbMapObj = orb.Get<MapGameObject>();
             var orbPos = orbMapObj.Position;
+            if (!TargetSelection.CursorDistCheck(orbPos)) return false;
             if (orbLiving.Health <= 16 && skill.Slot != AbilitySlot.Ability7)
             {
                 LocalPlayer.EditAimPosition = true;

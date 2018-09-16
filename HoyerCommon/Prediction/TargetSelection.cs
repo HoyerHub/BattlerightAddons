@@ -6,23 +6,31 @@ using BattleRight.SDK;
 using BattleRight.SDK.Enumeration;
 using Hoyer.Common.Data.Abilites;
 using Hoyer.Common.Extensions;
-using static Hoyer.Common.Prediction.Prediction;
 
-namespace Hoyer.Common.TargetSelection
+namespace Hoyer.Common.Prediction
 {
     public static class TargetSelection
     {
-        public static Output GetTargetPrediction(SkillBase castingSpell, AbilityInfo data)
+        public static bool UseMaxCursorDist;
+        public static float MaxCursorDist;
+
+        public static bool CursorDistCheck(Vector2 position)
+        {
+            if (UseMaxCursorDist) return position.Distance(Main.MouseWorldPos) <= MaxCursorDist;
+            return true;
+        }
+
+        public static Prediction.Output GetTargetPrediction(SkillBase castingSpell, AbilityInfo data)
         {
             var isProjectile = data.AbilityType == AbilityType.LineProjectile;
             var useOnIncaps = data.Danger >= 3;
 
             var possibleTargets = EntitiesManager.EnemyTeam.Where(e =>
-                    e != null && !e.Living.IsDead && e.Pos().Distance(Vector2.Zero) > 0.1f &&
-                    e.Distance(LocalPlayer.Instance) < castingSpell.Range * CancelRangeModifier)
+                    e != null && e.IsValid && e.IsActiveObject && !e.Living.IsDead && e.Pos().Distance(Vector2.Zero) > 0.1f &&
+                    e.Distance(LocalPlayer.Instance) < castingSpell.Range * Prediction.CancelRangeModifier)
                 .ToList();
 
-            var output = Output.None;
+            var output = Prediction.Output.None;
 
             while (possibleTargets.Count > 0 && !output.CanHit)
             {
@@ -31,8 +39,15 @@ namespace Hoyer.Common.TargetSelection
                 {
                     if (tryGetTarget.IsValidTarget())
                     {
-                        output = Basic(tryGetTarget, castingSpell);
-                        output.CanHit = true;
+                        var pred = tryGetTarget.GetPrediction(castingSpell);
+                        if (pred.CanHit && (CursorDistCheck(pred.CastPosition) || CursorDistCheck(pred.Target.Pos())))
+                        {
+                            output = pred;
+                        }
+                        else
+                        {
+                            possibleTargets.Remove(tryGetTarget);
+                        }
                     }
                     else
                     {
@@ -42,7 +57,7 @@ namespace Hoyer.Common.TargetSelection
                 else if (tryGetTarget.IsValidTarget(castingSpell, isProjectile, useOnIncaps))
                 {
                     var pred = tryGetTarget.GetPrediction(castingSpell);
-                    if (pred.CanHit)
+                    if (pred.CanHit && CursorDistCheck(pred.CastPosition))
                     {
                         output = pred;
                     }
@@ -60,16 +75,16 @@ namespace Hoyer.Common.TargetSelection
             return output;
         }
 
-        public static Output GetTargetPrediction(SkillBase castingSpell, AbilityInfo data, bool useOnIncaps)
+        public static Prediction.Output GetTargetPrediction(SkillBase castingSpell, AbilityInfo data, bool useOnIncaps)
         {
             var isProjectile = data.AbilityType == AbilityType.LineProjectile;
 
             var possibleTargets = EntitiesManager.EnemyTeam.Where(e =>
                     e != null && !e.Living.IsDead && e.Pos().Distance(Vector2.Zero) > 0.1f &&
-                    e.Distance(LocalPlayer.Instance) < castingSpell.Range * CancelRangeModifier)
+                    e.Distance(LocalPlayer.Instance) < castingSpell.Range * Prediction.CancelRangeModifier)
                 .ToList();
 
-            var output = Output.None;
+            var output = Prediction.Output.None;
 
             while (possibleTargets.Count > 0 && !output.CanHit)
             {
@@ -78,8 +93,15 @@ namespace Hoyer.Common.TargetSelection
                 {
                     if (tryGetTarget.IsValidTarget())
                     {
-                        output = Basic(tryGetTarget, castingSpell);
-                        output.CanHit = true;
+                        var pred = tryGetTarget.GetPrediction(castingSpell);
+                        if (pred.CanHit && (CursorDistCheck(pred.CastPosition) || CursorDistCheck(pred.Target.Pos())))
+                        {
+                            output = pred;
+                        }
+                        else
+                        {
+                            possibleTargets.Remove(tryGetTarget);
+                        }
                     }
                     else
                     {
@@ -89,7 +111,7 @@ namespace Hoyer.Common.TargetSelection
                 else if (tryGetTarget.IsValidTarget(castingSpell, isProjectile, useOnIncaps))
                 {
                     var pred = tryGetTarget.GetPrediction(castingSpell);
-                    if (pred.CanHit)
+                    if (pred.CanHit && CursorDistCheck(pred.CastPosition))
                     {
                         output = pred;
                     }

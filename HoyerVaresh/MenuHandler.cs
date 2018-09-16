@@ -62,7 +62,7 @@ namespace Hoyer.Champions.Varesh
             _useCursor.OnValueChange += delegate(ChangedValueArgs<bool> args) { UseCursor = args.NewValue; };
             VareshMenu.Add(_useCursor);
 
-            _interruptSpells = new MenuCheckBox("Varesh_interruptspells", "Interrupt spells if no valid targets are found");
+            _interruptSpells = new MenuCheckBox("Varesh_interruptspells", "Interrupt spellcasts if aim logic is active and no valid targets");
             _interruptSpells.OnValueChange += delegate(ChangedValueArgs<bool> args)
             {
                 InterruptSpells = args.NewValue;

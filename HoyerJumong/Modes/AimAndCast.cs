@@ -12,7 +12,7 @@ using BattleRight.SDK.UI.Values;
 using Hoyer.Common;
 using Hoyer.Common.Extensions;
 using Hoyer.Common.Local;
-using Hoyer.Common.TargetSelection;
+using Hoyer.Common.Prediction;
 using Prediction = Hoyer.Common.Prediction.Prediction;
 
 namespace Hoyer.Champions.Jumong.Modes
@@ -47,6 +47,10 @@ namespace Hoyer.Champions.Jumong.Modes
             }
 
             var enemyTeam = EntitiesManager.EnemyTeam;
+            if (TargetSelection.UseMaxCursorDist)
+            {
+                enemyTeam = enemyTeam.Where(e => e.Pos().Distance(Main.MouseWorldPos) <= TargetSelection.MaxCursorDist).ToArray();
+            }
             var validEnemies = enemyTeam.Where(e => e.IsValidTarget() && e.Pos().Distance(Vector2.Zero) > 0.3f).ToList();
             var validForProjectiles = validEnemies.Any(e => e.IsValidTargetProjectile());
             var validForBigProjectiles = validEnemies.Any(e => e.IsValidTargetProjectile(true));
@@ -154,7 +158,8 @@ namespace Hoyer.Champions.Jumong.Modes
 
             var orbMapObj = orb.Get<MapGameObject>();
             var orbPos = orbMapObj.Position;
-
+            
+            if (!TargetSelection.CursorDistCheck(orbPos)) return false;
             if (livingObj.Health <= 16 && skill.Slot != AbilitySlot.Ability7)
             {
                 Jumong.DebugOutput = "Attacking orb (Orb Steal)";

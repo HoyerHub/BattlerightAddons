@@ -5,6 +5,7 @@ using BattleRight.SDK;
 using BattleRight.SDK.Enumeration;
 using Hoyer.Common.Extensions;
 using Hoyer.Common.Prediction.TestPrediction2NS;
+using Hoyer.Common.Utilities.Geometry;
 
 namespace Hoyer.Common.Prediction
 {
@@ -13,6 +14,7 @@ namespace Hoyer.Common.Prediction
         public static int Mode = 1;
         public static float CastingRangeModifier;
         public static float CancelRangeModifier;
+        public static bool UseClosestPointOnLine;
 
         public static Output Get(Character target, SkillBase spell)
         {
@@ -54,6 +56,10 @@ namespace Hoyer.Common.Prediction
                         target.Pos().Y + target.NetworkMovement.Velocity.Y * (distance / spell.Speed));
             }
             output.Target = target;
+            if (spell.SkillType == SkillType.Line && UseClosestPointOnLine)
+            {
+                output.CastPosition = GeometryLib.NearestPointOnFiniteLine(LocalPlayer.Instance.Pos().Extend(output.CastPosition, 0.6f), output.CastPosition, Main.MouseWorldPos);
+            }
             return output;
         }
 
@@ -61,16 +67,22 @@ namespace Hoyer.Common.Prediction
         {
             if (spell.SkillType == SkillType.Line)
             {
-                var output = new PredictionInput(LocalPlayer.Instance, target, spell.Range, spell.Speed, spell.SpellCollisionRadius, SkillType.Line).GetLinePrediction();
-                return new Output
+                var sdkOutput = new PredictionInput(LocalPlayer.Instance, target, spell.Range, spell.Speed, spell.SpellCollisionRadius, SkillType.Line).GetLinePrediction();
+
+                var output = new Output
                 {
-                    CanHit = output.HitChancePercent > 1,
-                    CastPosition = output.PredictedPosition,
-                    CollisionResult = output.CollisionResult,
-                    Hitchance = output.HitChance,
-                    HitchancePercentage = output.HitChancePercent,
+                    CanHit = sdkOutput.HitChancePercent > 1,
+                    CastPosition = sdkOutput.PredictedPosition,
+                    CollisionResult = sdkOutput.CollisionResult,
+                    Hitchance = sdkOutput.HitChance,
+                    HitchancePercentage = sdkOutput.HitChancePercent,
                     Target = target
                 };
+                if (UseClosestPointOnLine)
+                {
+                    output.CastPosition = GeometryLib.NearestPointOnFiniteLine(LocalPlayer.Instance.Pos().Extend(output.CastPosition, 0.6f), output.CastPosition, Main.MouseWorldPos);
+                }
+                return output;
             }
             else
             {
@@ -91,7 +103,12 @@ namespace Hoyer.Common.Prediction
         {
             if (spell.SkillType == SkillType.Line)
             {
-                return TestPrediction.GetPrediction(LocalPlayer.Instance.Pos(), target, spell.Range, spell.Speed, spell.SpellCollisionRadius, spell.FixedDelay, 1.75f, true);
+                var output = TestPrediction.GetPrediction(LocalPlayer.Instance.Pos(), target, spell.Range, spell.Speed, spell.SpellCollisionRadius, spell.FixedDelay, 1.75f, true);
+                if (UseClosestPointOnLine)
+                {
+                    output.CastPosition = GeometryLib.NearestPointOnFiniteLine(LocalPlayer.Instance.Pos().Extend(output.CastPosition, 0.6f), output.CastPosition, Main.MouseWorldPos);
+                }
+                return output;
             }
             return TestPrediction.GetPrediction(LocalPlayer.Instance.Pos(), target, spell.Range, spell.Speed, spell.SpellCollisionRadius, spell.FixedDelay);
 

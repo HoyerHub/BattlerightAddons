@@ -10,6 +10,7 @@ using BattleRight.SDK.UI.Models;
 using BattleRight.SDK.UI.Values;
 using Hoyer.Common.Extensions;
 using Hoyer.Common.Local;
+using Hoyer.Common.Prediction;
 using UnityEngine;
 using Projectile = BattleRight.Core.GameObjects.Projectile;
 using Vector2 = BattleRight.Core.Math.Vector2;
@@ -18,11 +19,15 @@ namespace Hoyer.Common.Debugging
 {
     public static class DebugHelper
     {
+        public static bool DrawMaxCursorDist;
+
         private static bool _logEnabled;
         private static bool _onlyLogLocal;
 
         private static bool _drawBuffsEnabled;
         private static bool _onlyDrawLocal;
+
+        private static bool _drawAimPos;
 
         public static void Setup()
         {
@@ -35,17 +40,27 @@ namespace Hoyer.Common.Debugging
 
         private static void Game_OnDraw(EventArgs args)
         {
-            if(!_drawBuffsEnabled) return;
-            foreach (var character in EntitiesManager.AllPlayers)
+            if (!Game.IsInGame) return;
+            if (_drawBuffsEnabled)
             {
-                if (_onlyDrawLocal && character.Name != LocalPlayer.Instance.Name) continue;
-                var i = 0;
-                foreach (var buff in character.Buffs)
+                foreach (var character in EntitiesManager.AllPlayers)
                 {
-                    Drawing.DrawString(new Vector2(character.MapObject.Position.X + 2, character.MapObject.Position.Y - i * 0.5f), buff.ObjectName, Color.green);
-                    i++;
+                    if (_onlyDrawLocal && character.Name != LocalPlayer.Instance.Name) continue;
+                    var i = 0;
+                    foreach (var buff in character.Buffs)
+                    {
+                        Drawing.DrawString(new Vector2(character.MapObject.Position.X + 2, character.MapObject.Position.Y - i * 0.5f), buff.ObjectName, Color.green);
+                        i++;
+                    }
                 }
             }
+
+            if (DrawMaxCursorDist && TargetSelection.UseMaxCursorDist)
+            {
+                Drawing.DrawCircle(Main.MouseWorldPos, TargetSelection.MaxCursorDist, Color.green);
+            }
+
+            if (_drawAimPos) Drawing.DrawCircle(LocalPlayer.Instance.Aiming.AimPosition, 0.3f, Color.gray);
         }
 
         public static void Unload()
@@ -79,10 +94,14 @@ namespace Hoyer.Common.Debugging
                 var onlyDrawLocal = debugMenu.Add(new MenuCheckBox("debug_drawonlyLocal", "Only draw LocalPlayer buffs", false));
                 onlyDrawLocal.OnValueChange += args => _onlyDrawLocal = args.NewValue;
 
-                _logEnabled = enabled;
+                var drawAimPos = debugMenu.Add(new MenuCheckBox("debug_drawaimpos", "Draw LocalPlayer Aim position", false));
+                drawAimPos.OnValueChange += args => _drawAimPos = args.NewValue;
+
+                _logEnabled = enabled; 
                 _onlyLogLocal = onlyLocalPlayer;
                 _drawBuffsEnabled = drawBuffs;
                 _onlyDrawLocal = onlyDrawLocal;
+                _drawAimPos = drawAimPos;
             }, 0.4f);
         }
 

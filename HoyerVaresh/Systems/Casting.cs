@@ -3,9 +3,12 @@ using System.Linq;
 using BattleRight.Core;
 using BattleRight.Core.Enumeration;
 using BattleRight.Core.GameObjects;
+using BattleRight.Core.GameObjects.Models;
 using BattleRight.Core.Math;
 using BattleRight.SDK;
+using Hoyer.Common;
 using Hoyer.Common.Extensions;
+using Hoyer.Common.Prediction;
 
 // ReSharper disable InlineOutVariableDeclaration
 
@@ -24,7 +27,13 @@ namespace Hoyer.Champions.Varesh.Systems
                 }
             }
 
+            if (OrbLogic()) return;
+
             var enemyTeam = EntitiesManager.EnemyTeam;
+            if (TargetSelection.UseMaxCursorDist)
+            {
+                enemyTeam = enemyTeam.Where(e => e.Pos().Distance(Main.MouseWorldPos) <= TargetSelection.MaxCursorDist).ToArray();
+            }
             var validEnemies = enemyTeam.Where(e => e.IsValidTarget() && e.Pos().Distance(Vector2.Zero) > 0.3f).ToList();
 
             if (validEnemies.Any())
@@ -87,6 +96,30 @@ namespace Hoyer.Champions.Varesh.Systems
         private static List<Character> EnemiesInRange(float distance)
         {
             return EntitiesManager.EnemyTeam.Where(e => e.Distance(LocalPlayer.Instance) < distance).ToList();
+        }
+
+        private static bool OrbLogic()
+        {
+            var orb = EntitiesManager.CenterOrb;
+            if (orb == null || !orb.IsValid || !orb.IsActiveObject) return false;
+            var livingObj = orb.Get<LivingObject>();
+            if (livingObj.IsDead) return false;
+
+            var orbMapObj = orb.Get<MapGameObject>();
+            if (!TargetSelection.CursorDistCheck(orbMapObj.Position)) return false;
+            if (livingObj.Health <= 14)
+            {
+                Cast(AbilitySlot.Ability1);
+                return true;
+            }
+            if (livingObj.Health <= 22 && AbilitySlot.Ability2.IsReady())
+            {
+                Cast(AbilitySlot.Ability2);
+                return true;
+            }
+            if (!orbMapObj.IsHoveringNear()) return false;
+            Cast(AbilitySlot.Ability1);
+            return true;
         }
 
         private static void Cast(AbilitySlot slot)

@@ -99,7 +99,7 @@ namespace Hoyer.Common.Extensions
 
         public static bool IsHoveringNear(this MapGameObject obj)
         {
-            return new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y + 1).ScreenToWorld().Distance(obj.Position) < 2;
+            return new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y + 1).ScreenToWorld().Distance(obj.Position) < 0.5f;
         }
     }
 }

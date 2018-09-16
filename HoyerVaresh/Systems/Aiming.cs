@@ -7,12 +7,14 @@ using BattleRight.Core.GameObjects.Models;
 using BattleRight.Core.Math;
 using BattleRight.SDK;
 using BattleRight.SDK.Enumeration;
+using Hoyer.Common;
 using Hoyer.Common.Data.Abilites;
 using Hoyer.Common.Extensions;
 using Hoyer.Common.Local;
-using Hoyer.Common.TargetSelection;
+using Hoyer.Common.Prediction;
 using Hoyer.Common.Utilities;
 using static Hoyer.Common.Prediction.Prediction;
+using Prediction = Hoyer.Common.Prediction.Prediction;
 
 namespace Hoyer.Champions.Varesh.Systems
 {
@@ -25,7 +27,7 @@ namespace Hoyer.Champions.Varesh.Systems
             {
                 Varesh.DebugOutput = "Shielding self";
                 LocalPlayer.EditAimPosition = true;
-                LocalPlayer.Aim(LocalPlayer.Instance.MapObject.Position);
+                LocalPlayer.Aim(LocalPlayer.Instance.Pos());
                 return;
             }
             var skill = Skills.Get(castingId);
@@ -63,14 +65,22 @@ namespace Hoyer.Champions.Varesh.Systems
             var orbMapObj = orb.Get<MapGameObject>();
             var orbPos = orbMapObj.Position;
 
-            if (livingObj.Health <= 16 && skill.Slot != AbilitySlot.Ability7)
+            if (!TargetSelection.CursorDistCheck(orbPos)) return false;
+
+            if (livingObj.Health <= 14 && skill.Slot == AbilitySlot.Ability1)
             {
                 Varesh.DebugOutput = "Attacking orb (Orb Steal)";
                 LocalPlayer.EditAimPosition = true;
                 LocalPlayer.Aim(orbPos);
                 return true;
             }
-
+            if (livingObj.Health <= 22 && skill.Slot == AbilitySlot.Ability2)
+            {
+                Varesh.DebugOutput = "Attacking orb (Orb Steal)";
+                LocalPlayer.EditAimPosition = true;
+                LocalPlayer.Aim(orbPos);
+                return true;
+            }
             if (orbPos.Distance(LocalPlayer.Instance) > skill.Range ||
                 shouldCheckHover && !orbMapObj.IsHoveringNear()) return false;
 
@@ -111,8 +121,15 @@ namespace Hoyer.Champions.Varesh.Systems
                 {
                     if (tryGetTarget.IsValidTarget())
                     {
-                        output = Basic(tryGetTarget, castingSpell);
-                        output.CanHit = true;
+                        var pred = tryGetTarget.GetPrediction(castingSpell);
+                        if (pred.CanHit && (TargetSelection.CursorDistCheck(pred.CastPosition) || TargetSelection.CursorDistCheck(tryGetTarget.Pos())))
+                        {
+                            output = pred;
+                        }
+                        else
+                        {
+                            possibleTargets.Remove(tryGetTarget);
+                        }
                     }
                     else
                     {

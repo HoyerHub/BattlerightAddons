@@ -5,6 +5,7 @@ using BattleRight.Core;
 using BattleRight.Core.GameObjects;
 using BattleRight.Core.Math;
 using BattleRight.SDK;
+using Hoyer.Common;
 using Hoyer.Common.Data.Abilites;
 
 namespace Hoyer.Evade
@@ -17,7 +18,8 @@ namespace Hoyer.Evade
             {
                 return GetBestJumpPosition(data.Range, (int) (data.Range*5));
             }
-            return InputManager.MousePosition.ScreenToWorld();
+
+            return Main.MouseWorldPos;
         }
 
         private static Vector2 GetBestJumpPosition(float range, int pointsToConsider)
@@ -86,7 +88,7 @@ namespace Hoyer.Evade
                     }
 
             //If all else fails, just return mousepos
-            return InputManager.MousePosition.ScreenToWorld();
+            return Main.MouseWorldPos;
         }
     }
 }

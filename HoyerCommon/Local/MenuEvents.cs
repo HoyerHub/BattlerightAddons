@@ -3,11 +3,12 @@ using BattleRight.Core;
 using BattleRight.SDK.UI;
 using BattleRight.SDK.UI.Models;
 using BattleRight.SDK.UI.Values;
-using Hoyer.Common.Data.Abilites;
-using Hoyer.Common.Extensions;
+using Hoyer.Common.Debugging;
+using Hoyer.Common.Prediction;
 using Hoyer.Common.Utilities;
 using TMPro;
 using UnityEngine;
+using static Hoyer.Common.Prediction.Prediction;
 using Object = UnityEngine.Object;
 
 namespace Hoyer.Common.Local
@@ -19,6 +20,7 @@ namespace Hoyer.Common.Local
 
         public static Menu HoyerMenu;
         public static Menu PredMenu;
+        public static Menu HumanMenu;
         public static Menu TrackerMenu;
 
         public static void Setup()
@@ -62,13 +64,11 @@ namespace Hoyer.Common.Local
             showStealth.OnValueChange += delegate(ChangedValueArgs<bool> args) { StealthPrediction.DrawStealthed = args.NewValue; };
             HoyerMenu.Add(showStealth);
 
-            /*var drawProjectiles = new MenuCheckBox("draw_projectiles", "Draw Projectile Paths", false);
-            drawProjectiles.OnValueChange += delegate(ChangedValueArgs<bool> args) { DrawProjectiles.Active = args.NewValue; };
-            HoyerMenu.Add(drawProjectiles);*/
-
             HoyerMenu.AddSeparator();
 
             InitPredMenu();
+
+            InitHumanizerMenu();
 
             LoadValues();
             
@@ -86,24 +86,41 @@ namespace Hoyer.Common.Local
             PredMenu = HoyerMenu.Add(new Menu("HoyerPred", "Prediction", true));
             PredMenu.AddLabel("Common Prediction Settings");
 
-            var useStealthPred = PredMenu.Add(new MenuCheckBox("use_stealth_pred", "Use Stealth Pred to aim (WIP)", false));
+            var useStealthPred = PredMenu.Add(new MenuCheckBox("use_stealth_pred", "Use Stealth Pred to aim", false));
             useStealthPred.OnValueChange += delegate(ChangedValueArgs<bool> args) { StealthPrediction.ShouldUse = args.NewValue; };
 
             var castRangeSlider = PredMenu.Add(new MenuSlider("pred_castrange", "Start casting range modifier", 0.92f, 1.1f, 0.9f));
-            castRangeSlider.OnValueChange += delegate(ChangedValueArgs<float> args) { Prediction.Prediction.CastingRangeModifier = args.NewValue; };
+            castRangeSlider.OnValueChange += delegate(ChangedValueArgs<float> args) { CastingRangeModifier = args.NewValue; };
 
             var cancelRangeSlider = PredMenu.Add(new MenuSlider("pred_cancelrange", "Out of range modifier", 1, 1.1f, 0.9f));
-            cancelRangeSlider.OnValueChange += delegate(ChangedValueArgs<float> args) { Prediction.Prediction.CancelRangeModifier = args.NewValue; };
+            cancelRangeSlider.OnValueChange += delegate(ChangedValueArgs<float> args) { CancelRangeModifier = args.NewValue; };
 
             var predModes = new[] {"Basic Aimlogic (fastest)", "SDK Prediction", "DaPip's TestPred"};
             var predMode = PredMenu.Add(new MenuComboBox("pred_mode", "Prediction Mode", 1, predModes));
             predMode.OnValueChange += delegate(ChangedValueArgs<int> args)
             {
-                Prediction.Prediction.Mode = args.NewValue;
+                Mode = args.NewValue;
                 Console.WriteLine("[HoyerCommon/MenuEvents] Prediction changed to " + predModes[args.NewValue]);
             };
         }
 
+        private static void InitHumanizerMenu()
+        {
+            HumanMenu = HoyerMenu.Add(new Menu("HoyerHuman", "Humanizer", true));
+            HumanMenu.AddLabel("Common Humanizer Settings");
+
+            var useMaxCursorDist = HumanMenu.Add(new MenuCheckBox("usemaxcursordistance", "Use Max Cursor distance", false));
+            useMaxCursorDist.OnValueChange += delegate(ChangedValueArgs<bool> args) { TargetSelection.UseMaxCursorDist = args.NewValue; };
+
+            var maxCursorDist = HumanMenu.Add(new MenuSlider("maxcursordistance", "Max Cursor move distance", 3, 6, 1));
+            maxCursorDist.OnValueChange += delegate(ChangedValueArgs<float> args) { TargetSelection.MaxCursorDist = args.NewValue; };
+
+            var drawMaxCursorDist = HumanMenu.Add(new MenuCheckBox("drawmaxcursordistance", "Draw Max Cursor distance"));
+            drawMaxCursorDist.OnValueChange += delegate(ChangedValueArgs<bool> args) { DebugHelper.DrawMaxCursorDist = args.NewValue; };
+
+            var useClosestPos = HumanMenu.Add(new MenuCheckBox("useclosestpos", "Use closest position on line"));
+            useClosestPos.OnValueChange += delegate(ChangedValueArgs<bool> args) { UseClosestPointOnLine = args.NewValue; };
+        }
 
         private static void MatchUpdate(EventArgs args)
         {
@@ -115,9 +132,13 @@ namespace Hoyer.Common.Local
             HideNames.Active = HoyerMenu.Get<MenuCheckBox>("hide_names").CurrentValue;
             StealthPrediction.DrawStealthed = HoyerMenu.Get<MenuCheckBox>("show_stealth").CurrentValue;
             StealthPrediction.ShouldUse = PredMenu.Get<MenuCheckBox>("use_stealth_pred").CurrentValue;
-            Prediction.Prediction.Mode = PredMenu.Get<MenuComboBox>("pred_mode").CurrentValue;
-            Prediction.Prediction.CastingRangeModifier = PredMenu.Get<MenuSlider>("pred_castrange").CurrentValue;
-            Prediction.Prediction.CancelRangeModifier = PredMenu.Get<MenuSlider>("pred_cancelrange").CurrentValue;
+            Mode = PredMenu.Get<MenuComboBox>("pred_mode").CurrentValue;
+            CastingRangeModifier = PredMenu.Get<MenuSlider>("pred_castrange").CurrentValue;
+            CancelRangeModifier = PredMenu.Get<MenuSlider>("pred_cancelrange").CurrentValue;
+            TargetSelection.UseMaxCursorDist = HumanMenu.Get<MenuCheckBox>("usemaxcursordistance").CurrentValue;
+            TargetSelection.MaxCursorDist = HumanMenu.Get<MenuSlider>("maxcursordistance").CurrentValue;
+            DebugHelper.DrawMaxCursorDist = HumanMenu.Get<MenuCheckBox>("drawmaxcursordistance").CurrentValue;
+            UseClosestPointOnLine = HumanMenu.Get<MenuCheckBox>("useclosestpos").CurrentValue;
         }
     }
 }
