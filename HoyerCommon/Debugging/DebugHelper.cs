@@ -40,7 +40,7 @@ namespace Hoyer.Common.Debugging
 
         private static void Game_OnDraw(EventArgs args)
         {
-            if (!Game.IsInGame) return;
+            if (!Game.IsInGame || LocalPlayer.Instance == null || !LocalPlayer.Instance.IsValid || !LocalPlayer.Instance.IsActiveObject) return;
             if (_drawBuffsEnabled)
             {
                 foreach (var character in EntitiesManager.AllPlayers)

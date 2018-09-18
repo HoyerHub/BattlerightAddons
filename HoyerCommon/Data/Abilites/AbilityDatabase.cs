@@ -585,7 +585,7 @@ namespace Hoyer.Common.Data.Abilites
                 AbilityType = AbilityType.CircleThrowObject,
                 Range = 9,
                 Radius = 1.8f,
-                FixedDelay = 0.5f,
+                FixedDelay = 0.7f,
                 Danger = 1,
             });
             Add(new AbilityInfo
