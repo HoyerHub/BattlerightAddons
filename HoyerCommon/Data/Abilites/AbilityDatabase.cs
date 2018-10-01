@@ -768,7 +768,7 @@ namespace Hoyer.Common.Data.Abilites
                 Range = 9.5f,
                 Radius = 0.35f,
                 Speed = 21.5f,
-                Danger = 3,
+                Danger = 3, 
             });
             Add(new AbilityInfo
             {
@@ -780,6 +780,30 @@ namespace Hoyer.Common.Data.Abilites
                 Range = 7.1f,
                 Radius = 0.35f,
                 Speed = 23.2f,
+                Danger = 3,
+            });
+            Add(new AbilityInfo
+            {
+                Champion = "Ruh Kaan",
+                ObjectName = "ShadowBolt",
+                AbilitySlot = AbilitySlot.Ability2,
+                AbilityId = 921344682,
+                AbilityType = AbilityType.LineProjectile,
+                Range = 11f,
+                Radius = 0.35f,
+                Speed = 25f,
+                Danger = 2,
+            });
+            Add(new AbilityInfo
+            {
+                Champion = "Ruh Kaan",
+                ObjectName = "ShadowClaw",
+                AbilitySlot = AbilitySlot.Ability7,
+                AbilityId = 1826789489,
+                AbilityType = AbilityType.LineProjectile,
+                Range = 9.6f,
+                Radius = 0.35f,
+                Speed = 23.75f,
                 Danger = 3,
             });
             Add(new AbilityInfo
@@ -1488,6 +1512,18 @@ namespace Hoyer.Common.Data.Abilites
             });
             Add(new DodgeAbilityInfo
             {
+                Champion = "Raigon",
+                AbilitySlot = AbilitySlot.Ability4,
+                AbilityId = 690503554,
+                AbilityIndex = 7,
+                AbilityType = DodgeAbilityType.Shield,
+                UsesMousePos = false,
+                MinDanger = 2,
+                Priority = 1,
+                CastTime = 0.1f
+            });
+            Add(new DodgeAbilityInfo
+            {
                 Champion = "Jamila",
                 AbilitySlot = AbilitySlot.Ability4,
                 AbilityId = 98085269,
@@ -1542,6 +1578,19 @@ namespace Hoyer.Common.Data.Abilites
                 Priority = 1,
                 CastTime = 0.1f
             });
+            /*  The idea is fine, but it doesn't really catch the spells, they just go straight through at this point...
+                It will probably work when I get pre-cast countering
+            Add(new DodgeAbilityInfo
+            {
+                Champion = "Destiny",
+                AbilitySlot = AbilitySlot.Ability5,
+                AbilityId = 2029650450,
+                AbilityIndex = 2,
+                AbilityType = DodgeAbilityType.Obstacle,
+                MinDanger = 2,
+                Priority = 2,
+                CastTime = 0.3f
+            });*/
             Add(new DodgeAbilityInfo
             {
                 Champion = "Sirius",

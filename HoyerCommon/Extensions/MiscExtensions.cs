@@ -100,6 +100,8 @@ namespace Hoyer.Common.Extensions
                     return "AOE HP Shield";
                 case DodgeAbilityType.KnockAway:
                     return "Anti Dash";
+                case DodgeAbilityType.Obstacle:
+                    return "Obstacle";
             }
             Console.WriteLine("Error in parsing of DodgeAbilityType");
             return "Error";

@@ -7,11 +7,13 @@ using BattleRight.Core.GameObjects;
 using BattleRight.SDK;
 using BattleRight.SDK.Events;
 using BattleRight.SDK.EventsArgs;
+using Hoyer.Common;
 using Hoyer.Common.Data.Abilites;
 using Hoyer.Common.Extensions;
 using Hoyer.Common.Local;
 using Hoyer.Common.Trackers;
 using Hoyer.Common.Utilities;
+using Hoyer.Common.Utilities.Geometry;
 using UnityEngine;
 using Vector2 = BattleRight.Core.Math.Vector2;
 
@@ -166,12 +168,27 @@ namespace Hoyer.Evade
                     LocalPlayer.EditAimPosition = true;
                     LocalPlayer.Aim(casting.GetJumpPos());
                 }
-                else if (casting.AbilityType == DodgeAbilityType.Shield && casting.UsesMousePos)
+                else if (casting.AbilityType == DodgeAbilityType.Obstacle && dangerousProjectiles.Any())
                 {
                     LocalPlayer.EditAimPosition = true;
-                    LocalPlayer.Aim(dangerousProjectiles
+                    var projectile = dangerousProjectiles
                         .OrderByDescending(p => p.Data.Danger)
-                        .First().Projectile.StartPosition);
+                        .First().Projectile;
+                    var pos = LocalPlayer.Instance.Pos().Extend(projectile.MapObject.Position, 1.5f);
+                    LocalPlayer.Aim(pos);
+                }
+                else if (casting.AbilityType == DodgeAbilityType.Shield && casting.UsesMousePos && dangerousProjectiles.Any())
+                {
+                    var projectile = dangerousProjectiles
+                        .OrderByDescending(p => p.Data.Danger)
+                        .First().Projectile;
+                    var pos = GeometryLib.NearestPointOnFiniteLine(projectile.MapObject.Position,
+                        LocalPlayer.Instance.Pos(), Main.MouseWorldPos);
+                    if (LocalPlayer.Instance.Distance(pos) < 1)
+                    {
+                        pos = LocalPlayer.Instance.Pos().Extend(projectile.MapObject.Position, 1);
+                    }
+                    LocalPlayer.Aim(pos);
                 }
                 else if (casting.NeedsSelfCast)
                 {
@@ -270,7 +287,7 @@ namespace Hoyer.Evade
             {
                 if (!ability.UseInEvade || timeToImpact > ability.CastTime + 0.25f || timeToImpact < ability.CastTime + 0.05f) continue;
                 if (!ability.ShouldUse() && ability.IsReady() || ability.AbilityType == DodgeAbilityType.Counter || ability.AbilityType == DodgeAbilityType.Shield ||
-                    ability.GetDanger() > throwObj.Data.GetDanger()) continue;
+                    ability.AbilityType == DodgeAbilityType.Obstacle || ability.GetDanger() > throwObj.Data.GetDanger()) continue;
 
                 LocalPlayer.PressAbility(ability.AbilitySlot, true);
                 return;
@@ -286,7 +303,7 @@ namespace Hoyer.Evade
             {
                 if (!ability.UseInEvade || timeToImpact > ability.CastTime + 0.25f || timeToImpact < ability.CastTime + 0.05f) continue;
                 if (ability.ShouldUse() && ability.IsReady() && ability.AbilityType != DodgeAbilityType.Counter &&
-                    ability.AbilityType != DodgeAbilityType.Shield && ability.GetDanger() <= jumpObj.Data.GetDanger())
+                    ability.AbilityType != DodgeAbilityType.Shield && ability.AbilityType != DodgeAbilityType.Obstacle && ability.GetDanger() <= jumpObj.Data.GetDanger())
                 {
                     LocalPlayer.PressAbility(ability.AbilitySlot, true);
                     return;

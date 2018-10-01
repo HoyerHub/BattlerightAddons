@@ -5,12 +5,14 @@ using BattleRight.Core.Enumeration;
 using BattleRight.Core.GameObjects;
 using BattleRight.Core.GameObjects.Models;
 using BattleRight.SDK;
+using BattleRight.SDK.Enumeration;
 using BattleRight.SDK.Events;
 using Hoyer.Common.Data.Abilites;
 using Hoyer.Common.Data.Addons;
 using Hoyer.Common.Extensions;
 using Hoyer.Common.Local;
 using Hoyer.Common.Prediction;
+using Hoyer.Common.Utilities.Geometry;
 
 namespace Hoyer.Common.Aimbot
 {
@@ -125,6 +127,9 @@ namespace Hoyer.Common.Aimbot
             if (orbPos.Distance(LocalPlayer.Instance) > skill.Range || 
                 shouldCheckHover && !orbMapObj.IsHoveringNear()) return false;
 
+            if (skill.SkillType == SkillType.Line && Prediction.Prediction.UseClosestPointOnLine)
+                orbPos = GeometryLib.NearestPointOnFiniteLine(LocalPlayer.Instance.Pos().Extend(orbPos, 0.6f),
+                    orbPos, Main.MouseWorldPos);
             LocalPlayer.EditAimPosition = true;
             LocalPlayer.Aim(orbPos);
             return true;

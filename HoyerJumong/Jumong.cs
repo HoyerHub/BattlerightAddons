@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using BattleRight.Core;
 using BattleRight.Core.Enumeration;
 using BattleRight.Core.GameObjects;
@@ -7,12 +6,8 @@ using BattleRight.Sandbox;
 using BattleRight.SDK;
 using BattleRight.SDK.Enumeration;
 using BattleRight.SDK.Events;
-using BattleRight.SDK.UI;
-using BattleRight.SDK.UI.Models;
-using BattleRight.SDK.UI.Values;
 using Hoyer.Champions.Jumong.Modes;
 using Hoyer.Common.Data.Abilites;
-using Hoyer.Common.Extensions;
 using Hoyer.Common.Local;
 using UnityEngine;
 using Vector2 = BattleRight.Core.Math.Vector2;
@@ -78,8 +73,14 @@ namespace Hoyer.Champions.Jumong
                 DebugOutput = "";
                 return;
             }
-            if(_combo) AimAndCast.Update();
-            else AimOnly.Update();
+            if (LocalPlayer.Instance.AbilitySystem.IsCasting && !LocalPlayer.Instance.AbilitySystem.IsPostCasting)
+            {
+                if (_combo || MenuHandler.AimUserInput) Aiming.GetTargetAndAim();
+            }
+            else if (_combo && (!LocalPlayer.Instance.AbilitySystem.IsCasting || LocalPlayer.Instance.AbilitySystem.IsPostCasting))
+            {
+                Casting.CastLogic();
+            }
         }
 
         public static void SetMode(bool combo)

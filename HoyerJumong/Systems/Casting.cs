@@ -1,39 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using BattleRight.Core;
 using BattleRight.Core.Enumeration;
 using BattleRight.Core.GameObjects;
-using BattleRight.Core.GameObjects.Models;
 using BattleRight.Core.Math;
 using BattleRight.SDK;
-using BattleRight.SDK.Enumeration;
-using BattleRight.SDK.UI.Values;
 using Hoyer.Common;
 using Hoyer.Common.Extensions;
-using Hoyer.Common.Local;
 using Hoyer.Common.Prediction;
-using Prediction = Hoyer.Common.Prediction.Prediction;
 
 namespace Hoyer.Champions.Jumong.Modes
 {
-    public static class AimAndCast
+    public static class Casting
     {
-        public static void Update()
-        {
-            if (!LocalPlayer.Instance.AbilitySystem.IsCasting || LocalPlayer.Instance.AbilitySystem.IsPostCasting)
-            {
-                SpellCastLogic();
-            }
-            else if (LocalPlayer.Instance.AbilitySystem.IsCasting)
-            {
-                var skill = Skills.Get(LocalPlayer.Instance.AbilitySystem.CastingAbilityId);
-                if (skill == null) return;
-                GetTargetAndAim(skill);
-            }
-        }
-
-        private static void SpellCastLogic()
+        public static void CastLogic()
         {
             if (LocalPlayer.Instance.PhysicsCollision.IsImmaterial && EnemiesInRange(6.5f).Count > 0) return;
 
@@ -120,67 +100,6 @@ namespace Hoyer.Champions.Jumong.Modes
         private static List<Character> EnemiesInRange(float distance)
         {
             return EntitiesManager.EnemyTeam.Where(e => e.Distance(LocalPlayer.Instance) < distance).ToList();
-        }
-
-        private static void GetTargetAndAim(SkillBase skill)
-        {
-            if (OrbLogic(skill, true))
-            {
-                return;
-            }
-            var prediction = TargetSelection.GetTargetPrediction(skill, Skills.GetData(skill.Slot));
-
-            if (!prediction.CanHit)
-            {
-                if (OrbLogic(skill))
-                {
-                    Jumong.DebugOutput = "Attacking orb (no valid targets)";
-                }
-                else
-                {
-                    LocalPlayer.PressAbility(AbilitySlot.Interrupt, true);
-                }
-                return;
-            }
-
-            Jumong.DebugOutput = "Aiming at " + prediction.Target.CharName;
-            LocalPlayer.EditAimPosition = true;
-            LocalPlayer.Aim(prediction.CastPosition);
-        }
-
-        private static bool OrbLogic(SkillBase skill, bool shouldCheckHover = false)
-        {
-            if (skill.Slot == AbilitySlot.Ability4 || skill.Slot == AbilitySlot.Ability5 || skill.Slot == AbilitySlot.EXAbility1) return false;
-            var orb = EntitiesManager.CenterOrb;
-            if (orb == null || !orb.IsValid || !orb.IsActiveObject) return false;
-            var livingObj = orb.Get<LivingObject>();
-            if (livingObj.IsDead) return false;
-
-            var orbMapObj = orb.Get<MapGameObject>();
-            var orbPos = orbMapObj.Position;
-            
-            if (!TargetSelection.CursorDistCheck(orbPos)) return false;
-            if (livingObj.Health <= 16 && skill.Slot != AbilitySlot.Ability7)
-            {
-                Jumong.DebugOutput = "Attacking orb (Orb Steal)";
-                LocalPlayer.EditAimPosition = true;
-                LocalPlayer.Aim(orbPos);
-                return true;
-            }
-
-            if (orbPos.Distance(LocalPlayer.Instance) > skill.Range ||
-                shouldCheckHover && !orbMapObj.IsHoveringNear()) return false;
-
-            if (shouldCheckHover) Jumong.DebugOutput = "Attacking orb (mouse hovering)";
-            LocalPlayer.EditAimPosition = true;
-            LocalPlayer.Aim(orbPos);
-            return true;
-        }
-
-        private static TargetingMode GetTargetingMode(IEnumerable<Character> possibleTargets)
-        {
-            if (MenuHandler.UseCursor) return TargetingMode.NearMouse;
-            return possibleTargets.Any(o => o.Distance(LocalPlayer.Instance) < 5) ? TargetingMode.Closest : TargetingMode.LowestHealth;
         }
     }
 }

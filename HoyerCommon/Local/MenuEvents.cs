@@ -102,6 +102,10 @@ namespace Hoyer.Common.Local
                 Mode = args.NewValue;
                 Console.WriteLine("[HoyerCommon/MenuEvents] Prediction changed to " + predModes[args.NewValue]);
             };
+
+            var wallCheck = PredMenu.Add(new MenuComboBox("pred_wallcheck", "Wall Check", 1,
+                new[] {"No Wallcheck", "Only HighBlock", "LowBlock and HighBlock"}));
+            wallCheck.OnValueChange += delegate(ChangedValueArgs<int> args) { WallCheckMode = args.NewValue; };
         }
 
         private static void InitHumanizerMenu()
@@ -133,6 +137,7 @@ namespace Hoyer.Common.Local
             StealthPrediction.DrawStealthed = HoyerMenu.Get<MenuCheckBox>("show_stealth").CurrentValue;
             StealthPrediction.ShouldUse = PredMenu.Get<MenuCheckBox>("use_stealth_pred").CurrentValue;
             Mode = PredMenu.Get<MenuComboBox>("pred_mode").CurrentValue;
+            WallCheckMode = PredMenu.Get<MenuComboBox>("pred_wallcheck").CurrentValue;
             CastingRangeModifier = PredMenu.Get<MenuSlider>("pred_castrange").CurrentValue;
             CancelRangeModifier = PredMenu.Get<MenuSlider>("pred_cancelrange").CurrentValue;
             TargetSelection.UseMaxCursorDist = HumanMenu.Get<MenuCheckBox>("usemaxcursordistance").CurrentValue;

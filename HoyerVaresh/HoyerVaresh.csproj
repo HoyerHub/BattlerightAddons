@@ -65,7 +65,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Systems\Casting.cs" />
     <Compile Include="Systems\Aiming.cs" />
     <Compile Include="Varesh.cs" />

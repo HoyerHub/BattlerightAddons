@@ -25,11 +25,11 @@ namespace Hoyer.Champions.Varesh
 
         private static MenuCheckBox _useCursor;
         private static MenuCheckBox _aimUserInput;
-        private static MenuKeybind _comboKey;
         private static MenuCheckBox _enabledBox;
         private static MenuCheckBox _comboToggle;
         private static MenuCheckBox _interruptSpells;
         private static MenuCheckBox _neverInterruptE;
+        private static MenuKeybind _comboKey;
 
         private static readonly Dictionary<string, bool> SkillCheckBoxes = new Dictionary<string, bool>();
 

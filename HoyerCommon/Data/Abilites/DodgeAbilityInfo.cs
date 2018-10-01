@@ -13,6 +13,7 @@ namespace Hoyer.Common.Data.Abilites
         Counter,
         Jump,
         Shield,
+        Obstacle,
         HealthShield,
         AoEHealthShield,
         Ghost,

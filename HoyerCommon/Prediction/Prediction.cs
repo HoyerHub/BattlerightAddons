@@ -1,4 +1,5 @@
-﻿using BattleRight.Core.GameObjects;
+﻿using BattleRight.Core.Enumeration;
+using BattleRight.Core.GameObjects;
 using BattleRight.Core.Math;
 using BattleRight.Core.Models;
 using BattleRight.SDK;
@@ -12,24 +13,28 @@ namespace Hoyer.Common.Prediction
     public static class Prediction
     {
         public static int Mode = 1;
+        public static int WallCheckMode = 2;
         public static float CastingRangeModifier;
         public static float CancelRangeModifier;
         public static bool UseClosestPointOnLine;
 
+        private static CollisionFlags IgnoreFlags
+        {
+            get
+            {
+                if (WallCheckMode == 0) return CollisionFlags.Bush | CollisionFlags.NPCBlocker | CollisionFlags.LowBlock | CollisionFlags.HighBlock;
+
+                if (WallCheckMode == 1) return CollisionFlags.Bush | CollisionFlags.NPCBlocker | CollisionFlags.LowBlock;
+
+                return CollisionFlags.NPCBlocker | CollisionFlags.Bush;
+            }
+        }
+
         public static Output Get(Character target, SkillBase spell)
         {
-            if (Mode == 0)
-            {
-                return Basic(target, spell);
-            }
-            if (Mode == 1)
-            {
-                return SDK(target, spell);
-            }
-            if (Mode == 2)
-            {
-                return TestPred(target, spell);
-            }
+            if (Mode == 0) return Basic(target, spell);
+            if (Mode == 1) return SDK(target, spell);
+            if (Mode == 2) return TestPred(target, spell);
             return Output.None;
         }
 
@@ -55,11 +60,11 @@ namespace Hoyer.Common.Prediction
                     : new Vector2(target.Pos().X + target.NetworkMovement.Velocity.X * (distance / spell.Speed),
                         target.Pos().Y + target.NetworkMovement.Velocity.Y * (distance / spell.Speed));
             }
+
             output.Target = target;
             if (spell.SkillType == SkillType.Line && UseClosestPointOnLine)
-            {
-                output.CastPosition = GeometryLib.NearestPointOnFiniteLine(LocalPlayer.Instance.Pos().Extend(output.CastPosition, 0.6f), output.CastPosition, Main.MouseWorldPos);
-            }
+                output.CastPosition = GeometryLib.NearestPointOnFiniteLine(LocalPlayer.Instance.Pos().Extend(output.CastPosition, 0.6f),
+                    output.CastPosition, Main.MouseWorldPos);
             return output;
         }
 
@@ -67,7 +72,8 @@ namespace Hoyer.Common.Prediction
         {
             if (spell.SkillType == SkillType.Line)
             {
-                var sdkOutput = new PredictionInput(LocalPlayer.Instance, target, spell.Range, spell.Speed, spell.SpellCollisionRadius, SkillType.Line).GetLinePrediction();
+                var sdkOutput = new PredictionInput(LocalPlayer.Instance, target, spell.Range, spell.Speed, spell.SpellCollisionRadius,
+                    SkillType.Line, 0, IgnoreFlags).GetLinePrediction();
 
                 var output = new Output
                 {
@@ -79,14 +85,14 @@ namespace Hoyer.Common.Prediction
                     Target = target
                 };
                 if (UseClosestPointOnLine)
-                {
-                    output.CastPosition = GeometryLib.NearestPointOnFiniteLine(LocalPlayer.Instance.Pos().Extend(output.CastPosition, 0.6f), output.CastPosition, Main.MouseWorldPos);
-                }
+                    output.CastPosition = GeometryLib.NearestPointOnFiniteLine(LocalPlayer.Instance.Pos().Extend(output.CastPosition, 0.6f),
+                        output.CastPosition, Main.MouseWorldPos);
                 return output;
             }
             else
             {
-                var output = new PredictionInput(LocalPlayer.Instance, target, spell.Range, spell.Speed, spell.SpellCollisionRadius, SkillType.Circle, spell.FixedDelay).GetCirclePrediction();
+                var output = new PredictionInput(LocalPlayer.Instance, target, spell.Range, spell.Speed, spell.SpellCollisionRadius, SkillType.Circle,
+                    spell.FixedDelay).GetCirclePrediction();
                 return new Output
                 {
                     CanHit = output.HitChancePercent > 1,
@@ -103,27 +109,28 @@ namespace Hoyer.Common.Prediction
         {
             if (spell.SkillType == SkillType.Line)
             {
-                var output = TestPrediction.GetPrediction(LocalPlayer.Instance.Pos(), target, spell.Range, spell.Speed, spell.SpellCollisionRadius, spell.FixedDelay, 1.75f, true);
+                var output = TestPrediction.GetPrediction(LocalPlayer.Instance.Pos(), target, spell.Range, spell.Speed, spell.SpellCollisionRadius,
+                    spell.FixedDelay, 1.75f, true, IgnoreFlags);
                 if (UseClosestPointOnLine)
-                {
-                    output.CastPosition = GeometryLib.NearestPointOnFiniteLine(LocalPlayer.Instance.Pos().Extend(output.CastPosition, 0.6f), output.CastPosition, Main.MouseWorldPos);
-                }
+                    output.CastPosition = GeometryLib.NearestPointOnFiniteLine(LocalPlayer.Instance.Pos().Extend(output.CastPosition, 0.6f),
+                        output.CastPosition, Main.MouseWorldPos);
                 return output;
             }
-            return TestPrediction.GetPrediction(LocalPlayer.Instance.Pos(), target, spell.Range, spell.Speed, spell.SpellCollisionRadius, spell.FixedDelay);
 
+            return TestPrediction.GetPrediction(LocalPlayer.Instance.Pos(), target, spell.Range, spell.Speed, spell.SpellCollisionRadius,
+                spell.FixedDelay);
         }
 
         public class Output
         {
-            public Vector2 CastPosition;
             public bool CanHit;
+            public Vector2 CastPosition;
+            public CollisionResult CollisionResult;
             public HitChance Hitchance = HitChance.Unknown;
             public float HitchancePercentage;
-            public CollisionResult CollisionResult;
             public Character Target;
 
-            public static Output None => new Output { CastPosition = Vector2.Zero, Hitchance = HitChance.Impossible, CanHit = false };
+            public static Output None => new Output {CastPosition = Vector2.Zero, Hitchance = HitChance.Impossible, CanHit = false};
         }
     }
 }

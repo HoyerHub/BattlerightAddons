@@ -21,14 +21,15 @@ namespace Hoyer.Champions.Jumong
         public static bool UseCursor;
         public static bool AimUserInput;
         public static bool DrawDebugText;
+        public static bool InterruptSpells;
 
         private static MenuCheckBox _avoidStealthed;
         private static MenuCheckBox _useCursor;
         private static MenuCheckBox _aimUserInput;
-
-        private static MenuKeybind _comboKey;
+        private static MenuCheckBox _interruptSpells;
         private static MenuCheckBox _enabledBox;
         private static MenuCheckBox _comboToggle;
+        private static MenuKeybind _comboKey;
 
         private static readonly Dictionary<string, bool> SkillCheckBoxes = new Dictionary<string, bool>();
 
@@ -63,6 +64,13 @@ namespace Hoyer.Champions.Jumong
             _avoidStealthed = new MenuCheckBox("jumong_ignorestealthed", "Ignore stealthed enemies", false);
             _avoidStealthed.OnValueChange += delegate(ChangedValueArgs<bool> args) { AvoidStealthed = args.NewValue; };
             JumongMenu.Add(_avoidStealthed);
+
+            _interruptSpells = new MenuCheckBox("Varesh_interruptspells", "Interrupt spellcasts if aim logic is active and no valid targets");
+            _interruptSpells.OnValueChange += delegate (ChangedValueArgs<bool> args)
+            {
+                InterruptSpells = args.NewValue;
+            };
+            JumongMenu.Add(_interruptSpells);
 
             InitSkillMenu();
 
@@ -131,6 +139,9 @@ namespace Hoyer.Champions.Jumong
             Jumong.Enabled = _enabledBox.CurrentValue;
             Jumong.SetMode(false);
             _comboKey.IsToggle = _comboToggle.CurrentValue;
+            UseCursor = _useCursor;
+            AimUserInput = _aimUserInput;
+            InterruptSpells = _interruptSpells;
         }
 
         public static void Update()

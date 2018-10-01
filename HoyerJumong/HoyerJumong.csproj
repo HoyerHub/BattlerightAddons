@@ -67,8 +67,8 @@
   <ItemGroup>
     <Compile Include="Jumong.cs" />
     <Compile Include="MenuHandler.cs" />
-    <Compile Include="Modes\AimAndCast.cs" />
-    <Compile Include="Modes\AimOnly.cs" />
+    <Compile Include="Systems\Aiming.cs" />
+    <Compile Include="Systems\Casting.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -13,6 +13,7 @@ using Hoyer.Common.Extensions;
 using Hoyer.Common.Local;
 using Hoyer.Common.Prediction;
 using Hoyer.Common.Utilities;
+using Hoyer.Common.Utilities.Geometry;
 using static Hoyer.Common.Prediction.Prediction;
 using Prediction = Hoyer.Common.Prediction.Prediction;
 
@@ -85,6 +86,9 @@ namespace Hoyer.Champions.Varesh.Systems
                 shouldCheckHover && !orbMapObj.IsHoveringNear()) return false;
 
             if (shouldCheckHover) Varesh.DebugOutput = "Attacking orb (mouse hovering)";
+            if (skill.SkillType == SkillType.Line && Prediction.UseClosestPointOnLine)
+                orbPos = GeometryLib.NearestPointOnFiniteLine(LocalPlayer.Instance.Pos().Extend(orbPos, 0.6f),
+                    orbPos, Main.MouseWorldPos);
             LocalPlayer.EditAimPosition = true;
             LocalPlayer.Aim(orbPos);
             return true;
