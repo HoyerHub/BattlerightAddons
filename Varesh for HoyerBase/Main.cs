@@ -6,8 +6,9 @@ using BattleRight.Core.GameObjects;
 using BattleRight.Sandbox;
 using BattleRight.SDK.Events;
 using BattleRight.SDK.EventsArgs;
-using Hoyer.Base.Local;
+using Hoyer.Base.Data.Abilites;
 using Hoyer.Base.Extensions;
+using Hoyer.Base.Menus;
 using Hoyer.Champions.Varesh.Systems;
 using UnityEngine;
 using Vector2 = BattleRight.Core.Math.Vector2;
@@ -30,7 +31,7 @@ namespace Hoyer.Champions.Varesh
         {
             MenuEvents.Initialize += MenuHandler.Init;
             MenuEvents.Update += MenuHandler.Update;
-            Skills.Initialize += SpellInit;
+            ActiveSkills.Initialize += SpellInit;
             SpellDetector.OnSpellStopCast += SpellDetector_OnSpellStopCast;
             Game.OnUpdate += OnUpdate;
             Game.OnPreUpdate += Game_OnDraw;
@@ -42,7 +43,7 @@ namespace Hoyer.Champions.Varesh
             MenuHandler.Unload();
             MenuEvents.Initialize -= MenuHandler.Init;
             MenuEvents.Update -= MenuHandler.Update;
-            Skills.Initialize -= SpellInit;
+            ActiveSkills.Initialize -= SpellInit;
             SpellDetector.OnSpellStopCast -= SpellDetector_OnSpellStopCast;
             Game.OnUpdate -= OnUpdate;
             Game.OnPreUpdate -= Game_OnDraw;
@@ -52,7 +53,7 @@ namespace Hoyer.Champions.Varesh
         private void SpellInit()
         {
             if (LocalPlayer.Instance.CharName != "Varesh") return;
-            Skills.AddFromDatabase();
+            ActiveSkills.AddFromDatabase();
         }
 
         private void OnUpdate(EventArgs args)

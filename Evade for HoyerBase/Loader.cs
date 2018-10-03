@@ -1,6 +1,6 @@
 ﻿using System;
 using BattleRight.Sandbox;
-using Hoyer.Base.Local;
+using Hoyer.Base.Menus;
 
 namespace Hoyer.Evade
 {

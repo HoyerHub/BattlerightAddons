@@ -9,10 +9,10 @@ using BattleRight.Core.Math;
 using BattleRight.SDK;
 using BattleRight.SDK.Enumeration;
 using BattleRight.SDK.UI.Values;
+using Hoyer.Base.Data.Abilites;
 using Hoyer.Base.Extensions;
-using Hoyer.Base.Local;
+using Hoyer.Base.MathUtils;
 using Hoyer.Base.Prediction;
-using Hoyer.Base.Utilities.Geometry;
 using Prediction = Hoyer.Base.Prediction.Prediction;
 
 namespace Hoyer.Champions.Jumong.Modes
@@ -22,11 +22,11 @@ namespace Hoyer.Champions.Jumong.Modes
         public static void GetTargetAndAim()
         {
             var castingId = LocalPlayer.Instance.AbilitySystem.CastingAbilityId;
-            var skill = Skills.Get(castingId);
+            var skill = ActiveSkills.Get(castingId);
             if (skill == null) return;
             if (OrbLogic(skill, true)) return;
 
-            var prediction = TargetSelection.GetTargetPrediction(skill, Skills.GetData(skill.Slot));
+            var prediction = TargetSelection.GetTargetPrediction(skill, ActiveSkills.GetData(skill.Slot));
 
             if (!prediction.CanHit)
             {

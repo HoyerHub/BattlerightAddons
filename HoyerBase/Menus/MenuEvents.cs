@@ -10,18 +10,18 @@ using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Hoyer.Base.Local
+namespace Hoyer.Base.Menus
 {
     public static class MenuEvents
     {
         public static event Action Initialize = delegate { };
         public static event Action Update = delegate { };
 
-        public static Menu HoyerMenu;
-        public static Menu BaseMenu;
-        public static Menu PredMenu;
-        public static Menu HumanMenu;
-        public static Menu TrackerMenu;
+        public static BattleRight.SDK.UI.Models.Menu HoyerMenu;
+        public static BattleRight.SDK.UI.Models.Menu BaseMenu;
+        public static BattleRight.SDK.UI.Models.Menu PredMenu;
+        public static BattleRight.SDK.UI.Models.Menu HumanMenu;
+        public static BattleRight.SDK.UI.Models.Menu TrackerMenu;
 
         public static void Setup()
         {
@@ -38,7 +38,7 @@ namespace Hoyer.Base.Local
         public static void Init()
         {
             HoyerMenu = MainMenu.AddMenu("Hoyer.MainMenu", "Hoyer");
-            BaseMenu = HoyerMenu.Add(new Menu("Hoyer.Base", "Base", true));
+            BaseMenu = HoyerMenu.Add(new BattleRight.SDK.UI.Models.Menu("Hoyer.Base", "Base", true));
             BaseMenu.AddLabel("Common Utils");
 
             var hideNames = new MenuCheckBox("hide_names", "Hide all names (Video Mode)", false);
@@ -79,7 +79,7 @@ namespace Hoyer.Base.Local
 
         private static void InitPredMenu()
         {
-            PredMenu = BaseMenu.Add(new Menu("HoyerPred", "Prediction", true));
+            PredMenu = BaseMenu.Add(new BattleRight.SDK.UI.Models.Menu("HoyerPred", "Prediction", true));
             PredMenu.AddLabel("Common Prediction Settings");
 
             var useStealthPred = PredMenu.Add(new MenuCheckBox("use_stealth_pred", "Use Stealth Pred to aim", false));
@@ -106,7 +106,7 @@ namespace Hoyer.Base.Local
 
         private static void InitHumanizerMenu()
         {
-            HumanMenu = BaseMenu.Add(new Menu("HoyerHuman", "Humanizer", true));
+            HumanMenu = BaseMenu.Add(new BattleRight.SDK.UI.Models.Menu("HoyerHuman", "Humanizer", true));
             HumanMenu.AddLabel("Common Humanizer Settings");
 
             var useMaxCursorDist = HumanMenu.Add(new MenuCheckBox("usemaxcursordistance", "Use Max Cursor distance"));

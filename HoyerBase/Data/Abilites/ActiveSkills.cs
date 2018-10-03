@@ -5,12 +5,11 @@ using BattleRight.Core;
 using BattleRight.Core.Enumeration;
 using BattleRight.Core.GameObjects;
 using BattleRight.SDK;
-using Hoyer.Base.Data.Abilites;
 using Hoyer.Base.Extensions;
 
-namespace Hoyer.Base.Local
+namespace Hoyer.Base.Data.Abilites
 {
-    public static class Skills
+    public static class ActiveSkills
     {
         public static readonly List<SkillBase> Active = new List<SkillBase>();
         public static readonly List<AbilityInfo> ActiveInfos = new List<AbilityInfo>();

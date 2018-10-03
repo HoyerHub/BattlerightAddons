@@ -9,10 +9,9 @@ using BattleRight.SDK;
 using BattleRight.SDK.Enumeration;
 using Hoyer.Base.Data.Abilites;
 using Hoyer.Base.Extensions;
-using Hoyer.Base.Local;
+using Hoyer.Base.MathUtils;
 using Hoyer.Base.Prediction;
 using Hoyer.Base.Utilities;
-using Hoyer.Base.Utilities.Geometry;
 using Prediction = Hoyer.Base.Prediction.Prediction;
 
 namespace Hoyer.Champions.Varesh.Systems
@@ -29,12 +28,12 @@ namespace Hoyer.Champions.Varesh.Systems
                 LocalPlayer.Aim(LocalPlayer.Instance.Pos());
                 return;
             }
-            var skill = Skills.Get(castingId);
+            var skill = ActiveSkills.Get(castingId);
             if (skill == null) return;
             if (OrbLogic(skill, true)) return;
             var prediction = skill.Slot == AbilitySlot.Ability5 ?
-                GetEPrediction(skill, Skills.GetData(skill.Slot)) :
-                TargetSelection.GetTargetPrediction(skill, Skills.GetData(skill.Slot), skill.Slot == AbilitySlot.Ability2);
+                GetEPrediction(skill, ActiveSkills.GetData(skill.Slot)) :
+                TargetSelection.GetTargetPrediction(skill, ActiveSkills.GetData(skill.Slot), skill.Slot == AbilitySlot.Ability2);
             if (!prediction.CanHit)
             {
                 if (OrbLogic(skill))
@@ -154,9 +153,9 @@ namespace Hoyer.Champions.Varesh.Systems
 
         public static void AimUlt()
         {
-            var skill = Skills.Active.Get(AbilitySlot.Ability7);
+            var skill = ActiveSkills.Active.Get(AbilitySlot.Ability7);
             if (OrbLogic(skill, true)) return;
-            var prediction = TargetSelection.GetTargetPrediction(skill, Skills.GetData(skill.Slot), true);
+            var prediction = TargetSelection.GetTargetPrediction(skill, ActiveSkills.GetData(skill.Slot), true);
             if (!prediction.CanHit)
             {
                 Main.DebugOutput = OrbLogic(skill) ? "Attacking orb (no valid targets)" : "Cant find any targets";

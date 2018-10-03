@@ -7,7 +7,7 @@ using BattleRight.SDK;
 using BattleRight.SDK.Enumeration;
 using BattleRight.SDK.Events;
 using Hoyer.Base.Data.Abilites;
-using Hoyer.Base.Local;
+using Hoyer.Base.Menus;
 using Hoyer.Champions.Jumong.Modes;
 using UnityEngine;
 using Vector2 = BattleRight.Core.Math.Vector2;
@@ -28,7 +28,7 @@ namespace Hoyer.Champions.Jumong
         {
             MenuEvents.Initialize += MenuHandler.Init;
             MenuEvents.Update += MenuHandler.Update;
-            Skills.Initialize += SpellInit;
+            ActiveSkills.Initialize += SpellInit;
             SpellDetector.OnSpellStopCast += SpellDetector_OnSpellStopCast;
             Game.OnUpdate += OnUpdate;
             Game.OnPreUpdate += Game_OnDraw;
@@ -48,22 +48,22 @@ namespace Hoyer.Champions.Jumong
         private void SpellInit()
         {
             if (LocalPlayer.Instance.CharName != "Jumong") return;
-            Skills.Active.Add(new SkillBase(AbilitySlot.Ability1, SkillType.Line, 7.9f, 17, 0.3f));
-            Skills.ActiveInfos.AddRange(AbilityDatabase.Get("Jumong", AbilitySlot.Ability1));
-            Skills.Active.Add(new SkillBase(AbilitySlot.Ability2, SkillType.Line, 10.25f, 26.5f, 0.3f));
-            Skills.ActiveInfos.AddRange(AbilityDatabase.Get("Jumong", AbilitySlot.Ability2));
-            Skills.Active.Add(new SkillBase(AbilitySlot.Ability3, SkillType.Line, 7.8f, 13.5f, 0.3f));
-            Skills.ActiveInfos.AddRange(AbilityDatabase.Get("Jumong", AbilitySlot.Ability3));
-            Skills.Active.Add(new SkillBase(AbilitySlot.Ability4, SkillType.Circle, 10, 0, 2, 0.5f));
-            Skills.ActiveInfos.AddRange(AbilityDatabase.Get("Jumong", AbilitySlot.Ability4));
-            Skills.Active.Add(new SkillBase(AbilitySlot.Ability5, SkillType.Circle, 6.8f, 12, 1));
-            Skills.ActiveInfos.AddRange(AbilityDatabase.Get("Jumong", AbilitySlot.Ability5));
-            Skills.Active.Add(new SkillBase(AbilitySlot.Ability7, SkillType.Line, 7.8f, 13.5f, 0.3f));
-            Skills.ActiveInfos.AddRange(AbilityDatabase.Get("Jumong", AbilitySlot.Ability7));
-            Skills.Active.Add(new SkillBase(AbilitySlot.EXAbility1, SkillType.Line, 10.5f, 24.5f, 0.3f));
-            Skills.ActiveInfos.AddRange(AbilityDatabase.Get("Jumong", AbilitySlot.EXAbility1));
-            Skills.Active.Add(new SkillBase(AbilitySlot.EXAbility2, SkillType.Line, 8.8f, 26.5f, 0.3f));
-            Skills.ActiveInfos.AddRange(AbilityDatabase.Get("Jumong", AbilitySlot.EXAbility2));
+            ActiveSkills.Active.Add(new SkillBase(AbilitySlot.Ability1, SkillType.Line, 7.9f, 17, 0.3f));
+            ActiveSkills.ActiveInfos.AddRange(AbilityDatabase.Get("Jumong", AbilitySlot.Ability1));
+            ActiveSkills.Active.Add(new SkillBase(AbilitySlot.Ability2, SkillType.Line, 10.25f, 26.5f, 0.3f));
+            ActiveSkills.ActiveInfos.AddRange(AbilityDatabase.Get("Jumong", AbilitySlot.Ability2));
+            ActiveSkills.Active.Add(new SkillBase(AbilitySlot.Ability3, SkillType.Line, 7.8f, 13.5f, 0.3f));
+            ActiveSkills.ActiveInfos.AddRange(AbilityDatabase.Get("Jumong", AbilitySlot.Ability3));
+            ActiveSkills.Active.Add(new SkillBase(AbilitySlot.Ability4, SkillType.Circle, 10, 0, 2, 0.5f));
+            ActiveSkills.ActiveInfos.AddRange(AbilityDatabase.Get("Jumong", AbilitySlot.Ability4));
+            ActiveSkills.Active.Add(new SkillBase(AbilitySlot.Ability5, SkillType.Circle, 6.8f, 12, 1));
+            ActiveSkills.ActiveInfos.AddRange(AbilityDatabase.Get("Jumong", AbilitySlot.Ability5));
+            ActiveSkills.Active.Add(new SkillBase(AbilitySlot.Ability7, SkillType.Line, 7.8f, 13.5f, 0.3f));
+            ActiveSkills.ActiveInfos.AddRange(AbilityDatabase.Get("Jumong", AbilitySlot.Ability7));
+            ActiveSkills.Active.Add(new SkillBase(AbilitySlot.EXAbility1, SkillType.Line, 10.5f, 24.5f, 0.3f));
+            ActiveSkills.ActiveInfos.AddRange(AbilityDatabase.Get("Jumong", AbilitySlot.EXAbility1));
+            ActiveSkills.Active.Add(new SkillBase(AbilitySlot.EXAbility2, SkillType.Line, 8.8f, 26.5f, 0.3f));
+            ActiveSkills.ActiveInfos.AddRange(AbilityDatabase.Get("Jumong", AbilitySlot.EXAbility2));
         }
 
         private void OnUpdate(EventArgs args)
@@ -94,7 +94,7 @@ namespace Hoyer.Champions.Jumong
             MenuHandler.Unload();
             MenuEvents.Initialize -= MenuHandler.Init;
             MenuEvents.Update -= MenuHandler.Update;
-            Skills.Initialize -= SpellInit;
+            ActiveSkills.Initialize -= SpellInit;
             SpellDetector.OnSpellStopCast -= SpellDetector_OnSpellStopCast;
             Game.OnUpdate -= OnUpdate;
             Game.OnPreUpdate -= Game_OnDraw;

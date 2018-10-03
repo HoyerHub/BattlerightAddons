@@ -77,17 +77,17 @@
     <Compile Include="Extensions\MiscExtensions.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Main.cs" />
-    <Compile Include="Local\MenuEvents.cs" />
+    <Compile Include="Menus\MenuEvents.cs" />
     <Compile Include="Prediction\Prediction.cs" />
     <Compile Include="Prediction\TestPred.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Extensions\SpellExtensions.cs" />
-    <Compile Include="Local\Skills.cs" />
+    <Compile Include="Data\Abilites\ActiveSkills.cs" />
     <Compile Include="Prediction\TargetSelection.cs" />
     <Compile Include="Trackers\BuffTracker.cs" />
-    <Compile Include="Utilities\Geometry\GeometryLib.cs" />
+    <Compile Include="MathUtils\GeometryLib.cs" />
     <Compile Include="Utilities\HideNames.cs" />
-    <Compile Include="Utilities\StealthPrediction.cs" />
+    <Compile Include="Prediction\StealthPrediction.cs" />
     <Compile Include="Utilities\Tuple.cs" />
   </ItemGroup>
   <ItemGroup />

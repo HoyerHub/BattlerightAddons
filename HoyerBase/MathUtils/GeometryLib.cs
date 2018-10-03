@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using BattleRight.Core.GameObjects;
 using BattleRight.Core.GameObjects.Models;
@@ -9,7 +8,7 @@ using Hoyer.Base.Extensions;
 using UnityEngine;
 using Vector2 = BattleRight.Core.Math.Vector2;
 
-namespace Hoyer.Base.Utilities.Geometry
+namespace Hoyer.Base.MathUtils
 {
     public static class GeometryLib
     {
@@ -81,12 +80,12 @@ namespace Hoyer.Base.Utilities.Geometry
         public static List<IntPoint> ToClipperPath(this MapCollisionObject obj, int quality = 20)
         {
             var points = new List<IntPoint>();
-            var outRadius = obj.MapCollisionRadius / (float)Math.Cos(2 * Math.PI / quality);
+            var outRadius = obj.MapCollisionRadius / (float)System.Math.Cos(2 * System.Math.PI / quality);
             for (var i = 1; i <= quality; i++)
             {
-                var angle = i * 2 * Math.PI / quality;
+                var angle = i * 2 * System.Math.PI / quality;
                 var point = new IntPoint(
-                    obj.LastPosition.X + outRadius * (float)Math.Cos(angle), obj.LastPosition.Y + outRadius * (float)Math.Sin(angle));
+                    obj.LastPosition.X + outRadius * (float)System.Math.Cos(angle), obj.LastPosition.Y + outRadius * (float)System.Math.Sin(angle));
                 points.Add(point);
             }
             return points;
@@ -140,7 +139,7 @@ namespace Hoyer.Base.Utilities.Geometry
         {
             var w = projectile.CalculatedEndPosition.X - projectile.StartPosition.X;
             var h = projectile.CalculatedEndPosition.Y - projectile.StartPosition.Y;
-            var l = Math.Sqrt(w * w + h * h);
+            var l = System.Math.Sqrt(w * w + h * h);
             var xS = projectile.Radius * h / l;
             var yS = projectile.Radius * w / l;
 

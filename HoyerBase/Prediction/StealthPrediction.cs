@@ -7,7 +7,7 @@ using BattleRight.SDK;
 using UnityEngine;
 using Vector2 = BattleRight.Core.Math.Vector2;
 
-namespace Hoyer.Base.Utilities
+namespace Hoyer.Base.Prediction
 {
     public static class StealthPrediction
     {

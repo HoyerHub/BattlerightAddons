@@ -5,6 +5,7 @@ using BattleRight.Core.Enumeration;
 using BattleRight.Core.GameObjects;
 using BattleRight.Core.GameObjects.Models;
 using BattleRight.SDK;
+using Hoyer.Base.Prediction;
 using Hoyer.Base.Trackers;
 using Hoyer.Base.Utilities;
 using UnityEngine;

@@ -9,7 +9,7 @@ using BattleRight.SDK.UI;
 using BattleRight.SDK.UI.Models;
 using BattleRight.SDK.UI.Values;
 using Hoyer.Base.Extensions;
-using Hoyer.Base.Local;
+using Hoyer.Base.Menus;
 using Hoyer.Base.Prediction;
 using UnityEngine;
 using Projectile = BattleRight.Core.GameObjects.Projectile;

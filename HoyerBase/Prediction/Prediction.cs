@@ -5,8 +5,8 @@ using BattleRight.Core.Models;
 using BattleRight.SDK;
 using BattleRight.SDK.Enumeration;
 using Hoyer.Base.Extensions;
+using Hoyer.Base.MathUtils;
 using Hoyer.Base.Prediction.TestPrediction2NS;
-using Hoyer.Base.Utilities.Geometry;
 
 namespace Hoyer.Base.Prediction
 {

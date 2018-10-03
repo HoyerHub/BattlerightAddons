@@ -6,7 +6,8 @@ using BattleRight.SDK.ClipperLib;
 using Hoyer.Base.Data.Abilites;
 using Hoyer.Base.Data.Addons;
 using Hoyer.Base.Debugging;
-using Hoyer.Base.Local;
+using Hoyer.Base.Menus;
+using Hoyer.Base.Prediction;
 using Hoyer.Base.Trackers;
 using Hoyer.Base.Utilities;
 
@@ -49,7 +50,7 @@ namespace Hoyer.Base
             AddonMenus.Setup();
             StealthPrediction.Setup();
             HideNames.Setup();
-            Skills.Setup();
+            ActiveSkills.Setup();
             ObjectTracker.Setup();
             MenuEvents.Setup();
             DebugHelper.Setup();
@@ -70,7 +71,7 @@ namespace Hoyer.Base
             AddonMenus.Unload();
             StealthPrediction.Unload();
             HideNames.Unload();
-            Skills.Unload();
+            ActiveSkills.Unload();
             ObjectTracker.Unload();
             MenuEvents.Unload();
             DebugHelper.Unload();

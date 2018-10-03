@@ -8,7 +8,7 @@ using BattleRight.SDK.UI.Models;
 using BattleRight.SDK.UI.Values;
 using Hoyer.Base.Data.Abilites;
 using Hoyer.Base.Extensions;
-using Hoyer.Base.Local;
+using Hoyer.Base.Menus;
 using UnityEngine;
 
 namespace Hoyer.Base.Aimbot

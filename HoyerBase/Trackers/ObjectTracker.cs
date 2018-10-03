@@ -9,7 +9,7 @@ using BattleRight.SDK.Events;
 using BattleRight.SDK.EventsArgs;
 using Hoyer.Base.Data.Abilites;
 using Hoyer.Base.Extensions;
-using Hoyer.Base.Utilities.Geometry;
+using Hoyer.Base.MathUtils;
 using UnityEngine;
 using CollisionFlags = BattleRight.Core.Enumeration.CollisionFlags;
 using Vector2 = BattleRight.Core.Math.Vector2;

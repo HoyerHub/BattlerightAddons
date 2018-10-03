@@ -8,7 +8,6 @@ using BattleRight.Core.Math;
 using BattleRight.SDK;
 using BattleRight.SDK.Enumeration;
 using Hoyer.Base.Data.Abilites;
-using Hoyer.Base.Local;
 using Hoyer.Base.Trackers;
 
 namespace Hoyer.Base.Extensions
@@ -95,7 +94,7 @@ namespace Hoyer.Base.Extensions
 
         public static bool InRange(this AbilitySlot slot, float distance)
         {
-            return Skills.Active.Get(slot).Range * Prediction.Prediction.CastingRangeModifier > distance;
+            return ActiveSkills.Active.Get(slot).Range * Prediction.Prediction.CastingRangeModifier > distance;
         }
 
         public static SkillType ToSkillType(this AbilityType type)

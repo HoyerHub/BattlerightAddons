@@ -11,9 +11,9 @@ using BattleRight.SDK.Events;
 using Hoyer.Base.Data.Abilites;
 using Hoyer.Base.Data.Addons;
 using Hoyer.Base.Extensions;
-using Hoyer.Base.Local;
+using Hoyer.Base.MathUtils;
+using Hoyer.Base.Menus;
 using Hoyer.Base.Prediction;
-using Hoyer.Base.Utilities.Geometry;
 
 namespace Hoyer.Base.Aimbot
 {
@@ -73,7 +73,7 @@ namespace Hoyer.Base.Aimbot
                 {
                     var addons = AddonMenus.Active.Where(a => a.SupportedCharacters.Contains(LocalPlayer.Instance.CharName)).ToArray();
                     _shouldUse = !addons.Any();
-                    if (_shouldUse) Skills.AddFromDatabase();
+                    if (_shouldUse) ActiveSkills.AddFromDatabase();
                     MenuHandler.AimbotMenu.Hidden = !_shouldUse;
                 }
                 catch (Exception e)
@@ -86,7 +86,7 @@ namespace Hoyer.Base.Aimbot
         private static void Update(EventArgs args)
         {
             if (!MenuHandler.Enabled || !_shouldUse || !_isCasting || Game.CurrentMatchState != MatchState.InRound) return;
-            var skill = Skills.Get(_castingId);
+            var skill = ActiveSkills.Get(_castingId);
             if (skill == null)
             {
                 return;
