@@ -67,7 +67,7 @@ namespace Hoyer.Base.Aimbot
             }, 0.08f);
         }
 
-        private static void Game_OnMatchEnd(System.EventArgs args)
+        private static void Game_OnMatchEnd(EventArgs args)
         {
             foreach (var dict in SkillsMenuDict)
             {
@@ -78,7 +78,7 @@ namespace Hoyer.Base.Aimbot
             }
         }
 
-        private static void Game_OnMatchStart(System.EventArgs args)
+        private static void Game_OnMatchStart(EventArgs args)
         {
             foreach (var dict in SkillsMenuDict)
             {
