@@ -4,23 +4,26 @@ using BattleRight.Core.Enumeration;
 
 namespace Hoyer.Base.Data.Abilites
 {
-    //Made by Hoyer
     //Work in progress
     public static class AbilityDatabase
     {
-        public static List<AbilityInfo> Abilities = new List<AbilityInfo>();
-        public static List<DodgeAbilityInfo> DodgeAbilities = new List<DodgeAbilityInfo>();
-        public static List<ObstacleAbilityInfo> ObstacleAbilities = new List<ObstacleAbilityInfo>();
+        public static List<AbilityInfo> Abilities;
+        public static List<DodgeAbilityInfo> DodgeAbilities;
+        public static List<ObstacleAbilityInfo> ObstacleAbilities;
 
         public static void Unload()
         {
-            Abilities.Clear();
-            DodgeAbilities.Clear();
-            ObstacleAbilities.Clear();
+            Abilities = null;
+            DodgeAbilities = null;
+            ObstacleAbilities = null;
         }
 
         public static void Setup()
         {
+            Abilities = new List<AbilityInfo>();
+            DodgeAbilities = new List<DodgeAbilityInfo>();
+            ObstacleAbilities = new List<ObstacleAbilityInfo>();
+
             #region Abilities
             Add(new AbilityInfo
             {
@@ -536,6 +539,114 @@ namespace Hoyer.Base.Data.Abilites
                 Radius = 0.25f,
                 Speed = 18,
                 Danger = 2,
+            });
+            Add(new AbilityInfo
+            {
+                Champion = "Shen Rao",
+                ObjectName = "ShockBlast",
+                AbilitySlot = AbilitySlot.Ability1,
+                AbilityId = 2012528078,
+                AbilityType = AbilityType.LineProjectile,
+                Range = 8,
+                Radius = 0.25f,
+                Speed = 16,
+                Danger = 1,
+            });
+            Add(new AbilityInfo
+            {
+                Champion = "Shen Rao",
+                ObjectName = "LightningBolt",
+                AbilitySlot = AbilitySlot.Ability1,
+                AbilityId = 1529477859,
+                AbilityType = AbilityType.CircleThrowObject,
+                Range = 9.5f,
+                Radius = 1.1f,
+                FixedDelay = 0.44f,
+                Danger = 1,
+            });
+            Add(new AbilityInfo
+            {
+                Champion = "Shen Rao",
+                ObjectName = "LightningBoltSecond",
+                AbilitySlot = AbilitySlot.Ability1,
+                AbilityId = 1322137572,
+                AbilityType = AbilityType.CircleThrowObject,
+                Range = 9.5f,
+                Radius = 1.1f,
+                FixedDelay = 0.44f,
+                Danger = 1,
+            });
+            Add(new AbilityInfo
+            {
+                Champion = "Shen Rao",
+                ObjectName = "StormBolt",
+                AbilitySlot = AbilitySlot.Ability2,
+                AbilityId = 1807739183,
+                AbilityType = AbilityType.LineProjectile,
+                Range = 7.8f,
+                Radius = 0.35f,
+                Speed = 23.5f,
+                Danger = 1,
+            });
+            Add(new AbilityInfo
+            {
+                Champion = "Shen Rao",
+                ObjectName = "DragonRoarSecond",
+                AbilitySlot = AbilitySlot.Ability5,
+                AbilityId = 1292620944,
+                AbilityType = AbilityType.CircleThrowObject,
+                Range = 7,
+                Radius = 2,
+                FixedDelay = 1,
+                Danger = 3,
+            });
+            Add(new AbilityInfo
+            {
+                Champion = "Shen Rao",
+                ObjectName = "DragonRoar",
+                AbilitySlot = AbilitySlot.Ability5,
+                AbilityId = 0,
+                AbilityType = AbilityType.CircleThrowObject,
+                Range = 7,
+                Radius = 1,
+                FixedDelay = 0.6f,
+                Danger = 2,
+            });
+            Add(new AbilityInfo
+            {
+                Champion = "Shen Rao",
+                ObjectName = "SoaringThunder",
+                AbilitySlot = AbilitySlot.EXAbility2,
+                AbilityId = 1076454340,
+                AbilityType = AbilityType.CircleThrowObject,
+                Range = 5.5f,
+                Radius = 1.8f,
+                FixedDelay = 0.25f,
+                Danger = 1,
+            });
+            Add(new AbilityInfo
+            {
+                Champion = "Shen Rao",
+                ObjectName = "SoaringThunderSecond",
+                AbilitySlot = AbilitySlot.EXAbility2,
+                AbilityId = 1076454340,
+                AbilityType = AbilityType.CircleThrowObject,
+                Range = 11,
+                Radius = 1.8f,
+                FixedDelay = 1,
+                Danger = 3,
+            });
+            Add(new AbilityInfo
+            {
+                Champion = "Shen Rao",
+                ObjectName = "DragonStormBarrage",
+                AbilitySlot = AbilitySlot.Ability7,
+                AbilityId = 1686347798,
+                AbilityType = AbilityType.LineProjectile,
+                Range = 13,
+                Radius = 0.45f,
+                Speed = 30,
+                Danger = 5,
             });
             Add(new AbilityInfo
             {
@@ -1421,7 +1532,43 @@ namespace Hoyer.Base.Data.Abilites
                 MinDanger = 2,
                 Priority = 2,
                 CastTime = 0.1f
-            }); 
+            });
+            Add(new DodgeAbilityInfo
+            {
+                Champion = "Shen Rao",
+                AbilitySlot = AbilitySlot.EXAbility1,
+                AbilityId = 1515985449,
+                AbilityIndex = 17,
+                AbilityType = DodgeAbilityType.Shield,
+                UsesMousePos = true,
+                MinDanger = 4,
+                Priority = 1,
+                CastTime = 0.1f
+            });
+            Add(new DodgeAbilityInfo
+            {
+                Champion = "Shen Rao",
+                AbilitySlot = AbilitySlot.Ability4,
+                AbilityId = 585173162,
+                AbilityIndex = 18,
+                AbilityType = DodgeAbilityType.Shield,
+                UsesMousePos = true,
+                MinDanger = 2,
+                Priority = 2,
+                CastTime = 0.1f
+            });
+            Add(new DodgeAbilityInfo
+            {
+                Champion = "Shen Rao",
+                AbilitySlot = AbilitySlot.Ability3,
+                AbilityId = 1005284505,
+                AbilityIndex = 10,
+                AbilityType = DodgeAbilityType.Jump,
+                UsesMousePos = true,
+                MinDanger = 2,
+                Priority = 3,
+                CastTime = 0.1f
+            });
             Add(new DodgeAbilityInfo
             {
                 Champion = "Ruh Kaan",

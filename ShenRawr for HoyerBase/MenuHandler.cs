@@ -8,26 +8,24 @@ using BattleRight.SDK.UI.Models;
 using BattleRight.SDK.UI.Values;
 using UnityEngine;
 
-namespace Hoyer.Champions.Varesh
+namespace Hoyer.Champions.ShenRao
 {
     public static class MenuHandler
     {
         public static Menu HoyerMainMenu;
-        public static Menu VareshMenu;
+        public static Menu ShenRaoMenu;
         public static Menu SkillMenu;
         
         public static bool UseCursor;
         public static bool AimUserInput;
         public static bool DrawDebugText;
         public static bool InterruptSpells;
-        public static bool NeverInterruptE;
 
         private static MenuCheckBox _useCursor;
         private static MenuCheckBox _aimUserInput;
         private static MenuCheckBox _enabledBox;
         private static MenuCheckBox _comboToggle;
         private static MenuCheckBox _interruptSpells;
-        private static MenuCheckBox _neverInterruptE;
         private static MenuKeybind _comboKey;
 
         private static Dictionary<string, bool> SkillCheckBoxes;
@@ -37,49 +35,45 @@ namespace Hoyer.Champions.Varesh
             SkillCheckBoxes = new Dictionary<string, bool>();
 
             HoyerMainMenu = MainMenu.GetMenu("Hoyer.MainMenu");
-            VareshMenu = HoyerMainMenu.Add(new Menu("HoyerVaresh", "Varesh", true));
+            ShenRaoMenu = HoyerMainMenu.Add(new Menu("HoyerShenRao", "Shen Rawr", true));
 
-            VareshMenu.Add(new MenuLabel("Varesh"));
-            _enabledBox = new MenuCheckBox("Varesh_enabled", "Enabled");
+            ShenRaoMenu.Add(new MenuLabel("ShenRao"));
+            _enabledBox = new MenuCheckBox("ShenRao_enabled", "Enabled");
             _enabledBox.OnValueChange += delegate(ChangedValueArgs<bool> args) { Main.Enabled = args.NewValue; };
-            VareshMenu.Add(_enabledBox);
+            ShenRaoMenu.Add(_enabledBox);
 
-            VareshMenu.AddSeparator();
+            ShenRaoMenu.AddSeparator();
 
-            _comboKey = new MenuKeybind("Varesh_combokey", "Combo key", KeyCode.V);
+            _comboKey = new MenuKeybind("ShenRao_combokey", "Combo key", KeyCode.V);
             _comboKey.OnValueChange += delegate(ChangedValueArgs<bool> args) { Main.SetMode(args.NewValue); };
-            VareshMenu.Add(_comboKey);
+            ShenRaoMenu.Add(_comboKey);
 
-            _comboToggle = new MenuCheckBox("Varesh_combotoggle", "Should Combo key be a toggle", false);
+            _comboToggle = new MenuCheckBox("ShenRao_combotoggle", "Should Combo key be a toggle", false);
             _comboToggle.OnValueChange += delegate(ChangedValueArgs<bool> args) { _comboKey.IsToggle = args.NewValue; };
-            VareshMenu.Add(_comboToggle);
+            ShenRaoMenu.Add(_comboToggle);
 
-            _aimUserInput = new MenuCheckBox("Varesh_aimuserinput", "Apply aim logic when combo isn't active");
+            _aimUserInput = new MenuCheckBox("ShenRao_aimuserinput", "Apply aim logic when combo isn't active");
             _aimUserInput.OnValueChange += delegate(ChangedValueArgs<bool> args) { AimUserInput = args.NewValue; };
-            VareshMenu.Add(_aimUserInput);
+            ShenRaoMenu.Add(_aimUserInput);
 
-            _useCursor = new MenuCheckBox("Varesh_usecursor", "Use cursor pos for target selection");
+            _useCursor = new MenuCheckBox("ShenRao_usecursor", "Use cursor pos for target selection");
             _useCursor.OnValueChange += delegate(ChangedValueArgs<bool> args) { UseCursor = args.NewValue; };
-            VareshMenu.Add(_useCursor);
+            ShenRaoMenu.Add(_useCursor);
 
-            _interruptSpells = new MenuCheckBox("Varesh_interruptspells", "Interrupt spellcasts if aim logic is active and no valid targets");
+            _interruptSpells = new MenuCheckBox("ShenRao_interruptspells", "Interrupt spellcasts if aim logic is active and no valid targets");
             _interruptSpells.OnValueChange += delegate(ChangedValueArgs<bool> args)
             {
                 InterruptSpells = args.NewValue;
-                _neverInterruptE.Hidden = !args.NewValue;
             };
-            VareshMenu.Add(_interruptSpells);
-
-            _neverInterruptE = new MenuCheckBox("Varesh_neverinterrupte", "Never interrupt E");
-            _neverInterruptE.OnValueChange += delegate (ChangedValueArgs<bool> args) { NeverInterruptE = args.NewValue; };
-            VareshMenu.Add(_neverInterruptE);
+            ShenRaoMenu.Add(_interruptSpells);
+            
 
             InitSkillMenu();
             FirstRun();
 
             Base.Main.DelayAction(delegate
             {
-                var drawText = HoyerMainMenu.Get<Menu>("Hoyer.Debug").Add(new MenuCheckBox("Varesh_drawdebug", "Draw Varesh debug text"));
+                var drawText = HoyerMainMenu.Get<Menu>("Hoyer.Debug").Add(new MenuCheckBox("ShenRao_drawdebug", "Draw ShenRao debug text"));
                 drawText.OnValueChange += delegate(ChangedValueArgs<bool> args) { DrawDebugText = args.NewValue; };
                 DrawDebugText = drawText.CurrentValue;
             }, 0.8f);
@@ -92,14 +86,12 @@ namespace Hoyer.Champions.Varesh
 
         private static void InitSkillMenu()
         {
-            SkillMenu = VareshMenu.Add(new Menu("HoyerVaresh.Skills", "Skills", true));
+            SkillMenu = ShenRaoMenu.Add(new Menu("HoyerShenRao.Skills", "Skills", true));
             AddSkillCheckbox("combo_a1", "Use M1 in combo");
             AddSkillCheckbox("combo_a2", "Use M2 in combo");
-            AddSkillCheckbox("close_a3", "Use Space on self if in melee range");
+            AddSkillCheckbox("safe_a4", "Use Q to push enemies away");
             AddSkillCheckbox("combo_a5", "Use E in combo");
-            AddSkillCheckbox("save_a6", "Save energy for R in combo");
-            AddSkillCheckbox("combo_a7", "Use F in combo");
-            AddSkillCheckbox("combo_ex1", "Use EX1 in combo");
+            AddSkillCheckbox("heal_a6", "Use R if life is low");
         }
 
         public static bool SkillBool(string name)
@@ -115,10 +107,12 @@ namespace Hoyer.Champions.Varesh
                     return SkillCheckBoxes["combo_a1"];
                 case AbilitySlot.Ability2:
                     return SkillCheckBoxes["combo_a2"];
+                case AbilitySlot.Ability4:
+                    return SkillCheckBoxes["safe_a4"];
                 case AbilitySlot.Ability5:
                     return SkillCheckBoxes["combo_a5"];
-                case AbilitySlot.EXAbility1:
-                    return SkillCheckBoxes["combo_ex1"];
+                case AbilitySlot.Ability6:
+                    return SkillCheckBoxes["heal_a6"];
             }
 
             return false;
@@ -139,30 +133,29 @@ namespace Hoyer.Champions.Varesh
             UseCursor = _useCursor;
             AimUserInput = _aimUserInput;
             InterruptSpells = _interruptSpells;
-            NeverInterruptE = _neverInterruptE;
     }
 
         public static void Update()
         {
-            if (VareshMenu == null)
+            if (ShenRaoMenu == null)
             {
-                Console.WriteLine("[HoyerVaresh/MenuHandler] Can't find menu, if this message is getting spammed, try F5 and please report this to Hoyer :(");
+                Console.WriteLine("[HoyerShenRao/MenuHandler] Can't find menu, if this message is getting spammed, try F5 and please report this to Hoyer :(");
                 return;
             }
 
             if (!Game.IsInGame)
             {
-                if (VareshMenu.Hidden) VareshMenu.Hidden = false;
+                if (ShenRaoMenu.Hidden) ShenRaoMenu.Hidden = false;
                 return;
             }
 
-            if (LocalPlayer.Instance.ChampionEnum != Champion.Varesh && !VareshMenu.Hidden)
+            if ((LocalPlayer.Instance.CharName != "Shen Rao" && !string.IsNullOrEmpty(LocalPlayer.Instance.CharName)) && !ShenRaoMenu.Hidden)
             {
-                VareshMenu.Hidden = true;
+                ShenRaoMenu.Hidden = true;
                 return;
             }
 
-            if (LocalPlayer.Instance.ChampionEnum == Champion.Varesh && VareshMenu.Hidden) VareshMenu.Hidden = false;
+            if ((LocalPlayer.Instance.CharName != "Shen Rao" && !string.IsNullOrEmpty(LocalPlayer.Instance.CharName)) && ShenRaoMenu.Hidden) ShenRaoMenu.Hidden = false;
         }
     }
 }

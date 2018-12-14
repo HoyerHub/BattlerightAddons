@@ -181,12 +181,16 @@ namespace Hoyer.Base.Trackers
 
             public static class CircularThrows
             {
-                public static List<TrackedThrowObject> TrackedObjects = new List<TrackedThrowObject>();
-                private static readonly List<TrackedThrowObject> AddAfterFrame = new List<TrackedThrowObject>();
-                private static readonly List<TrackedThrowObject> RemoveAfterFrame = new List<TrackedThrowObject>();
+                public static List<TrackedThrowObject> TrackedObjects;
+                private static List<TrackedThrowObject> AddAfterFrame;
+                private static List<TrackedThrowObject> RemoveAfterFrame;
 
                 public static void Setup()
                 {
+                    TrackedObjects = new List<TrackedThrowObject>();
+                    AddAfterFrame = new List<TrackedThrowObject>();
+                    RemoveAfterFrame = new List<TrackedThrowObject>();
+
                     EnemyObjectSpawn += InGameObject_OnCreate;
                     CheckForDeadObjects += ObjectsHealthCheck;
                     InGameObject.OnDestroy += InGameObject_OnDestroy;
@@ -226,7 +230,9 @@ namespace Hoyer.Base.Trackers
                 {
                     EnemyObjectSpawn -= InGameObject_OnCreate;
                     InGameObject.OnDestroy -= InGameObject_OnDestroy;
-                    Clear();
+                    TrackedObjects = null;
+                    AddAfterFrame = null;
+                    RemoveAfterFrame = null;
                 }
 
                 private static void InGameObject_OnDestroy(InGameObject inGameObject)
@@ -251,12 +257,16 @@ namespace Hoyer.Base.Trackers
 
             public static class CircularJumps
             {
-                public static List<TrackedCircularJump> TrackedObjects = new List<TrackedCircularJump>();
-                private static readonly List<TrackedCircularJump> AddAfterFrame = new List<TrackedCircularJump>();
-                private static readonly List<TrackedCircularJump> RemoveAfterFrame = new List<TrackedCircularJump>();
+                public static List<TrackedCircularJump> TrackedObjects;
+                private static List<TrackedCircularJump> AddAfterFrame;
+                private static List<TrackedCircularJump> RemoveAfterFrame;
 
                 public static void Setup()
                 {
+                    TrackedObjects = new List<TrackedCircularJump>();
+                    AddAfterFrame = new List<TrackedCircularJump>();
+                    RemoveAfterFrame = new List<TrackedCircularJump>();
+
                     EnemyObjectSpawn += InGameObject_OnCreate;
                     CheckForDeadObjects += ObjectsHealthCheck;
                     InGameObject.OnDestroy += InGameObject_OnDestroy;
@@ -296,7 +306,9 @@ namespace Hoyer.Base.Trackers
                 {
                     EnemyObjectSpawn -= InGameObject_OnCreate;
                     InGameObject.OnDestroy -= InGameObject_OnDestroy;
-                    Clear();
+                    TrackedObjects = null;
+                    AddAfterFrame = null;
+                    RemoveAfterFrame = null;
                 }
 
                 private static void InGameObject_OnDestroy(InGameObject inGameObject)
@@ -321,12 +333,16 @@ namespace Hoyer.Base.Trackers
 
             public static class Obstacles
             {
-                public static List<TrackedObstacleObject> TrackedObjects = new List<TrackedObstacleObject>();
-                private static readonly List<TrackedObstacleObject> AddAfterFrame = new List<TrackedObstacleObject>();
-                private static readonly List<TrackedObstacleObject> RemoveAfterFrame = new List<TrackedObstacleObject>();
+                public static List<TrackedObstacleObject> TrackedObjects;
+                private static List<TrackedObstacleObject> AddAfterFrame;
+                private static List<TrackedObstacleObject> RemoveAfterFrame;
 
                 public static void Setup()
                 {
+                    TrackedObjects = new List<TrackedObstacleObject>();
+                    AddAfterFrame = new List<TrackedObstacleObject>();
+                    RemoveAfterFrame = new List<TrackedObstacleObject>();
+
                     EnemyObjectSpawn += InGameObject_OnCreate;
                     CheckForDeadObjects += ObjectsHealthCheck;
                     InGameObject.OnDestroy += InGameObject_OnDestroy;
@@ -366,7 +382,10 @@ namespace Hoyer.Base.Trackers
                 {
                     EnemyObjectSpawn -= InGameObject_OnCreate;
                     InGameObject.OnDestroy -= InGameObject_OnDestroy;
-                    Clear();
+
+                    TrackedObjects = null;
+                    AddAfterFrame = null;
+                    RemoveAfterFrame = null;
                 }
 
                 private static void InGameObject_OnDestroy(InGameObject inGameObject)
@@ -386,12 +405,16 @@ namespace Hoyer.Base.Trackers
 
             public static class Projectiles
             {
-                public static List<TrackedProjectile> TrackedObjects = new List<TrackedProjectile>();
-                private static readonly List<TrackedProjectile> AddAfterFrame = new List<TrackedProjectile>();
-                private static readonly List<TrackedProjectile> RemoveAfterFrame = new List<TrackedProjectile>();
+                public static List<TrackedProjectile> TrackedObjects;
+                private static List<TrackedProjectile> AddAfterFrame;
+                private static List<TrackedProjectile> RemoveAfterFrame;
 
                 public static void Setup()
                 {
+                    TrackedObjects = new List<TrackedProjectile>();
+                    AddAfterFrame = new List<TrackedProjectile>();
+                    RemoveAfterFrame = new List<TrackedProjectile>();
+
                     EnemyObjectSpawn += InGameObject_OnCreate;
                     CheckForDeadObjects += ObjectsHealthCheck;
                     InGameObject.OnDestroy += InGameObject_OnDestroy;
@@ -431,7 +454,10 @@ namespace Hoyer.Base.Trackers
                 {
                     EnemyObjectSpawn -= InGameObject_OnCreate;
                     InGameObject.OnDestroy -= InGameObject_OnDestroy;
-                    Clear();
+
+                    TrackedObjects = null;
+                    AddAfterFrame = null;
+                    RemoveAfterFrame = null;
                 }
 
                 private static void InGameObject_OnDestroy(InGameObject inGameObject)
@@ -462,12 +488,16 @@ namespace Hoyer.Base.Trackers
 
             public static class CurveProjectiles
             {
-                public static List<TrackedCurveProjectile> TrackedObjects = new List<TrackedCurveProjectile>();
-                private static readonly List<TrackedCurveProjectile> AddAfterFrame = new List<TrackedCurveProjectile>();
-                private static readonly List<TrackedCurveProjectile> RemoveAfterFrame = new List<TrackedCurveProjectile>();
+                public static List<TrackedCurveProjectile> TrackedObjects;
+                private static List<TrackedCurveProjectile> AddAfterFrame;
+                private static List<TrackedCurveProjectile> RemoveAfterFrame;
 
                 public static void Setup()
                 {
+                    TrackedObjects = new List<TrackedCurveProjectile>();
+                    AddAfterFrame = new List<TrackedCurveProjectile>();
+                    RemoveAfterFrame = new List<TrackedCurveProjectile>();
+
                     EnemyObjectSpawn += InGameObject_OnCreate;
                     CheckForDeadObjects += ObjectsHealthCheck;
                     InGameObject.OnDestroy += InGameObject_OnDestroy;
@@ -507,7 +537,10 @@ namespace Hoyer.Base.Trackers
                 {
                     EnemyObjectSpawn -= InGameObject_OnCreate;
                     InGameObject.OnDestroy -= InGameObject_OnDestroy;
-                    Clear();
+
+                    TrackedObjects = null;
+                    AddAfterFrame = null;
+                    RemoveAfterFrame = null;
                 }
 
                 private static void InGameObject_OnDestroy(InGameObject inGameObject)
@@ -539,12 +572,16 @@ namespace Hoyer.Base.Trackers
 
             public static class Dashes
             {
-                public static List<TrackedDash> TrackedObjects = new List<TrackedDash>();
-                private static readonly List<TrackedDash> AddAfterFrame = new List<TrackedDash>();
-                private static readonly List<TrackedDash> RemoveAfterFrame = new List<TrackedDash>();
+                public static List<TrackedDash> TrackedObjects;
+                private static List<TrackedDash> AddAfterFrame;
+                private static List<TrackedDash> RemoveAfterFrame;
 
                 public static void Setup()
                 {
+                    TrackedObjects = new List<TrackedDash>();
+                    AddAfterFrame = new List<TrackedDash>();
+                    RemoveAfterFrame = new List<TrackedDash>();
+
                     EnemyObjectSpawn += InGameObject_OnCreate;
                     CheckForDeadObjects += ObjectsHealthCheck;
                     InGameObject.OnDestroy += InGameObject_OnDestroy;
@@ -584,7 +621,10 @@ namespace Hoyer.Base.Trackers
                 {
                     EnemyObjectSpawn -= InGameObject_OnCreate;
                     InGameObject.OnDestroy -= InGameObject_OnDestroy;
-                    Clear();
+
+                    TrackedObjects = null;
+                    AddAfterFrame = null;
+                    RemoveAfterFrame = null;
                 }
 
                 private static void InGameObject_OnDestroy(InGameObject inGameObject)

@@ -24,11 +24,11 @@ namespace Hoyer.Evade
 
         public static int JumpMode = 0;
 
-        private static readonly Dictionary<string, List<MenuItem>> EvadeSkillsMenuByChampion = new Dictionary<string, List<MenuItem>>();
-        private static readonly Dictionary<string, List<MenuItem>> DodgeableSkillsMenuByChampion = new Dictionary<string, List<MenuItem>>();
+        private static Dictionary<string, List<MenuItem>> EvadeSkillsMenuByChampion;
+        private static Dictionary<string, List<MenuItem>> DodgeableSkillsMenuByChampion;
 
-        private static readonly Dictionary<string, List<MenuItem>> EvadeStatusMenuByChampion = new Dictionary<string, List<MenuItem>>();
-        private static readonly Dictionary<string, List<MenuItem>> EvadeOverrideMenuByChampion = new Dictionary<string, List<MenuItem>>();
+        private static Dictionary<string, List<MenuItem>> EvadeStatusMenuByChampion;
+        private static Dictionary<string, List<MenuItem>> EvadeOverrideMenuByChampion;
 
         private static MenuCheckBox _enabledWalkBox;
         private static MenuCheckBox _enabledSkillsBox;
@@ -41,6 +41,11 @@ namespace Hoyer.Evade
         {
             try
             {
+                EvadeSkillsMenuByChampion = new Dictionary<string, List<MenuItem>>();
+                DodgeableSkillsMenuByChampion = new Dictionary<string, List<MenuItem>>();
+                EvadeStatusMenuByChampion = new Dictionary<string, List<MenuItem>>();
+                EvadeOverrideMenuByChampion = new Dictionary<string, List<MenuItem>>();
+
                 HoyerMain = MainMenu.GetMenu("Hoyer.MainMenu");
                 EvadeMain = HoyerMain.Add(new Menu("Evade.MainMenu", "Evade", true));
 
@@ -79,10 +84,10 @@ namespace Hoyer.Evade
 
         public static void Unload()
         {
-            DodgeableSkillsMenuByChampion.Clear();
-            EvadeOverrideMenuByChampion.Clear();
-            EvadeSkillsMenuByChampion.Clear();
-            EvadeStatusMenuByChampion.Clear();
+            DodgeableSkillsMenuByChampion = null;
+            EvadeOverrideMenuByChampion = null;
+            EvadeSkillsMenuByChampion = null;
+            EvadeStatusMenuByChampion = null;
         }
 
         private static void AddEvadeEntries()

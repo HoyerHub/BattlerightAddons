@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jumong for HoyerBase", "Jum
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Varesh for HoyerBase", "Varesh for HoyerBase\Varesh for HoyerBase.csproj", "{74FD072A-A8BB-46E8-9904-E7B91627FEB6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raigon for HoyerBase", "Raigon for HoyerBase\Raigon for HoyerBase.csproj", "{D2864005-C938-40E9-895D-24DC2DCCDBA1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShenRawr for HoyerBase", "ShenRawr for HoyerBase\ShenRawr for HoyerBase.csproj", "{5E4FFE55-F92E-4D8B-9109-C2AE209EB05B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,10 +41,10 @@ Global
 		{74FD072A-A8BB-46E8-9904-E7B91627FEB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74FD072A-A8BB-46E8-9904-E7B91627FEB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74FD072A-A8BB-46E8-9904-E7B91627FEB6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D2864005-C938-40E9-895D-24DC2DCCDBA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D2864005-C938-40E9-895D-24DC2DCCDBA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D2864005-C938-40E9-895D-24DC2DCCDBA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D2864005-C938-40E9-895D-24DC2DCCDBA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E4FFE55-F92E-4D8B-9109-C2AE209EB05B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E4FFE55-F92E-4D8B-9109-C2AE209EB05B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E4FFE55-F92E-4D8B-9109-C2AE209EB05B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E4FFE55-F92E-4D8B-9109-C2AE209EB05B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

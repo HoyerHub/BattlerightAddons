@@ -21,26 +21,30 @@ namespace Hoyer.Base.Aimbot
         public static bool Enabled;
         public static bool Interrupt;
 
-        private static readonly Dictionary<string, Dictionary<AbilitySlot, MenuSpell>> SkillsMenuDict = new Dictionary<string, Dictionary<AbilitySlot, MenuSpell>>();
+        private static Dictionary<string, Dictionary<AbilitySlot, MenuSpell>> SkillsMenuDict;
         
         public static bool Get(AbilitySlot slot)
         {
-            if (!SkillsMenuDict.ContainsKey(LocalPlayer.Instance.CharName)) return false;
-            if (!SkillsMenuDict[LocalPlayer.Instance.CharName].ContainsKey(slot)) return false;
-            return SkillsMenuDict[LocalPlayer.Instance.CharName][slot].Enabled;
+            var charName = string.IsNullOrEmpty(LocalPlayer.Instance.CharName)
+                ? "Shen Rao"
+                : LocalPlayer.Instance.CharName;
+            if (!SkillsMenuDict.ContainsKey(charName)) return false;
+            if (!SkillsMenuDict[charName].ContainsKey(slot)) return false;
+            return SkillsMenuDict[charName][slot].Enabled;
         }
 
         public static void Unload()
         {
             Game.OnMatchStart -= Game_OnMatchStart;
             Game.OnMatchEnd -= Game_OnMatchEnd;
-            SkillsMenuDict.Clear();
+            SkillsMenuDict = null;
         }
 
         public static void Setup()
         {
             Main.DelayAction(delegate
             {
+                SkillsMenuDict = new Dictionary<string, Dictionary<AbilitySlot, MenuSpell>>();
                 AimbotMenu = MenuEvents.HoyerMenu.Add(new Menu("Hoyer.Aimbot", "Aimbot", true));
                 var enabled = AimbotMenu.Add(new MenuKeybind("aimbot_enabled", "Enabled", KeyCode.V));
                 enabled.OnValueChange += args => Enabled = args.NewValue;
@@ -82,7 +86,7 @@ namespace Hoyer.Base.Aimbot
         {
             foreach (var dict in SkillsMenuDict)
             {
-                if (dict.Key == LocalPlayer.Instance.CharName)
+                if (dict.Key == (string.IsNullOrEmpty(LocalPlayer.Instance.CharName) ? "Shen Rao" : LocalPlayer.Instance.CharName))
                 {
                     foreach (var spell in dict.Value)
                     {

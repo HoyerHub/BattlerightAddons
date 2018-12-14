@@ -16,7 +16,7 @@ namespace Hoyer.Base
     public class Main:IAddon
     {
         public static Clipper Clipper = new Clipper();
-        public static event Action Init = delegate { };
+        public static event Action Init;
 
         public static Vector2 MouseWorldPos
         {
@@ -46,6 +46,7 @@ namespace Hoyer.Base
 
         public void OnInit()
         {
+            Init = delegate { };
             AbilityDatabase.Setup();
             AddonMenus.Setup();
             StealthPrediction.Setup();
@@ -67,6 +68,7 @@ namespace Hoyer.Base
         public void OnUnload()
         {
             Console.WriteLine("Unload Common Started");
+            Init = null;
             AbilityDatabase.Unload();
             AddonMenus.Unload();
             StealthPrediction.Unload();

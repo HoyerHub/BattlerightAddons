@@ -1,4 +1,5 @@
-﻿using BattleRight.Core.Enumeration;
+﻿using System;
+using BattleRight.Core.Enumeration;
 using BattleRight.Core.GameObjects;
 using BattleRight.Core.Math;
 using BattleRight.Core.Models;

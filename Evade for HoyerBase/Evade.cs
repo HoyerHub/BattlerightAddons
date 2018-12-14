@@ -53,9 +53,7 @@ namespace Hoyer.Evade
 
         private static void EvadeLogic()
         {
-            if (UseSkills)
-                if (SkillAimLogic())
-                    return;
+            if (UseSkills && SkillAimLogic()) return;
 
             if (ObjectTracker.Enemy.Projectiles.TrackedObjects.Any())
             {

@@ -11,9 +11,23 @@ namespace Hoyer.Base.Data.Abilites
 {
     public static class ActiveSkills
     {
-        public static readonly List<SkillBase> Active = new List<SkillBase>();
-        public static readonly List<AbilityInfo> ActiveInfos = new List<AbilityInfo>();
+        public static List<SkillBase> Active;
+        public static List<AbilityInfo> ActiveInfos;
         public static event Action Initialize = delegate {};
+        
+        public static void Setup()
+        {
+            Active = new List<SkillBase>();
+            ActiveInfos = new List<AbilityInfo>();
+            Game.OnMatchStart += Game_OnMatchStart;
+        }
+
+        public static void Unload()
+        {
+            Game.OnMatchStart -= Game_OnMatchStart;
+            Active = null;
+            ActiveInfos = null;
+        }
 
         public static void AddFromDatabase(AbilitySlot slot)
         {
@@ -29,7 +43,15 @@ namespace Hoyer.Base.Data.Abilites
         {
             ActiveInfos.Clear();
             Active.Clear();
-            foreach (var ability in AbilityDatabase.Abilities.Where(a=>a.Champion == LocalPlayer.Instance.CharName))
+            if (string.IsNullOrEmpty(LocalPlayer.Instance.CharName))
+            {
+                foreach (var ability in AbilityDatabase.Abilities.Where(a => a.Champion == "Shen Rao"))
+                {
+                    ActiveInfos.Add(ability);
+                    Active.Add(new SkillBase(ability.AbilitySlot, ability.AbilityType.ToSkillType(), ability.Range == 0 ? ability.MaxRange : ability.Range, ability.Speed, ability.Radius, ability.FixedDelay));
+                }
+            }
+            else foreach (var ability in AbilityDatabase.Abilities.Where(a=>a.Champion == LocalPlayer.Instance.CharName))
             {
                 ActiveInfos.Add(ability);
                 Active.Add(new SkillBase(ability.AbilitySlot, ability.AbilityType.ToSkillType(), ability.Range == 0 ? ability.MaxRange : ability.Range, ability.Speed, ability.Radius, ability.FixedDelay));
@@ -49,18 +71,6 @@ namespace Hoyer.Base.Data.Abilites
         public static AbilityInfo GetData(AbilitySlot slot)
         {
             return ActiveInfos.FirstOrDefault(a => a.AbilitySlot == slot);
-        }
-
-        public static void Setup()
-        {
-            Game.OnMatchStart += Game_OnMatchStart;
-        }
-
-        public static void Unload()
-        {
-            Game.OnMatchStart -= Game_OnMatchStart;
-            Active.Clear();
-            ActiveInfos.Clear();
         }
 
         private static void Game_OnMatchStart(EventArgs args)

@@ -32,23 +32,23 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BattleRight.Core">
-      <HintPath>D:\Battleright\System\BattleRight.Core.dll</HintPath>
+      <HintPath>..\..\..\..\Battleright\System\BattleRight.Core.dll</HintPath>
     </Reference>
     <Reference Include="BattleRight.Helper">
-      <HintPath>D:\Battleright\System\BattleRight.Helper.dll</HintPath>
+      <HintPath>..\..\..\..\Battleright\System\BattleRight.Helper.dll</HintPath>
     </Reference>
     <Reference Include="BattleRight.Sandbox">
-      <HintPath>D:\Battleright\System\BattleRight.Sandbox.dll</HintPath>
+      <HintPath>..\..\..\..\Battleright\System\BattleRight.Sandbox.dll</HintPath>
     </Reference>
     <Reference Include="BattleRight.SDK">
-      <HintPath>D:\Battleright\System\BattleRight.SDK.dll</HintPath>
+      <HintPath>..\..\..\..\Battleright\System\BattleRight.SDK.dll</HintPath>
     </Reference>
     <Reference Include="HoyerBase">
-      <HintPath>..\HoyerBase\bin\Release\HoyerBase.dll</HintPath>
+      <HintPath>..\HoyerBase\bin\Debug\HoyerBase.dll</HintPath>
     </Reference>
     <Reference Include="MergedUnity, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Battlerite\Battlerite_Data\Managed\MergedUnity.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Battlerite\Battlerite_Data\Managed\MergedUnity.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -57,10 +57,10 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Battlerite\Battlerite_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Battlerite\Battlerite_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Battlerite\Battlerite_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Battlerite\Battlerite_Data\Managed\UnityEngine.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

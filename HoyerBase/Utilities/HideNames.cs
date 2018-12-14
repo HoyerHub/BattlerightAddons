@@ -9,11 +9,13 @@ namespace Hoyer.Base.Utilities
     public static class HideNames
     {
         public static bool Active;
-        private static readonly List<TextMeshProUGUI> HUDLabels = new List<TextMeshProUGUI>();
-        private static readonly List<TextMeshProUGUI> UILabels = new List<TextMeshProUGUI>();
+        private static List<TextMeshProUGUI> HUDLabels = new List<TextMeshProUGUI>();
+        private static List<TextMeshProUGUI> UILabels = new List<TextMeshProUGUI>();
 
         public static void Setup()
         {
+            HUDLabels = new List<TextMeshProUGUI>();
+            UILabels = new List<TextMeshProUGUI>();
             OnInit();
         }
 
@@ -21,8 +23,8 @@ namespace Hoyer.Base.Utilities
         {
             Game.OnUpdate -= MB_Update;
             Game.OnMatchStart -= Game_OnMatchStart;
-            HUDLabels.Clear();
-            UILabels.Clear();
+            HUDLabels = null;
+            UILabels = null;
         }
 
         private static void OnInit()

@@ -12,14 +12,17 @@ namespace Hoyer.Base.Prediction
     public static class StealthPrediction
     {
         public static bool ShouldUse;
-        public static Dictionary<string, Vector2> Positions = new Dictionary<string, Vector2>();
-        public static Dictionary<string, Vector2> LastSeenPositions = new Dictionary<string, Vector2>();
+        public static Dictionary<string, Vector2> Positions;
+        public static Dictionary<string, Vector2> LastSeenPositions;
         public static bool DrawStealthed = true;
 
         private static readonly Dictionary<string, float> Widths = new Dictionary<string, float>();
 
         public static void Setup()
         {
+            Positions = new Dictionary<string, Vector2>();
+            LastSeenPositions = new Dictionary<string, Vector2>();
+
             Game.OnUpdate += OnUpdate;
             Game.OnPreUpdate += Game_OnDraw;
             Game.OnMatchStart += Game_OnMatchStart;
@@ -32,8 +35,8 @@ namespace Hoyer.Base.Prediction
             Game.OnPreUpdate -= Game_OnDraw;
             Game.OnMatchStart -= Game_OnMatchStart;
             Game.OnMatchStateUpdate -= Game_OnMatchStateUpdate;
-            Positions.Clear();
-            LastSeenPositions.Clear();
+            Positions = null;
+            LastSeenPositions = null;
         }
 
         private static void Game_OnMatchStateUpdate(MatchStateUpdate args)

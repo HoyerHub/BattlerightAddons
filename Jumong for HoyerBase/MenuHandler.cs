@@ -147,7 +147,7 @@ namespace Hoyer.Champions.Jumong
         {
             if (JumongMenu == null)
             {
-                Console.WriteLine("[HoyerJumong/MenuHandler] Can't find menu, please report this to Hoyer :(");
+                Console.WriteLine("[HoyerJumong/MenuHandler] Can't find menu, if this message is getting spammed, try F5 and please report this to Hoyer :(");
                 return;
             }
 

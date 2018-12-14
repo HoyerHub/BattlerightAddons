@@ -25,7 +25,7 @@ namespace Hoyer.Base.Aimbot
 
         public void OnUnload()
         {
-            Game.OnMatchStateUpdate -= Game_OnMatchStart;
+            Game.OnMatchStart -= Game_OnMatchStart;
             Game.OnMatchEnd -= OnMatchEnd;
             SpellDetector.OnSpellCast -= SpellDetector_OnSpellCast;
             SpellDetector.OnSpellStopCast -= SpellDetector_OnSpellStopCast;
@@ -71,6 +71,7 @@ namespace Hoyer.Base.Aimbot
             {
                 try
                 {
+                    Console.WriteLine("Entering match as " + string.IsNullOrEmpty(LocalPlayer.Instance.CharName));
                     var addons = AddonMenus.Active.Where(a => a.SupportedCharacters.Contains(LocalPlayer.Instance.CharName)).ToArray();
                     _shouldUse = !addons.Any();
                     if (_shouldUse) ActiveSkills.AddFromDatabase();

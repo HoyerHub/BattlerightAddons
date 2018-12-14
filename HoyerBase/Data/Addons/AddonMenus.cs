@@ -24,18 +24,20 @@ namespace Hoyer.Base.Data.Addons
 
     public static class AddonMenus
     {
-        private static readonly List<AddonMenu> Menus = new List<AddonMenu>();
-        public static List<AddonMenu> Active = new List<AddonMenu>();
+        private static List<AddonMenu> Menus;
+        public static List<AddonMenu> Active;
 
         public static void Unload()
         {
-            Menus.Clear();
-            Active.Clear();
+            Menus = null;
+            Active = null;
             Game.OnMatchStart -= Game_OnMatchStart;
         }
 
         public static void Setup()
         {
+            Menus = new List<AddonMenu>();
+            Active = new List<AddonMenu>();
             Menus.AddRange(new[]
             {
                 new AddonMenu("Hoyer", "Jumong", new []{"Hoyer.MainMenu", "HoyerJumong"}, new []{"Jumong"}),

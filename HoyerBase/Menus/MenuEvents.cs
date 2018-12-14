@@ -25,11 +25,16 @@ namespace Hoyer.Base.Menus
 
         public static void Setup()
         {
+            Initialize = delegate { };
+            Update = delegate { };
             Main.Init += Init;
         }
 
         public static void Unload()
         {
+            Initialize = null;
+            Update = null;
+
             Main.Init -= Init;
             Game.OnMatchStart -= MatchUpdate;
             Game.OnMatchEnd -= MatchUpdate;
@@ -124,6 +129,7 @@ namespace Hoyer.Base.Menus
 
         private static void MatchUpdate(EventArgs args)
         {
+            Console.WriteLine("Updating match state...");
             Update.Invoke();
         }
 
