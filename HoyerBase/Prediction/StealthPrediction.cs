@@ -74,6 +74,7 @@ namespace Hoyer.Base.Prediction
             if (!Game.IsInGame || Game.CurrentMatchState != MatchState.InRound) return;
             foreach (var character in EntitiesManager.EnemyTeam)
             {
+                if (character.CharName == null) continue;
                 if (character.Living.IsDead)
                 {
                     if(Positions.ContainsKey(character.CharName)) Positions.Remove(character.CharName);
@@ -110,6 +111,7 @@ namespace Hoyer.Base.Prediction
 
         public static Vector2 GetPosition(Character character)
         {
+            if (character.CharName == null) return character.MapObject.Position;
             if (ShouldUse && character.Team == BattleRight.Core.Enumeration.Team.Enemy &&
                 character.CharacterModel.IsModelInvisible &&
                 Positions.ContainsKey(character.CharName))
