@@ -71,7 +71,6 @@ namespace Hoyer.Base.Aimbot
             {
                 try
                 {
-                    Console.WriteLine("Entering match as " + string.IsNullOrEmpty(LocalPlayer.Instance.CharName));
                     var addons = AddonMenus.Active.Where(a => a.SupportedCharacters.Contains(LocalPlayer.Instance.CharName)).ToArray();
                     _shouldUse = !addons.Any();
                     if (_shouldUse) ActiveSkills.AddFromDatabase();

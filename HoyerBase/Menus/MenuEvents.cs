@@ -129,7 +129,6 @@ namespace Hoyer.Base.Menus
 
         private static void MatchUpdate(EventArgs args)
         {
-            Console.WriteLine("Updating match state...");
             Update.Invoke();
         }
 

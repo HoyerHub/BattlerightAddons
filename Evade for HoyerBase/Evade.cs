@@ -278,7 +278,6 @@ namespace Hoyer.Evade
         private static void DodgeWithAbilities(TrackedThrowObject throwObj)
         {
             var timeToImpact = throwObj.EstimatedImpact - Time.time;
-
             if (PlayerIsSafe()) return;
             foreach (var ability in AbilityDatabase.GetDodge(LocalPlayer.Instance.CharName).OrderBy(a => a.Priority))
             {
