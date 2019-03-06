@@ -45,7 +45,7 @@ namespace Hoyer.Base.Prediction
             LastSeenPositions.Clear();
         }
 
-        private static void Game_OnMatchStart(EventArgs args)
+        private static void Game_OnMatchStart()
         {
             Widths.Clear();
             foreach (var character in EntitiesManager.EnemyTeam)
@@ -54,7 +54,7 @@ namespace Hoyer.Base.Prediction
             }
         }
 
-        private static void Game_OnDraw(EventArgs args)
+        private static void Game_OnDraw()
         {
             if (DrawStealthed)
             {
@@ -69,7 +69,7 @@ namespace Hoyer.Base.Prediction
             }
         }
 
-        public static void OnUpdate(EventArgs eventArgs)
+        public static void OnUpdate()
         {
             if (!Game.IsInGame || Game.CurrentMatchState != MatchState.InRound) return;
             foreach (var character in EntitiesManager.EnemyTeam)

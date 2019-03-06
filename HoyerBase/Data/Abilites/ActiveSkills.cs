@@ -73,7 +73,7 @@ namespace Hoyer.Base.Data.Abilites
             return ActiveInfos.FirstOrDefault(a => a.AbilitySlot == slot);
         }
 
-        private static void Game_OnMatchStart(EventArgs args)
+        private static void Game_OnMatchStart()
         {
             ActiveInfos.Clear();
             Active.Clear();

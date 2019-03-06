@@ -34,7 +34,7 @@ namespace Hoyer.Base.Utilities
             if (Game.IsInGame) SetHudLabels();
         }
 
-        private static void Game_OnMatchStart(EventArgs args)
+        private static void Game_OnMatchStart()
         {
             SetHudLabels();
         }
@@ -58,7 +58,7 @@ namespace Hoyer.Base.Utilities
                     HUDLabels.Add(label);
         }
 
-        private static void MB_Update(EventArgs args)
+        private static void MB_Update()
         {
             if (!Active) return;
             if (!Game.IsInGame) SetUILabels();

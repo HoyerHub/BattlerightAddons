@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{74FD072A-A8BB-46E8-9904-E7B91627FEB6}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Hoyer.Champions.Varesh</RootNamespace>
     <AssemblyName>HoyerVaresh</AssemblyName>
@@ -30,18 +30,21 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BattleRight.Core">
-      <HintPath>..\..\..\..\Battleright\System\BattleRight.Core.dll</HintPath>
+    <Reference Include="BattleRight.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=65bb327b54febf4b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\BattleRight.Project\BattleRight.Loader\bin\Debug\System\BattleRight.Core.dll</HintPath>
     </Reference>
-    <Reference Include="BattleRight.Helper">
-      <HintPath>..\..\..\..\Battleright\System\BattleRight.Helper.dll</HintPath>
+    <Reference Include="BattleRight.Helper, Version=1.0.0.0, Culture=neutral, PublicKeyToken=889728e60ee12fc0, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\BattleRight.Project\BattleRight.Loader\bin\Debug\System\BattleRight.Helper.dll</HintPath>
     </Reference>
-    <Reference Include="BattleRight.Sandbox">
-      <HintPath>..\..\..\..\Battleright\System\BattleRight.Sandbox.dll</HintPath>
-    </Reference>
-    <Reference Include="BattleRight.SDK">
-      <HintPath>..\..\..\..\Battleright\System\BattleRight.SDK.dll</HintPath>
+    <Reference Include="BattleRight.SDK, Version=1.0.0.0, Culture=neutral, PublicKeyToken=a667324049f5f09a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\BattleRight.Project\BattleRight.Loader\bin\Debug\System\BattleRight.SDK.dll</HintPath>
     </Reference>
     <Reference Include="HoyerBase">
       <HintPath>..\HoyerBase\bin\Debug\HoyerBase.dll</HintPath>

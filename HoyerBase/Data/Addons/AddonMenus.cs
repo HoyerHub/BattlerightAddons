@@ -52,7 +52,7 @@ namespace Hoyer.Base.Data.Addons
             Game.OnMatchStart += Game_OnMatchStart;
         }
 
-        private static void Game_OnMatchStart(EventArgs args)
+        private static void Game_OnMatchStart()
         {
             SetActiveMenus();
         }

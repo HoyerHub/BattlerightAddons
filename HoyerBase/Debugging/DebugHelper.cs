@@ -38,7 +38,7 @@ namespace Hoyer.Base.Debugging
             Game.OnPreUpdate += Game_OnDraw;
         }
 
-        private static void Game_OnDraw(EventArgs args)
+        private static void Game_OnDraw()
         {
             if (!Game.IsInGame || LocalPlayer.Instance == null || !LocalPlayer.Instance.IsValid || !LocalPlayer.Instance.IsActiveObject) return;
             if (_drawBuffsEnabled)

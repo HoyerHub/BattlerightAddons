@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using BattleRight.Core;
 using BattleRight.Core.Enumeration;
 using BattleRight.Core.GameObjects;
-using BattleRight.Sandbox;
 using BattleRight.SDK.Events;
 using BattleRight.SDK.EventsArgs;
 using Hoyer.Base.Data.Abilites;
@@ -17,7 +16,18 @@ using Vector2 = BattleRight.Core.Math.Vector2;
 
 namespace Hoyer.Champions.Varesh
 {
-    public class Main : IAddon
+    public class Program
+    {
+        private static readonly Main Addon = new Main();
+
+        public static void Main(string[] args)
+        {
+            Base.Main.OnInit();
+            Addon.OnInit();
+        }
+    }
+
+    public class Main
     {
         public static bool Enabled;
 
@@ -56,8 +66,9 @@ namespace Hoyer.Champions.Varesh
             ActiveSkills.AddFromDatabase();
         }
 
-        private void OnUpdate(EventArgs args)
+        private void OnUpdate()
         {
+            Console.WriteLine("Update");
             if (!Enabled || !Game.IsInGame || Game.CurrentMatchState != MatchState.InRound || LocalPlayer.Instance.CharName != "Varesh") return;
 
             if (LocalPlayer.Instance.AbilitySystem.IsCasting && !LocalPlayer.Instance.AbilitySystem.IsPostCasting)
@@ -84,7 +95,7 @@ namespace Hoyer.Champions.Varesh
             _combo = combo;
         }
 
-        private void Game_OnDraw(EventArgs args)
+        private void Game_OnDraw()
         {
             if (MenuHandler.DrawDebugText)
                 Drawing.DrawString(new Vector2(Screen.width / 2f, 200), DebugOutput, Color.green, ViewSpace.ScreenSpacePixels);

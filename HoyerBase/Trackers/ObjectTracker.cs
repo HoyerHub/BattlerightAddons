@@ -40,7 +40,7 @@ namespace Hoyer.Base.Trackers
             Game.OnCoroutineUpdate += Game_OnCoroutineUpdate;
         }
 
-        private static void Game_OnCoroutineUpdate(EventArgs args)
+        private static void Game_OnCoroutineUpdate()
         {
             if (!(Time.time > NextCheckTime)) return;
             CheckForDeadObjects.Invoke();
@@ -143,7 +143,7 @@ namespace Hoyer.Base.Trackers
                     AbilityStates.Clear();
                 }
 
-                private static void Game_OnUpdate(EventArgs args)
+                private static void Game_OnUpdate()
                 {
                     /*if (Input.GetKeyDown(KeyCode.L))
                     {
@@ -167,7 +167,7 @@ namespace Hoyer.Base.Trackers
                     }*/
                 }
 
-                private static void OnMatchStart(EventArgs args)
+                private static void OnMatchStart()
                 {
                     AbilityStates.Clear();
                     foreach (var character in EntitiesManager.EnemyTeam)
@@ -204,7 +204,7 @@ namespace Hoyer.Base.Trackers
                             RemoveAfterFrame.Add(o);
                 }
 
-                private static void Game_OnLateUpdate(EventArgs args)
+                private static void Game_OnLateUpdate()
                 {
                     if (AddAfterFrame.Any())
                     {
@@ -280,7 +280,7 @@ namespace Hoyer.Base.Trackers
                             RemoveAfterFrame.Add(o);
                 }
 
-                private static void Game_OnLateUpdate(EventArgs args)
+                private static void Game_OnLateUpdate()
                 {
                     if (AddAfterFrame.Any())
                     {
@@ -356,7 +356,7 @@ namespace Hoyer.Base.Trackers
                             RemoveAfterFrame.Add(o);
                 }
 
-                private static void Game_OnLateUpdate(EventArgs args)
+                private static void Game_OnLateUpdate()
                 {
                     if (AddAfterFrame.Any())
                     {
@@ -428,7 +428,7 @@ namespace Hoyer.Base.Trackers
                             RemoveAfterFrame.Add(o);
                 }
 
-                private static void Game_OnLateUpdate(EventArgs args)
+                private static void Game_OnLateUpdate()
                 {
                     if (AddAfterFrame.Any())
                     {
@@ -511,7 +511,7 @@ namespace Hoyer.Base.Trackers
                             RemoveAfterFrame.Add(o);
                 }
 
-                private static void Game_OnLateUpdate(EventArgs args)
+                private static void Game_OnLateUpdate()
                 {
                     if (AddAfterFrame.Any())
                     {
@@ -595,7 +595,7 @@ namespace Hoyer.Base.Trackers
                             RemoveAfterFrame.Add(o);
                 }
 
-                private static void Game_OnLateUpdate(EventArgs args)
+                private static void Game_OnLateUpdate()
                 {
                     if (AddAfterFrame.Any())
                     {

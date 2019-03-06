@@ -21,7 +21,7 @@ namespace Hoyer.Base.Trackers
             Game.OnCoroutineUpdate += Game_OnCoroutineUpdate;
         }
 
-        private static void Game_OnCoroutineUpdate(EventArgs args)
+        private static void Game_OnCoroutineUpdate()
         {
             if (!(Time.time > NextCheckTime)) return;
             foreach (var buffState in CharacterBuffStates.Values)
@@ -70,7 +70,7 @@ namespace Hoyer.Base.Trackers
             CharacterBuffStates[targetChar.Name].RemoveBuff(args.Buff);
         }
 
-        private static void Game_OnMatchStart(EventArgs args)
+        private static void Game_OnMatchStart()
         {
             CharacterBuffStates.Clear();
             foreach (var character in EntitiesManager.EnemyTeam)

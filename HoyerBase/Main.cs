@@ -1,7 +1,7 @@
 ﻿using System;
 using BattleRight.Core;
 using BattleRight.Core.Math;
-using BattleRight.Sandbox;
+using BattleRight.Helper;
 using BattleRight.SDK.ClipperLib;
 using Hoyer.Base.Data.Abilites;
 using Hoyer.Base.Data.Addons;
@@ -13,8 +13,15 @@ using Hoyer.Base.Utilities;
 
 namespace Hoyer.Base
 {
-    public class Main:IAddon
+    public static class Main
     {
+        private static bool _hasInitialized = false;
+
+        static Main()
+        {
+            OnInit();
+        }
+
         public static Clipper Clipper = new Clipper();
         public static event Action Init;
 
@@ -44,8 +51,11 @@ namespace Hoyer.Base
                 null, (long)(seconds * 1000), System.Threading.Timeout.Infinite);
         }
 
-        public void OnInit()
+        public static void OnInit()
         {
+            if (_hasInitialized) return;
+            _hasInitialized = true;
+            Logs.Info("Initializing HoyerBase..");
             Init = delegate { };
             AbilityDatabase.Setup();
             AddonMenus.Setup();
@@ -58,14 +68,15 @@ namespace Hoyer.Base
             BuffTracker.Setup();
             Game.OnPreUpdate += Game_OnPreUpdate;
             DelayAction(Init.Invoke, 0.5f);
+            Logs.Info("HoyerBase ready to play!");
         }
 
-        private void Game_OnPreUpdate(EventArgs args)
+        private static void Game_OnPreUpdate()
         {
             _updatedMouseThisFrame = false;
         }
 
-        public void OnUnload()
+        public static void OnUnload()
         {
             Console.WriteLine("Unload Common Started");
             Init = null;

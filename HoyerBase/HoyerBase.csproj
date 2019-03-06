@@ -32,18 +32,21 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BattleRight.Core">
-      <HintPath>..\..\..\..\Battleright\System\BattleRight.Core.dll</HintPath>
+    <Reference Include="BattleRight.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=65bb327b54febf4b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\BattleRight.Project\BattleRight.Loader\bin\Debug\System\BattleRight.Core.dll</HintPath>
     </Reference>
-    <Reference Include="BattleRight.Helper">
-      <HintPath>..\..\..\..\Battleright\System\BattleRight.Helper.dll</HintPath>
+    <Reference Include="BattleRight.Helper, Version=1.0.0.0, Culture=neutral, PublicKeyToken=889728e60ee12fc0, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\BattleRight.Project\BattleRight.Loader\bin\Debug\System\BattleRight.Helper.dll</HintPath>
     </Reference>
-    <Reference Include="BattleRight.Sandbox">
-      <HintPath>..\..\..\..\Battleright\System\BattleRight.Sandbox.dll</HintPath>
-    </Reference>
-    <Reference Include="BattleRight.SDK">
-      <HintPath>..\..\..\..\Battleright\System\BattleRight.SDK.dll</HintPath>
+    <Reference Include="BattleRight.SDK, Version=1.0.0.0, Culture=neutral, PublicKeyToken=a667324049f5f09a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\BattleRight.Project\BattleRight.Loader\bin\Debug\System\BattleRight.SDK.dll</HintPath>
     </Reference>
     <Reference Include="MergedUnity">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Battlerite\Battlerite_Data\Managed\MergedUnity.dll</HintPath>

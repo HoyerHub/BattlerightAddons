@@ -127,7 +127,7 @@ namespace Hoyer.Base.Menus
             useClosestPos.OnValueChange += delegate(ChangedValueArgs<bool> args) { Prediction.Prediction.UseClosestPointOnLine = args.NewValue; };
         }
 
-        private static void MatchUpdate(EventArgs args)
+        private static void MatchUpdate()
         {
             Update.Invoke();
         }

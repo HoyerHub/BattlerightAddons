@@ -73,14 +73,7 @@ namespace Hoyer.Base.Extensions
                         return false;
                     }
                 }
-                if (!useOnHardCC && (buff.ObjectName == "Incapacitate" || buff.ObjectName == "PetrifyStone"))
-                {
-                    if (timeLeft < buff.TimeToExpire)
-                    {
-                        return false;
-                    }
-                }
-                if (buff.ObjectName == "Jetpack")
+                if (!useOnHardCC && (buff.ObjectName == "Incapacitate" || buff.ObjectName == "PetrifyStone") || buff.ObjectName == "Jetpack")
                 {
                     if (timeLeft < buff.TimeToExpire)
                     {
