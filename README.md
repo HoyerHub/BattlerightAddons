@@ -9,5 +9,4 @@ Addons for https://battleright.net/forum/
 - Jumong
 - Varesh
 
-### Needs more work (WIP)
 
