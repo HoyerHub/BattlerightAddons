@@ -6,6 +6,7 @@ Addons for https://battleright.net/forum/
 ### Ready for use
 - Common
 - Evade
+- Aimbot
 - Jumong
 - Varesh
 
