@@ -14,7 +14,7 @@ namespace Hoyer.Base.Data.Abilites
         public static List<SkillBase> Active;
         public static List<AbilityInfo> ActiveInfos;
         public static event Action Initialize = delegate {};
-        
+
         public static void Setup()
         {
             Active = new List<SkillBase>();

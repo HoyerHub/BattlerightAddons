@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BattleRight.Core.Enumeration;
 
@@ -1411,6 +1412,7 @@ namespace Hoyer.Base.Data.Abilites
             Add(new DodgeAbilityInfo
             {
                 Champion = "Taya",
+                ObjectName = "WindStrike",
                 AbilitySlot = AbilitySlot.Ability4,
                 SharedCooldown = AbilitySlot.EXAbility2,
                 AbilityId = 1600053270,
@@ -1423,7 +1425,35 @@ namespace Hoyer.Base.Data.Abilites
             });
             Add(new DodgeAbilityInfo
             {
+                Champion = "Taya",
+                ObjectName = "Zephyr",
+                AbilitySlot = AbilitySlot.EXAbility2,
+                SharedCooldown = AbilitySlot.Ability4,
+                AbilityId = 869920877,
+                AbilityIndex = 9,
+                AbilityType = DodgeAbilityType.Jump,
+                Range = 4,
+                MinDanger = 4,
+                Priority = 3,
+                CastTime = 0.1f
+            });
+            Add(new DodgeAbilityInfo
+            {
+                Champion = "Taya",
+                ObjectName = "TornadoBuff",
+                AbilitySlot = AbilitySlot.Ability6,
+                AbilityId = 386203254,
+                AbilityIndex = 16,
+                AbilityType = DodgeAbilityType.Jump,
+                Range = 4.5f,
+                MinDanger = 3,
+                Priority = 2,
+                CastTime = 0.1f
+            });
+            Add(new DodgeAbilityInfo
+            {
                 Champion = "Shifu",
+                ObjectName = "Fleetfoot",
                 AbilitySlot = AbilitySlot.Ability3,
                 SharedCooldown = AbilitySlot.EXAbility1,
                 AbilityId = 1493003740,
@@ -1431,7 +1461,7 @@ namespace Hoyer.Base.Data.Abilites
                 AbilityType = DodgeAbilityType.Ghost,
                 MinDanger = 3,
                 Priority = 2,
-                CastTime = 0.1f
+                CastTime = 0.1f,
             });
             Add(new DodgeAbilityInfo
             {
@@ -1592,6 +1622,18 @@ namespace Hoyer.Base.Data.Abilites
                 Range = 7,
                 MinDanger = 4,
                 Priority = 3,
+                CastTime = 0.1f
+            });
+            Add(new DodgeAbilityInfo
+            {
+                Champion = "Bakko_EasterEvent",
+                AbilitySlot = AbilitySlot.Ability4,
+                AbilityId = 1173522481,
+                AbilityIndex = 3,
+                AbilityType = DodgeAbilityType.Shield,
+                UsesMousePos = true,
+                MinDanger = 1,
+                Priority = 1,
                 CastTime = 0.1f
             });
             Add(new DodgeAbilityInfo

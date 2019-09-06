@@ -17,6 +17,8 @@ namespace Hoyer.Base.Data.Abilites
     public class DodgeAbilityInfo
     {
         public string Champion;
+        public string ObjectName = "";
+        public int Cooldown;
         public int AbilityId;
         public int AbilityIndex = -1;
         public AbilitySlot AbilitySlot;

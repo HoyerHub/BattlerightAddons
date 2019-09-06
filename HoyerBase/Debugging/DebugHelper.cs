@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using BattleRight.Core;
+using BattleRight.Core.Enumeration;
 using BattleRight.Core.GameObjects;
 using BattleRight.Core.GameObjects.Models;
 using BattleRight.SDK;
@@ -8,6 +9,7 @@ using BattleRight.SDK.Events;
 using BattleRight.SDK.UI;
 using BattleRight.SDK.UI.Models;
 using BattleRight.SDK.UI.Values;
+using Hoyer.Base.Data.Abilites;
 using Hoyer.Base.Extensions;
 using Hoyer.Base.Menus;
 using Hoyer.Base.Prediction;
@@ -69,6 +71,7 @@ namespace Hoyer.Base.Debugging
             InGameObject.OnCreate -= InGameObject_OnCreate;
             InGameObject.OnDestroy -= InGameObject_OnDestroy;
             MenuEvents.Initialize -= MenuEvents_Initialize;
+            Game.OnPreUpdate -= Game_OnDraw;
         }
 
         private static void MenuEvents_Initialize()

@@ -64,7 +64,7 @@ namespace Hoyer.Base.Extensions
             else timeLeft = enemy.Distance(LocalPlayer.Instance) / spell.Speed;
             timeLeft += 0.2f;
             
-            foreach (var buff in enemy.Buffs.Where(b => b != null && b.ObjectName != null))
+            foreach (var buff in enemy.Buffs.Where(b => b?.ObjectName != null))
             {
                 if (isProjectile && (buff.BuffType == BuffType.Counter || buff.BuffType == BuffType.Consume || buff.ObjectName == "GustBuff" || buff.ObjectName == "BulwarkBuff" || buff.ObjectName == "TractorBeam" || buff.ObjectName == "TimeBenderBuff" || buff.ObjectName == "DivineShieldBuff"))
                 {
@@ -98,7 +98,7 @@ namespace Hoyer.Base.Extensions
 
         public static bool IsHoveringNear(this MapGameObject obj)
         {
-            return new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y + 1).ScreenToWorld().Distance(obj.Position) < 0.5f;
+            return new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y + 1).ScreenToWorld().Distance(obj.Position) < 1;
         }
     }
 }

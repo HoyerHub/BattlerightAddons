@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using BattleRight.Core;
+using BattleRight.Core.Enumeration;
 using BattleRight.Core.GameObjects;
 using BattleRight.Core.GameObjects.Models;
 using BattleRight.SDK;
@@ -21,7 +22,7 @@ namespace Hoyer.Base.Trackers
     public static class ObjectTracker
     {
         internal static float NextCheckTime;
-        internal static event Action<InGameObject> EnemyObjectSpawn = delegate { };
+        public static event Action<InGameObject> EnemyObjectSpawn = delegate { };
         internal static event Action CheckForDeadObjects = delegate { };
 
         public static void Setup()
@@ -771,7 +772,7 @@ namespace Hoyer.Base.Trackers
         private bool CheckForCollision(Vector2 pos)
         {
             var targetCollision = CollisionSolver.CheckThickLineCollision(ClosestPoint, Projectile.StartPosition,
-                LocalPlayer.Instance.MapCollision.MapCollisionRadius);
+                LocalPlayer.Instance.MapCollision.MapCollisionRadius, CollisionFlags.Bush);
             return targetCollision != null && targetCollision.IsColliding &&
                    targetCollision.CollisionFlags.HasFlag(CollisionFlags.LowBlock | CollisionFlags.HighBlock);
         }

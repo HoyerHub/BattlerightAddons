@@ -19,12 +19,13 @@ namespace Hoyer.Base.Aimbot
         public static Menu Skills;
 
         public static bool Enabled;
-        public static bool Interrupt;
+        public static bool Interrupt;       
 
         private static Dictionary<string, Dictionary<AbilitySlot, MenuSpell>> SkillsMenuDict;
         
         public static bool Get(AbilitySlot slot)
         {
+            if (slot == AbilitySlot.Taunt) return true;
             var charName = string.IsNullOrEmpty(LocalPlayer.Instance.CharName)
                 ? "Shen Rao"
                 : LocalPlayer.Instance.CharName;

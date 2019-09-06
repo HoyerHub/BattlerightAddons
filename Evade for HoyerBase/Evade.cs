@@ -59,7 +59,7 @@ namespace Hoyer.Evade
             {
                 foreach (var trackedProjectile in ObjectTracker.Enemy.Projectiles.TrackedObjects) trackedProjectile.Update();
 
-                var dangerousProjectiles = ObjectTracker.Enemy.Projectiles.TrackedObjects.Where(p => p.IsDangerous).ToArray();
+                var dangerousProjectiles = ObjectTracker.Enemy.Projectiles.TrackedObjects.Where(p => p.IsDangerous && p.Data.ShouldUse()).ToArray();
                 if (dangerousProjectiles.Any())
                 {
                     var mostDangerous = dangerousProjectiles.OrderByDescending(p => p.Data.Danger).First();
@@ -75,7 +75,7 @@ namespace Hoyer.Evade
             {
                 foreach (var trackedDash in ObjectTracker.Enemy.Dashes.TrackedObjects) trackedDash.Update();
 
-                var dangerousDashes = ObjectTracker.Enemy.Dashes.TrackedObjects.Where(d => d.IsDangerous).ToArray();
+                var dangerousDashes = ObjectTracker.Enemy.Dashes.TrackedObjects.Where(p => p.IsDangerous && p.Data.ShouldUse()).ToArray();
                 if (dangerousDashes.Any())
                 {
                     var mostDangerous = dangerousDashes.OrderByDescending(p => p.Data.Danger).First();
@@ -91,7 +91,7 @@ namespace Hoyer.Evade
             {
                 foreach (var trackedThrow in ObjectTracker.Enemy.CircularThrows.TrackedObjects) trackedThrow.Update();
 
-                var dangerousThrows = ObjectTracker.Enemy.CircularThrows.TrackedObjects.Where(t => t.IsDangerous).ToArray();
+                var dangerousThrows = ObjectTracker.Enemy.CircularThrows.TrackedObjects.Where(p => p.IsDangerous && p.Data.ShouldUse()).ToArray();
                 if (dangerousThrows.Any())
                 {
                     var mostDangerous = dangerousThrows.OrderByDescending(p => p.Data.Danger).First();
@@ -113,7 +113,7 @@ namespace Hoyer.Evade
             {
                 foreach (var trackedJump in ObjectTracker.Enemy.CircularJumps.TrackedObjects) trackedJump.Update();
 
-                var dangerousJumps = ObjectTracker.Enemy.CircularJumps.TrackedObjects.Where(t => t.IsDangerous).ToArray();
+                var dangerousJumps = ObjectTracker.Enemy.CircularJumps.TrackedObjects.Where(p => p.IsDangerous && p.Data.ShouldUse()).ToArray();
                 if (dangerousJumps.Any())
                 {
                     var mostDangerous = dangerousJumps.OrderByDescending(p => p.Data.Danger).First();
@@ -135,7 +135,7 @@ namespace Hoyer.Evade
             {
                 foreach (var trackedCurveProjectile in ObjectTracker.Enemy.CurveProjectiles.TrackedObjects) trackedCurveProjectile.Update();
 
-                var dangerousProjectiles = ObjectTracker.Enemy.CurveProjectiles.TrackedObjects.Where(p => p.IsDangerous).ToArray();
+                var dangerousProjectiles = ObjectTracker.Enemy.CurveProjectiles.TrackedObjects.Where(p => p.IsDangerous && p.Data.ShouldUse()).ToArray();
                 if (dangerousProjectiles.Any())
                 {
                     var mostDangerous = dangerousProjectiles.OrderByDescending(p => p.Data.Danger).First();

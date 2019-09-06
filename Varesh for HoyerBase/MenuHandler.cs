@@ -63,15 +63,14 @@ namespace Hoyer.Champions.Varesh
             VareshMenu.Add(_useCursor);
 
             _interruptSpells = new MenuCheckBox("Varesh_interruptspells", "Interrupt spellcasts if aim logic is active and no valid targets");
-            _interruptSpells.OnValueChange += delegate(ChangedValueArgs<bool> args)
+            VareshMenu.Add(_interruptSpells);
+            _neverInterruptE = new MenuCheckBox("Varesh_neverinterrupte", "Never interrupt E");
+            _neverInterruptE.OnValueChange += delegate (ChangedValueArgs<bool> args) { NeverInterruptE = args.NewValue; };
+            _interruptSpells.OnValueChange += delegate (ChangedValueArgs<bool> args)
             {
                 InterruptSpells = args.NewValue;
                 _neverInterruptE.Hidden = !args.NewValue;
             };
-            VareshMenu.Add(_interruptSpells);
-
-            _neverInterruptE = new MenuCheckBox("Varesh_neverinterrupte", "Never interrupt E");
-            _neverInterruptE.OnValueChange += delegate (ChangedValueArgs<bool> args) { NeverInterruptE = args.NewValue; };
             VareshMenu.Add(_neverInterruptE);
 
             InitSkillMenu();

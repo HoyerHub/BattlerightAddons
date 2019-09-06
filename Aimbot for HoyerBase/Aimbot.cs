@@ -41,7 +41,13 @@ namespace Hoyer.Base.Aimbot
             SpellDetector.OnSpellCast += SpellDetector_OnSpellCast;
             SpellDetector.OnSpellStopCast += SpellDetector_OnSpellStopCast;
             Game.OnUpdate += Update;
+            Game.OnPreUpdate += Game_OnPreUpdate;
             MenuEvents.Initialize += MenuHandler.Setup;
+        }
+
+        private void Game_OnPreUpdate(EventArgs args)
+        {
+            LocalPlayer.EditAimPosition = false;
         }
 
         private static void OnMatchEnd(EventArgs args)
@@ -51,7 +57,7 @@ namespace Hoyer.Base.Aimbot
 
         private static void SpellDetector_OnSpellStopCast(BattleRight.SDK.EventsArgs.SpellStopArgs args)
         {
-            if (!MenuHandler.Enabled || args.Caster.Name != LocalPlayer.Instance.Name) return;
+            if (args.Caster.Name != LocalPlayer.Instance.Name) return;
             _isCasting = false;
             _castingId = 0;
             if (_shouldUse) LocalPlayer.EditAimPosition = false;
@@ -59,7 +65,7 @@ namespace Hoyer.Base.Aimbot
 
         private static void SpellDetector_OnSpellCast(BattleRight.SDK.EventsArgs.SpellCastArgs args)
         {
-            if (!MenuHandler.Enabled || args.Caster.Name != LocalPlayer.Instance.Name) return;
+            if (args.Caster.Name != LocalPlayer.Instance.Name) return;
             _isCasting = true;
             _castingId = args.Caster.AbilitySystem.CastingAbilityId;
         }
@@ -135,7 +141,5 @@ namespace Hoyer.Base.Aimbot
             LocalPlayer.Aim(orbPos);
             return true;
         }
-
-        
     }
 }
